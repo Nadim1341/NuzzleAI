@@ -1,7 +1,7 @@
 <template>
   <div class="bottom-nav-outer-wrapper">
     <nav class="floating-island-nav">
-      <!-- 🏡 Den (Feed) -->
+      <!-- 🏠 Feed -->
       <button 
         class="nav-capsule-btn" 
         :class="{ active: currentTab === 'feed' }" 
@@ -10,10 +10,10 @@
         <div class="icon-bubble">
           <Home :size="20" />
         </div>
-        <span class="nav-label">Den</span>
+        <span class="nav-label">Home</span>
       </button>
 
-      <!-- 🧭 Park (Explore & Clubs) -->
+      <!-- 🧭 Explore -->
       <button 
         class="nav-capsule-btn" 
         :class="{ active: currentTab === 'explore' }" 
@@ -22,18 +22,17 @@
         <div class="icon-bubble">
           <Compass :size="20" />
         </div>
-        <span class="nav-label">Park</span>
+        <span class="nav-label">Explore</span>
       </button>
 
-      <!-- ➕ Center Bark/Post Glowing Capsule -->
+      <!-- ➕ Center Creation Button -->
       <div class="center-fab-anchor">
-        <button class="glowing-bark-fab" @click="isCreateSheetOpen = true" title="Bark a Moment">
-          <Plus :size="24" class="fab-plus-icon" />
-          <span class="fab-pulse-ring"></span>
+        <button class="glowing-bark-fab" @click="isCreateSheetOpen = true" title="New Post">
+          <Plus :size="22" class="fab-plus-icon" />
         </button>
       </div>
 
-      <!-- ✨ PawAI Intelligence Tab -->
+      <!-- ✨ PawAI Intelligence -->
       <button 
         class="nav-capsule-btn ai-tab" 
         :class="{ active: currentTab === 'ai' }" 
@@ -45,7 +44,7 @@
         <span class="nav-label ai-label">PawAI</span>
       </button>
 
-      <!-- 🐾 Pet Passport (Profile) -->
+      <!-- 🐾 Profile & Passport -->
       <button 
         class="nav-capsule-btn" 
         :class="{ active: currentTab === 'profile' }" 
@@ -54,7 +53,7 @@
         <div class="passport-avatar-bubble" :class="{ active: currentTab === 'profile' }">
           <img :src="owner.avatarUrl" :alt="owner.displayName" />
         </div>
-        <span class="nav-label">Passport</span>
+        <span class="nav-label">Profile</span>
       </button>
     </nav>
   </div>

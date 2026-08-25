@@ -8,9 +8,6 @@
       </div>
 
       <div class="header-actions">
-        <button class="btn-icon passport-head-btn" @click="isPassportModalOpen = true" title="Digital Pet Passport">
-          <Award :size="20" class="gold-icon" />
-        </button>
         <button class="btn-icon" @click="setTab('settings')" title="Settings">
           <Settings :size="20" />
         </button>
@@ -26,7 +23,7 @@
           @click="activeProfileId = 'owner_me'"
         >
           <img :src="owner.avatarUrl" :alt="owner.displayName" class="persona-avatar" />
-          <span>{{ owner.displayName.split(' ')[0] }} (Owner)</span>
+          <span>{{ owner.displayName.split(' ')[0] }}</span>
         </button>
 
         <button 
@@ -37,35 +34,8 @@
           @click="activeProfileId = p.id"
         >
           <img :src="p.avatarUrl" :alt="p.name" class="persona-avatar" />
-          <span>🐾 {{ p.name }}</span>
+          <span>{{ p.name }}</span>
         </button>
-      </div>
-
-      <!-- Anonymity / Ghost Mode Banner (Entire Card is Clickable) -->
-      <div 
-        class="anonymity-card card-item"
-        :class="{ 'ghost-active': isCurrentAnonymous }"
-        @click="toggleAnonymity"
-        title="Click to toggle Anonymous Ghost Mode"
-      >
-        <div class="anon-text-col">
-          <div class="anon-badge-line">
-            <EyeOff :size="15" class="anon-icon" />
-            <span class="anon-title">
-              {{ isCurrentAnonymous ? '👻 Ghost Mode Active' : 'Anonymous Mode' }}
-            </span>
-            <span v-if="isCurrentAnonymous" class="live-active-tag">ON</span>
-          </div>
-          <p class="anon-explain">
-            {{ isCurrentAnonymous 
-                ? 'Your identity is masked as Anonymous across public feeds & comments.' 
-                : 'Click here to hide your real name & photo on public posts.' }}
-          </p>
-        </div>
-
-        <div class="toggle-switch" :class="{ active: isCurrentAnonymous }">
-          <div class="toggle-thumb"></div>
-        </div>
       </div>
 
       <!-- Main Profile Bio & Numbers Card -->
@@ -74,7 +44,6 @@
           <div class="hero-avatar-wrapper" :class="{ 'ghost-halo': isCurrentAnonymous }">
             <img :src="currentAvatar" :alt="currentDisplayName" class="hero-avatar" />
             <div v-if="isCurrentAnonymous" class="ghost-badge-overlay" title="Anonymous Persona">👻</div>
-            <div v-else-if="activePet" class="pet-star-badge">⭐</div>
           </div>
 
           <div class="stats-counts-group">
@@ -100,7 +69,7 @@
             <span v-if="isCurrentAnonymous" class="anon-identity-badge">Incognito</span>
           </div>
           <span v-if="activePet" class="hero-subtitle">{{ activePet.species }} • {{ activePet.breed }} • {{ activePet.age }}</span>
-          <span v-else class="hero-subtitle">Pet Parent • Portland / Dhaka</span>
+          <span v-else class="hero-subtitle">Pet Parent • Portland, OR</span>
 
           <p class="hero-bio-text">
             {{ currentBio }}
@@ -109,9 +78,9 @@
 
         <!-- Action Buttons -->
         <div class="profile-buttons-row">
-          <button class="btn-solid profile-btn gold-gradient-btn" @click="isPassportModalOpen = true">
+          <button class="btn-solid profile-btn passport-action-btn" @click="isPassportModalOpen = true">
             <Award :size="15" />
-            <span>{{ activePet ? `${activePet.name}'s Passport` : 'Pet Passports' }} 🛂</span>
+            <span>Digital Pet Passport 🛂</span>
           </button>
 
           <button class="btn-outline profile-btn" @click="setTab('settings')">
@@ -121,47 +90,36 @@
         </div>
       </div>
 
-      <!-- UPGRADED PET PASSPORT SUMMARY CARD (PROMINENT WIDGET) -->
-      <div class="passport-widget-card card-item" @click="isPassportModalOpen = true">
-        <div class="p-widget-top">
-          <div class="p-widget-emblem">
-            <span class="p-flag">🛂</span>
-            <div>
-              <h4 class="p-widget-title">Digital Pet Passport ID</h4>
-              <span class="p-widget-chip">CHIP: {{ activePet?.microchipId || pets[0]?.microchipId || '985-0019-4820-GOLD' }}</span>
-            </div>
+      <!-- Minimalist Anonymity Toggle Card -->
+      <div 
+        class="anonymity-card card-item"
+        :class="{ 'ghost-active': isCurrentAnonymous }"
+        @click="toggleAnonymity"
+        title="Toggle Ghost Mode"
+      >
+        <div class="anon-text-col">
+          <div class="anon-badge-line">
+            <EyeOff :size="15" class="anon-icon" />
+            <span class="anon-title">
+              {{ isCurrentAnonymous ? '👻 Ghost Mode Active' : 'Anonymous Mode' }}
+            </span>
           </div>
-          <div class="verified-seal-badge">
-            <ShieldCheck :size="13" />
-            <span>100% Verified</span>
-          </div>
+          <p class="anon-explain">
+            {{ isCurrentAnonymous 
+                ? 'Your identity is masked as Anonymous across feeds & comments.' 
+                : 'Hide real name & photo on public posts.' }}
+          </p>
         </div>
 
-        <div class="p-widget-metrics">
-          <div class="p-metric">
-            <span class="pm-val">✓ Active</span>
-            <span class="pm-lbl">Rabies & Core</span>
-          </div>
-          <div class="p-metric">
-            <span class="pm-val">June 2027</span>
-            <span class="pm-lbl">Next Booster</span>
-          </div>
-          <div class="p-metric">
-            <span class="pm-val">✈️ Cleared</span>
-            <span class="pm-lbl">Travel Ready</span>
-          </div>
-        </div>
-
-        <div class="p-widget-cta">
-          <span class="cta-text">Open Full Passport & Scannable QR ID</span>
-          <ChevronRight :size="16" class="cta-arrow" />
+        <div class="toggle-switch" :class="{ active: isCurrentAnonymous }">
+          <div class="toggle-thumb"></div>
         </div>
       </div>
 
       <!-- Pets Roster (when in Owner View) -->
       <div v-if="!activePet" class="pets-roster-section">
         <div class="roster-head">
-          <h4 class="roster-title">🐾 Alex's Pets ({{ pets.length }})</h4>
+          <h4 class="roster-title">🐾 Pets ({{ pets.length }})</h4>
           <button class="add-pet-link" @click="addDemoPet">+ Add Pet</button>
         </div>
 
@@ -182,11 +140,11 @@
       <!-- Media & Posts Grid Tabs -->
       <div class="profile-media-tabs">
         <button class="p-tab-btn active">
-          <Grid :size="18" />
+          <Grid :size="17" />
           <span>Posts ({{ currentPostsCount }})</span>
         </button>
         <button class="p-tab-btn">
-          <Bookmark :size="18" />
+          <Bookmark :size="17" />
           <span>Saved</span>
         </button>
       </div>
@@ -220,7 +178,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { Settings, EyeOff, Edit, Grid, Bookmark, Award, ShieldCheck, ChevronRight } from 'lucide-vue-next';
+import { Settings, EyeOff, Edit, Grid, Bookmark, Award } from 'lucide-vue-next';
 import PetPassportModal from '../components/profile/PetPassportModal.vue';
 import { 
   owner, 

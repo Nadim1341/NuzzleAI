@@ -13,6 +13,9 @@ export interface Owner {
   notifyFollows: boolean;
   followersCount: number;
   followingCount: number;
+  isProMember?: boolean;
+  proPlan?: string;
+  proRenewalDate?: string;
 }
 
 export interface Pet {
@@ -32,6 +35,7 @@ export interface Pet {
   followersCount: number;
   aiPersonality?: string;
   energyLevel?: 'Low & Chill' | 'Moderate' | 'High Zoomies';
+  isProMember?: boolean;
 }
 
 export interface PostComment {

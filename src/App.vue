@@ -37,6 +37,7 @@
       <CommentsModal />
       <ChatWindowModal />
       <CreateSheetModal />
+      <ProUpgradeModal />
     </div>
   </div>
 </template>
@@ -47,6 +48,7 @@ import StoryViewerModal from './components/feed/StoryViewerModal.vue';
 import CommentsModal from './components/feed/CommentsModal.vue';
 import ChatWindowModal from './components/chat/ChatWindowModal.vue';
 import CreateSheetModal from './components/create/CreateSheetModal.vue';
+import ProUpgradeModal from './components/subscription/ProUpgradeModal.vue';
 
 // Views
 import FeedView from './views/FeedView.vue';

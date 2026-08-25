@@ -3,6 +3,26 @@
     <TopBar title="⚙️ Settings & Privacy" />
 
     <div class="settings-scroll-body">
+      <!-- Section 0: Nuzzle Pro Member VIP -->
+      <div class="settings-section">
+        <h4 class="sec-heading">Subscription Plan</h4>
+        <div class="settings-card card-item pro-settings-card" @click="isProModalOpen = true">
+          <div class="pro-settings-left">
+            <span class="pro-crown-ico">👑</span>
+            <div>
+              <div class="pro-set-head">
+                <span class="pro-set-title">{{ owner.isProMember ? 'Nuzzle Pro Member' : 'Upgrade to Nuzzle Pro' }}</span>
+                <span class="pro-set-badge">{{ owner.isProMember ? 'ACTIVE' : '90 BDT / mo' }}</span>
+              </div>
+              <p class="pro-set-sub">
+                {{ owner.isProMember ? `Subscribed (${owner.proPlan}) • All VIP privileges unlocked` : 'Unlock VIP Crown, Unlimited PawDoctor AI & 5% Market Discount' }}
+              </p>
+            </div>
+          </div>
+          <button class="pro-set-btn">{{ owner.isProMember ? 'Manage' : 'Upgrade' }}</button>
+        </div>
+      </div>
+
       <!-- Section 1: Account Information -->
       <div class="settings-section">
         <h4 class="sec-heading">Account Details</h4>
@@ -142,7 +162,7 @@
 
 <script setup lang="ts">
 import TopBar from '../components/layout/TopBar.vue';
-import { owner, isDarkMode, toggleTheme, setTab } from '../stores/appStore';
+import { owner, isDarkMode, toggleTheme, setTab, isProModalOpen } from '../stores/appStore';
 
 function handleLogout() {
   if (confirm('Log out of Nuzzle?')) {
@@ -162,6 +182,89 @@ function handleLogout() {
   flex: 1;
   overflow-y: auto;
   padding: 12px 16px 28px;
+}
+
+/* Pro Settings Card */
+.pro-settings-card {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1.5px solid #FCD34D;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 12px 16px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+  transition: transform 0.15s ease;
+}
+
+:global([data-theme='dark']) .pro-settings-card {
+  background: rgba(45, 30, 10, 0.65);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.pro-settings-card:hover {
+  transform: translateY(-1px);
+}
+
+.pro-settings-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pro-crown-ico {
+  font-size: 26px;
+}
+
+.pro-set-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pro-set-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #92400E;
+}
+
+:global([data-theme='dark']) .pro-set-title {
+  color: #FCD34D;
+}
+
+.pro-set-badge {
+  font-size: 9px;
+  font-weight: 900;
+  color: #fff;
+  background: #D97706;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+}
+
+.pro-set-sub {
+  font-size: 10.5px;
+  color: #B45309;
+  line-height: 1.25;
+  margin-top: 1px;
+}
+
+:global([data-theme='dark']) .pro-set-sub {
+  color: #FDE68A;
+}
+
+.pro-set-btn {
+  font-size: 11px;
+  font-weight: 800;
+  color: #92400E;
+  background: #fff;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+:global([data-theme='dark']) .pro-set-btn {
+  background: #78350F;
+  color: #FDE68A;
 }
 
 .settings-section {

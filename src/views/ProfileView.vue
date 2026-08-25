@@ -38,17 +38,47 @@
         </button>
       </div>
 
-      <!-- 2. Hero Profile Card -->
-      <div class="profile-hero-card" :class="{ 'ghost-active-border': isCurrentAnonymous }">
+      <!-- 2. Nuzzle Pro Membership VIP Banner (90 BDT / month) -->
+      <div 
+        class="pro-profile-banner"
+        :class="{ 'pro-active': owner.isProMember }"
+        @click="isProModalOpen = true"
+      >
+        <div class="pro-banner-left">
+          <div class="pro-crown-badge">👑</div>
+          <div class="pro-banner-text">
+            <div class="pro-banner-head">
+              <span class="pro-head-title">{{ owner.isProMember ? 'Nuzzle Pro Member Active' : 'Upgrade to Nuzzle Pro' }}</span>
+              <span class="pro-price-tag">{{ owner.isProMember ? 'VIP UNLOCKED' : '90 BDT / mo' }}</span>
+            </div>
+            <p class="pro-head-sub">
+              {{ owner.isProMember 
+                  ? 'All VIP privileges active: PawDoctor AI, Priority Vets & 5% Market Discount' 
+                  : 'VIP Crown, Unlimited PawAI, Priority Vet Slots & 5% Marketplace Discount' }}
+            </p>
+          </div>
+        </div>
+
+        <button class="pro-cta-pill">
+          <span>{{ owner.isProMember ? 'Manage' : 'Upgrade' }}</span>
+        </button>
+      </div>
+
+      <!-- 3. Hero Profile Card -->
+      <div class="profile-hero-card" :class="{ 'ghost-active-border': isCurrentAnonymous, 'pro-member-halo': owner.isProMember }">
         <div class="hero-identity-row">
-          <div class="hero-avatar-frame" :class="{ 'ghost-halo': isCurrentAnonymous }">
+          <div class="hero-avatar-frame" :class="{ 'ghost-halo': isCurrentAnonymous, 'pro-gold-frame': owner.isProMember }">
             <img :src="currentAvatar" :alt="currentDisplayName" class="hero-main-avatar" />
-            <div v-if="isCurrentAnonymous" class="ghost-icon-tag" title="Ghost Mode Mask">👻</div>
+            <div v-if="owner.isProMember && !isCurrentAnonymous" class="pro-crown-tag" title="Nuzzle Pro VIP">👑</div>
+            <div v-else-if="isCurrentAnonymous" class="ghost-icon-tag" title="Ghost Mode Mask">👻</div>
           </div>
 
           <div class="hero-bio-col">
             <div class="name-badge-line">
-              <h3 class="hero-display-name">{{ currentDisplayName }}</h3>
+              <h3 class="hero-display-name">
+                {{ currentDisplayName }}
+                <span v-if="owner.isProMember" class="inline-crown" title="Pro Member">👑</span>
+              </h3>
               <span v-if="activePet" class="species-chip">{{ activePet.breed || activePet.species }}</span>
             </div>
             <span class="sub-location-line">
@@ -211,7 +241,8 @@ import {
   pets, 
   activeProfileId, 
   activePet, 
-  setTab 
+  setTab,
+  isProModalOpen
 } from '../stores/appStore';
 
 const isPassportModalOpen = ref(false);
@@ -760,6 +791,125 @@ function showProfileToast(msg: string) {
   transform: scale(1.05);
 }
 
+/* Pro Member VIP Banner */
+.pro-profile-banner {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1.5px solid #FCD34D;
+  border-radius: 16px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+  transition: transform 0.15s ease;
+}
+
+:global([data-theme='dark']) .pro-profile-banner {
+  background: rgba(45, 30, 10, 0.65);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.pro-profile-banner:hover {
+  transform: translateY(-1px);
+}
+
+.pro-profile-banner.pro-active {
+  border-color: #D97706;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+}
+
+:global([data-theme='dark']) .pro-profile-banner.pro-active {
+  background: rgba(55, 35, 10, 0.8);
+}
+
+.pro-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pro-crown-badge {
+  font-size: 24px;
+}
+
+.pro-banner-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pro-head-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #92400E;
+}
+
+:global([data-theme='dark']) .pro-head-title {
+  color: #FCD34D;
+}
+
+.pro-price-tag {
+  font-size: 9px;
+  font-weight: 900;
+  color: #fff;
+  background: #D97706;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+}
+
+.pro-head-sub {
+  font-size: 10.5px;
+  color: #B45309;
+  line-height: 1.25;
+  margin-top: 1px;
+}
+
+:global([data-theme='dark']) .pro-head-sub {
+  color: #FDE68A;
+}
+
+.pro-cta-pill {
+  font-size: 11px;
+  font-weight: 800;
+  color: #92400E;
+  background: #fff;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme='dark']) .pro-cta-pill {
+  background: #78350F;
+  color: #FDE68A;
+}
+
+.pro-gold-frame {
+  border-color: #F59E0B !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+.pro-crown-tag {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  font-size: 14px;
+  background: #FEF3C7;
+  border: 1.5px solid #F59E0B;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+}
+
+.inline-crown {
+  font-size: 14px;
+  margin-left: 2px;
+}
+
 /* Toast */
 .profile-toast-bar {
   position: fixed;
@@ -787,3 +937,4 @@ function showProfileToast(msg: string) {
   transform: translate(-50%, 10px);
 }
 </style>
+

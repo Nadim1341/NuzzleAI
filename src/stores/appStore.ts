@@ -44,6 +44,7 @@ export const activeHashtag = ref<string | null>(null);
 export const activeProfileId = ref<string>('owner_me');
 export const isCommentsModalOpen = ref(false);
 export const activePostForComments = ref<Post | null>(null);
+export const isProModalOpen = ref(false);
 
 export const owner = reactive<Owner>({ ...initialOwner });
 export const pets = reactive<Pet[]>([
@@ -630,4 +631,36 @@ export function buyMarketItem(itemId: string) {
     isRead: false
   });
 }
+
+// Pro Member Subscription Actions (90 BDT / month)
+export function subscribeToPro(plan: 'monthly' | 'annual' = 'monthly', method: string = 'bKash') {
+  owner.isProMember = true;
+  owner.proPlan = plan === 'monthly' ? '90 BDT / month' : '890 BDT / year';
+  owner.proRenewalDate = 'Next Month';
+
+  // Enable Pro on all pets
+  pets.forEach(p => {
+    p.isProMember = true;
+  });
+
+  notifications.unshift({
+    id: `notif_pro_${Date.now()}`,
+    type: 'ai_insight',
+    title: '👑 Welcome to Nuzzle Pro!',
+    message: `Subscription active via ${method} (${owner.proPlan}). All VIP privileges & PawDoctor AI unlocked!`,
+    avatarUrl: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&auto=format&fit=crop&q=80',
+    timeAgo: 'Just now',
+    isRead: false
+  });
+}
+
+export function cancelPro() {
+  owner.isProMember = false;
+  owner.proPlan = undefined;
+  owner.proRenewalDate = undefined;
+  pets.forEach(p => {
+    p.isProMember = false;
+  });
+}
+
 

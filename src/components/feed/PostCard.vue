@@ -10,7 +10,10 @@
 
         <div class="author-meta">
           <div class="name-row">
-            <h4 class="pet-name">{{ post.petName || post.ownerName }}</h4>
+            <h4 class="pet-name">
+              {{ post.petName || post.ownerName }}
+              <span v-if="isAuthorPro" class="pro-crown-badge" title="Nuzzle Pro Member">👑</span>
+            </h4>
             <span v-if="post.isAnonymous" class="ghost-badge">👻 Anon</span>
           </div>
           <span class="byline-row">{{ post.ownerName }} · {{ post.createdAt }}</span>
@@ -172,12 +175,20 @@ import {
   togglePostSave, 
   openComments, 
   activeProfileId, 
-  setTab 
+  setTab,
+  owner
 } from '../../stores/appStore';
 
 const props = defineProps<{
   post: Post;
 }>();
+
+const isAuthorPro = computed(() => {
+  if (props.post.ownerName === owner.displayName) {
+    return !!owner.isProMember;
+  }
+  return props.post.id === 'post_1' || props.post.petName === 'Waffles';
+});
 
 const isDockOpen = ref(false);
 const burstReaction = ref<PetReactionType | null>(null);
@@ -677,5 +688,11 @@ function getPetThought(post: Post): string {
 @keyframes fadeOut {
   0% { transform: scale(1) translateY(0); opacity: 1; }
   100% { transform: scale(0.9) translateY(3px); opacity: 0; }
+}
+
+.pro-crown-badge {
+  font-size: 13px;
+  margin-left: 2px;
+  filter: drop-shadow(0 1px 2px rgba(245, 158, 11, 0.4));
 }
 </style>

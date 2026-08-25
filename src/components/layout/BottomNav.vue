@@ -1,7 +1,7 @@
 <template>
   <div class="bottom-nav-outer-wrapper">
     <nav class="floating-island-nav">
-      <!-- 🏠 Feed -->
+      <!-- 🏡 Den (Pet Feed) -->
       <button 
         class="nav-capsule-btn" 
         :class="{ active: currentTab === 'feed' }" 
@@ -10,10 +10,10 @@
         <div class="icon-bubble">
           <Home :size="20" />
         </div>
-        <span class="nav-label">Home</span>
+        <span class="nav-label">Den</span>
       </button>
 
-      <!-- 🧭 Explore -->
+      <!-- 🧭 Park (Explore & Clubs) -->
       <button 
         class="nav-capsule-btn" 
         :class="{ active: currentTab === 'explore' }" 
@@ -22,13 +22,13 @@
         <div class="icon-bubble">
           <Compass :size="20" />
         </div>
-        <span class="nav-label">Explore</span>
+        <span class="nav-label">Park</span>
       </button>
 
-      <!-- ➕ Center Creation Button -->
+      <!-- 🐾 Center Bark FAB -->
       <div class="center-fab-anchor">
-        <button class="glowing-bark-fab" @click="isCreateSheetOpen = true" title="New Post">
-          <Plus :size="22" class="fab-plus-icon" />
+        <button class="glowing-bark-fab" @click="isCreateSheetOpen = true" title="Bark a Moment">
+          <span class="fab-paw-icon">🐾</span>
         </button>
       </div>
 
@@ -44,7 +44,7 @@
         <span class="nav-label ai-label">PawAI</span>
       </button>
 
-      <!-- 🐾 Profile & Passport -->
+      <!-- 🛂 Passport (Pet Bio ID) -->
       <button 
         class="nav-capsule-btn" 
         :class="{ active: currentTab === 'profile' }" 
@@ -53,14 +53,14 @@
         <div class="passport-avatar-bubble" :class="{ active: currentTab === 'profile' }">
           <img :src="owner.avatarUrl" :alt="owner.displayName" />
         </div>
-        <span class="nav-label">Profile</span>
+        <span class="nav-label">Passport</span>
       </button>
     </nav>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Home, Compass, Plus, Sparkles } from 'lucide-vue-next';
+import { Home, Compass, Sparkles } from 'lucide-vue-next';
 import { currentTab, setTab, isCreateSheetOpen, owner } from '../../stores/appStore';
 </script>
 
@@ -175,12 +175,13 @@ import { currentTab, setTab, isCreateSheetOpen, owner } from '../../stores/appSt
   transform: scale(0.92);
 }
 
-.fab-plus-icon {
-  transition: transform 0.2s ease;
+.fab-paw-icon {
+  font-size: 20px;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.glowing-bark-fab:hover .fab-plus-icon {
-  transform: rotate(90deg);
+.glowing-bark-fab:hover .fab-paw-icon {
+  transform: scale(1.2) rotate(12deg);
 }
 
 /* PawAI Tab */

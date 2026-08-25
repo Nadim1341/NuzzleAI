@@ -1,115 +1,153 @@
 <template>
-  <article class="clean-post-card">
-    <!-- Clean Author Header -->
-    <header class="post-header">
-      <div class="author-info" @click="handleProfileClick">
-        <div class="avatar-wrap">
-          <img :src="post.petAvatar || post.ownerAvatar" :alt="post.petName || post.ownerName" class="author-avatar" />
-          <span v-if="post.isAnonymous" class="ghost-badge">👻</span>
+  <article class="nuzzle-moment-card">
+    <!-- 1. Pet Persona Header -->
+    <header class="moment-header">
+      <div class="pet-persona-badge" @click="handleProfileClick">
+        <div class="collar-avatar-frame">
+          <img :src="post.petAvatar || post.ownerAvatar" :alt="post.petName || post.ownerName" class="pet-photo" />
+          <span class="species-charm">{{ getSpeciesCharm(post.petBreed) }}</span>
         </div>
 
-        <div class="author-meta">
-          <div class="name-line">
-            <h3 class="author-name">{{ post.petName || post.ownerName }}</h3>
-            <span v-if="post.petBreed" class="breed-subtext">• {{ post.petBreed }}</span>
+        <div class="persona-identity">
+          <div class="pet-name-line">
+            <h3 class="pet-hero-name">{{ post.petName || post.ownerName }}</h3>
+            <span v-if="post.petMood" class="mood-pill">{{ post.petMood }}</span>
+            <span v-if="post.isAnonymous" class="ghost-incognito-tag">👻 Ghost</span>
           </div>
-          <div class="sub-line">
-            <span class="author-byline">{{ post.ownerName }}</span>
-            <span class="dot-sep">·</span>
-            <span class="post-time">{{ post.createdAt }}</span>
+          
+          <div class="guardian-meta-line">
+            <span class="guardian-by">Guardian: {{ post.ownerName }}</span>
+            <span class="meta-dot">·</span>
+            <span class="moment-time">{{ post.createdAt }}</span>
           </div>
         </div>
       </div>
 
-      <button class="more-btn" title="Options">
+      <button class="card-options-btn" title="Options">
         <MoreHorizontal :size="18" />
       </button>
     </header>
 
-    <!-- Clean Media Container -->
-    <div class="post-media-box" @dblclick="handleDoubleTap">
-      <img :src="post.mediaUrls[0]" :alt="post.caption" class="post-image" />
-      
-      <!-- Subtle Location Tag -->
-      <div v-if="post.location" class="location-badge">
+    <!-- 2. The Moment Photo Showcase -->
+    <div class="moment-photo-container" @dblclick="handleDoubleTap">
+      <img :src="post.mediaUrls[0]" :alt="post.caption" class="moment-img" />
+
+      <!-- Corner Vibe / Location Stamp -->
+      <div v-if="post.location" class="corner-geo-stamp">
         <MapPin :size="11" />
         <span>{{ post.location }}</span>
       </div>
 
-      <!-- Carousel indicator if multi-photo -->
-      <div v-if="post.mediaUrls.length > 1" class="carousel-pill">
-        1/{{ post.mediaUrls.length }}
+      <!-- Multi-photo Badge -->
+      <div v-if="post.mediaUrls.length > 1" class="carousel-counter-charm">
+        <span>📸 1/{{ post.mediaUrls.length }}</span>
       </div>
 
-      <!-- Double Tap Heart Burst Animation -->
-      <transition name="heart-pop">
-        <div v-if="showHeartBurst" class="heart-burst-overlay">
-          <span class="burst-icon">🐾</span>
+      <!-- Double Tap Golden Paw Stamp Burst -->
+      <transition name="paw-stamp-pop">
+        <div v-if="showPawBurst" class="paw-burst-overlay">
+          <div class="paw-stamp-emblem">
+            <span class="stamp-emoji">🐾</span>
+            <span class="stamp-text">PAW BUMP!</span>
+          </div>
         </div>
       </transition>
     </div>
 
-    <!-- Clean Action Toolbar -->
-    <div class="post-actions-bar">
-      <div class="left-actions">
-        <!-- Like / Paw React -->
+    <!-- 3. Unique "Pet's Inner Monologue" Dialogue Card -->
+    <div v-if="post.petDialogue || getPetThought(post)" class="pet-monologue-box">
+      <div class="monologue-icon">💭</div>
+      <div class="monologue-content">
+        <span class="monologue-speaker">{{ post.petName || 'Pet' }}'s thoughts:</span>
+        <p class="monologue-quote">"{{ post.petDialogue || getPetThought(post) }}"</p>
+      </div>
+    </div>
+
+    <!-- 4. Pet-Centric Interaction Dock (High Paw, Toss Bone, Nuzzle, Barks) -->
+    <div class="pet-interaction-dock">
+      <div class="reactions-cluster">
+        <!-- High Paw -->
         <button 
-          class="action-btn react-btn" 
-          :class="{ active: post.isLiked }" 
-          @click="handleLike"
+          class="pet-reaction-btn paw-btn" 
+          :class="{ active: post.isLiked }"
+          @click="handlePawBump"
+          title="High Paw!"
         >
-          <span class="paw-icon">🐾</span>
-          <span class="action-count">{{ post.likesCount }}</span>
+          <span class="r-icon">🐾</span>
+          <span class="r-count">{{ post.likesCount }}</span>
         </button>
 
-        <!-- Comments -->
-        <button class="action-btn comment-btn" @click="openComments(post)">
-          <MessageCircle :size="19" />
-          <span class="action-count">{{ post.commentsCount }}</span>
+        <!-- Toss a Bone / Treat -->
+        <button 
+          class="pet-reaction-btn bone-btn" 
+          :class="{ active: hasGivenBone }"
+          @click="handleTossBone"
+          title="Toss a Bone / Treat"
+        >
+          <span class="r-icon">🦴</span>
+          <span class="r-count">{{ boneCount }}</span>
         </button>
 
-        <!-- Share -->
-        <button class="action-btn share-btn" @click="sharePost(post)">
-          <Send :size="18" />
+        <!-- Nuzzle & Love -->
+        <button 
+          class="pet-reaction-btn nuzzle-btn" 
+          :class="{ active: hasNuzzled }"
+          @click="handleNuzzle"
+          title="Give a Nuzzle"
+        >
+          <span class="r-icon">💜</span>
+          <span class="r-count">{{ nuzzleCount }}</span>
+        </button>
+
+        <!-- Barks / Comments -->
+        <button 
+          class="pet-reaction-btn bark-btn" 
+          @click="openComments(post)"
+          title="Join the Bark Thread"
+        >
+          <MessageSquare :size="16" class="bark-svg-icon" />
+          <span class="r-count">{{ post.commentsCount }}</span>
         </button>
       </div>
 
-      <!-- Bookmark -->
+      <!-- Vault Save Bookmark -->
       <button 
-        class="action-btn bookmark-btn" 
+        class="save-vault-btn" 
         :class="{ active: post.isSaved }" 
         @click="handleSave"
+        title="Save to Pet Vault"
       >
-        <Bookmark :size="19" :fill="post.isSaved ? 'currentColor' : 'none'" />
+        <Bookmark :size="18" :fill="post.isSaved ? 'currentColor' : 'none'" />
       </button>
     </div>
 
-    <!-- Clean Caption & Hashtags -->
-    <div class="post-content-body">
-      <p class="caption-text">
-        <strong class="caption-author" @click="handleProfileClick">{{ post.petName || post.ownerName }}</strong>
-        {{ post.caption }}
+    <!-- 5. Guardian Caption & Collar Tag Chips -->
+    <div class="moment-journal-body">
+      <p class="journal-caption">
+        <strong class="guardian-name" @click="handleProfileClick">{{ post.ownerName }}</strong>
+        <span class="caption-text-content">{{ post.caption }}</span>
       </p>
 
-      <!-- Clean Inline Hashtags -->
-      <div v-if="post.hashtags && post.hashtags.length" class="hashtags-list">
+      <!-- Bespoke Collar Tag Hashtags -->
+      <div v-if="post.hashtags && post.hashtags.length" class="collar-tags-track">
         <span 
           v-for="tag in post.hashtags" 
           :key="tag" 
-          class="hashtag-item"
+          class="collar-tag-chip"
           @click="exploreTag(tag)"
         >
-          #{{ tag }}
+          <span class="tag-bone">🏷️</span> #{{ tag }}
         </span>
       </div>
 
-      <!-- Subtle Comments Trigger -->
+      <!-- Bark Thread Peek -->
       <button 
         v-if="post.commentsCount > 0" 
-        class="view-comments-link" 
+        class="open-bark-thread-btn" 
         @click="openComments(post)"
       >
-        View all {{ post.commentsCount }} comments
+        <span>🐾 View all {{ post.commentsCount }} barks in this thread</span>
+        <ChevronRight :size="14" />
       </button>
     </div>
   </article>
@@ -117,7 +155,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { MoreHorizontal, MessageCircle, Send, Bookmark, MapPin } from 'lucide-vue-next';
+import { MoreHorizontal, Bookmark, MapPin, MessageSquare, ChevronRight } from 'lucide-vue-next';
 import type { Post } from '../../types';
 import { 
   reactToPost, 
@@ -131,22 +169,42 @@ const props = defineProps<{
   post: Post;
 }>();
 
-const showHeartBurst = ref(false);
+const showPawBurst = ref(false);
+const hasGivenBone = ref(false);
+const hasNuzzled = ref(false);
+const boneCount = ref(14);
+const nuzzleCount = ref(28);
 
-function handleLike() {
+function handlePawBump() {
   reactToPost(props.post.id, 'paw');
+}
+
+function handleTossBone() {
+  hasGivenBone.value = !hasGivenBone.value;
+  boneCount.value += hasGivenBone.value ? 1 : -1;
+  triggerBurst();
+}
+
+function handleNuzzle() {
+  hasNuzzled.value = !hasNuzzled.value;
+  nuzzleCount.value += hasNuzzled.value ? 1 : -1;
+  triggerBurst();
+}
+
+function handleDoubleTap() {
+  reactToPost(props.post.id, 'paw');
+  triggerBurst();
+}
+
+function triggerBurst() {
+  showPawBurst.value = true;
+  setTimeout(() => {
+    showPawBurst.value = false;
+  }, 850);
 }
 
 function handleSave() {
   togglePostSave(props.post.id);
-}
-
-function handleDoubleTap() {
-  reactToPost(props.post.id, 'nuzzle');
-  showHeartBurst.value = true;
-  setTimeout(() => {
-    showHeartBurst.value = false;
-  }, 750);
 }
 
 function handleProfileClick() {
@@ -158,291 +216,445 @@ function handleProfileClick() {
   setTab('profile');
 }
 
-function sharePost(post: Post) {
-  if (navigator.share) {
-    navigator.share({
-      title: `Nuzzle - ${post.petName || post.ownerName}'s post`,
-      text: post.caption,
-      url: window.location.href
-    }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(window.location.href);
-    alert('Link copied to clipboard!');
-  }
-}
-
 function exploreTag(_tag: string) {
   setTab('explore');
+}
+
+function getSpeciesCharm(breed?: string): string {
+  if (!breed) return '🐾';
+  const b = breed.toLowerCase();
+  if (b.includes('cat') || b.includes('kitten') || b.includes('persian') || b.includes('bengal')) return '🐱';
+  if (b.includes('bird') || b.includes('parrot') || b.includes('kiwi')) return '🦜';
+  if (b.includes('rabbit') || b.includes('bunny') || b.includes('lop')) return '🐰';
+  return '🐕';
+}
+
+function getPetThought(post: Post): string {
+  if (post.petDialogue) return post.petDialogue;
+  const name = post.petName || 'I';
+  if (post.caption.toLowerCase().includes('park') || post.caption.toLowerCase().includes('run')) {
+    return `${name}: "I ran at maximum velocity and investigated 14 distinct smells."`;
+  }
+  if (post.caption.toLowerCase().includes('nap') || post.caption.toLowerCase().includes('sleep')) {
+    return `${name}: "I have selected the sunniest spot on the carpet and declared it my kingdom."`;
+  }
+  if (post.caption.toLowerCase().includes('treat') || post.caption.toLowerCase().includes('food')) {
+    return `${name}: "The human opened the snack cupboard. I am deploying the puppy eyes."`;
+  }
+  return `${name}: "Living my best life today. 10/10 would wag tail again!"`;
 }
 </script>
 
 <style scoped>
-.clean-post-card {
+.nuzzle-moment-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  margin-bottom: 16px;
+  border: 1.5px solid var(--border-subtle);
+  border-radius: 22px;
+  margin-bottom: 18px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 
+    0 4px 20px -2px rgba(148, 125, 238, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.03);
+  position: relative;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
 }
 
-/* 1. Clean Header */
-.post-header {
+.nuzzle-moment-card:hover {
+  box-shadow: 
+    0 8px 28px -4px rgba(148, 125, 238, 0.16),
+    0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+/* 1. Pet Persona Header */
+.moment-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px;
+  padding: 12px 16px 10px;
 }
 
-.author-info {
+.pet-persona-badge {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   cursor: pointer;
+  flex: 1;
 }
 
-.avatar-wrap {
+.collar-avatar-frame {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, #947DEE 0%, #F59E0B 100%);
+  flex-shrink: 0;
 }
 
-.author-avatar {
+.pet-photo {
   width: 100%;
   height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 1.5px solid var(--border-subtle);
+  border: 2px solid var(--bg-card);
 }
 
-.ghost-badge {
+.species-charm {
   position: absolute;
   bottom: -2px;
-  right: -2px;
-  font-size: 11px;
-  background: #7C3AED;
+  right: -3px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
-  width: 16px;
-  height: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   display: grid;
   place-items: center;
-  border: 1.5px solid var(--bg-card);
+  font-size: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
-.author-meta {
+.persona-identity {
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
 
-.name-line {
+.pet-name-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pet-hero-name {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--ink-primary);
+  letter-spacing: -0.01em;
+}
+
+.mood-pill {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #6D28D9;
+  background: #F3EEFF;
+  border: 1px solid #DDD6FE;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.ghost-incognito-tag {
+  font-size: 10px;
+  font-weight: 800;
+  color: #fff;
+  background: #7C3AED;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+}
+
+.guardian-meta-line {
   display: flex;
   align-items: center;
   gap: 5px;
-}
-
-.author-name {
-  font-size: 13.5px;
-  font-weight: 800;
-  color: var(--ink-primary);
-}
-
-.breed-subtext {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--brand-primary);
-}
-
-.sub-line {
-  display: flex;
-  align-items: center;
-  gap: 4px;
   font-size: 11px;
   color: var(--ink-muted);
 }
 
-.author-byline {
+.guardian-by {
+  font-weight: 600;
   color: var(--ink-secondary);
 }
 
-.dot-sep {
-  opacity: 0.6;
+.meta-dot {
+  opacity: 0.5;
 }
 
-.more-btn {
+.card-options-btn {
   color: var(--ink-muted);
-  padding: 4px;
+  padding: 6px;
   border-radius: 50%;
   transition: all 0.15s ease;
 }
 
-.more-btn:hover {
-  color: var(--ink-primary);
+.card-options-btn:hover {
   background: var(--bg-card-subtle);
+  color: var(--ink-primary);
 }
 
-/* 2. Media Box */
-.post-media-box {
+/* 2. Photo Showcase */
+.moment-photo-container {
   position: relative;
-  width: 100%;
+  width: calc(100% - 16px);
+  margin: 0 8px;
   aspect-ratio: 4 / 3;
-  background: var(--bg-card-subtle);
+  border-radius: 16px;
   overflow: hidden;
+  background: var(--bg-card-subtle);
   user-select: none;
 }
 
-.post-image {
+.moment-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.3s ease;
 }
 
-.location-badge {
+.corner-geo-stamp {
   position: absolute;
   top: 10px;
   left: 10px;
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(26, 18, 42, 0.65);
-  color: #fff;
+  background: rgba(26, 18, 42, 0.72);
+  color: #ffffff;
   font-size: 10.5px;
   font-weight: 600;
-  padding: 3px 8px;
+  padding: 3px 9px;
   border-radius: var(--radius-full);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
 }
 
-.carousel-pill {
+.carousel-counter-charm {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(26, 18, 42, 0.65);
+  background: rgba(26, 18, 42, 0.72);
   color: #fff;
   font-size: 10px;
   font-weight: 700;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: var(--radius-full);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
 }
 
-/* Heart Pop Burst */
-.heart-burst-overlay {
+/* Double-tap Golden Paw Stamp */
+.paw-burst-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(148, 125, 238, 0.18);
+  background: rgba(148, 125, 238, 0.22);
+  backdrop-filter: blur(2px);
   pointer-events: none;
+  z-index: 10;
 }
 
-.burst-icon {
-  font-size: 54px;
-  animation: heartZoom 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+.paw-stamp-emblem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #F59E0B;
+  padding: 12px 20px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
+  animation: stampZoom 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-@keyframes heartZoom {
-  0% { transform: scale(0.2); opacity: 0; }
-  45% { transform: scale(1.2); opacity: 1; }
-  80% { transform: scale(1); opacity: 1; }
-  100% { transform: scale(1.15); opacity: 0; }
+.stamp-emoji {
+  font-size: 42px;
 }
 
-/* 3. Action Toolbar */
-.post-actions-bar {
+.stamp-text {
+  font-size: 12px;
+  font-weight: 900;
+  color: #D97706;
+  letter-spacing: 0.05em;
+}
+
+@keyframes stampZoom {
+  0% { transform: scale(0.3) rotate(-15deg); opacity: 0; }
+  45% { transform: scale(1.18) rotate(0deg); opacity: 1; }
+  80% { transform: scale(1) rotate(0deg); opacity: 1; }
+  100% { transform: scale(1.1) rotate(5deg); opacity: 0; }
+}
+
+/* 3. Pet's Inner Monologue */
+.pet-monologue-box {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: linear-gradient(135deg, #FAF7FF 0%, #F5EEFF 100%);
+  border: 1.5px dashed #D8B4FE;
+  border-radius: 14px;
+  padding: 9px 12px;
+  margin: 10px 14px 4px;
+}
+
+:global([data-theme='dark']) .pet-monologue-box {
+  background: rgba(42, 23, 72, 0.4);
+  border-color: rgba(192, 132, 252, 0.4);
+}
+
+.monologue-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.monologue-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.monologue-speaker {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  letter-spacing: 0.03em;
+}
+
+.monologue-quote {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--ink-primary);
+  line-height: 1.35;
+  margin-top: 1px;
+}
+
+/* 4. Pet Interaction Dock */
+.pet-interaction-dock {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px 6px;
+  padding: 10px 14px 4px;
 }
 
-.left-actions {
+.reactions-cluster {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 6px;
 }
 
-.action-btn {
+.pet-reaction-btn {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
   color: var(--ink-secondary);
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 700;
-  transition: all 0.15s ease;
-  padding: 2px;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
 }
 
-.action-btn:hover {
-  color: var(--brand-primary);
+.pet-reaction-btn:hover {
   transform: translateY(-1px);
+  border-color: var(--brand-primary);
 }
 
-.paw-icon {
-  font-size: 17px;
-  transition: transform 0.15s ease;
+.pet-reaction-btn:active {
+  transform: scale(0.95);
 }
 
-.react-btn.active .paw-icon {
-  transform: scale(1.15);
+.pet-reaction-btn.active {
+  background: #F3EEFF;
+  border-color: #C4B5FD;
+  color: #7C3AED;
 }
 
-.react-btn.active {
+.r-icon {
+  font-size: 14px;
+}
+
+.r-count {
+  font-size: 11.5px;
+}
+
+.bark-svg-icon {
+  color: var(--ink-muted);
+}
+
+.save-vault-btn {
+  padding: 6px 8px;
+  border-radius: var(--radius-full);
+  color: var(--ink-muted);
+  transition: all 0.15s ease;
+}
+
+.save-vault-btn:hover {
+  color: var(--brand-primary);
+  background: var(--bg-card-subtle);
+}
+
+.save-vault-btn.active {
   color: var(--brand-primary);
 }
 
-.bookmark-btn.active {
-  color: var(--brand-primary);
+/* 5. Journal Body */
+.moment-journal-body {
+  padding: 4px 14px 14px;
 }
 
-/* 4. Caption Body */
-.post-content-body {
-  padding: 0 14px 14px;
-}
-
-.caption-text {
+.journal-caption {
   font-size: 13px;
   line-height: 1.45;
   color: var(--ink-primary);
 }
 
-.caption-author {
+.guardian-name {
   font-weight: 800;
   margin-right: 4px;
   cursor: pointer;
 }
 
-.hashtags-list {
+.collar-tags-track {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
+  gap: 5px;
+  margin-top: 8px;
 }
 
-.hashtag-item {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--brand-primary);
+.collar-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #7C3AED;
+  background: #FAF5FF;
+  border: 1px solid #E9D5FF;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  transition: all 0.15s ease;
 }
 
-.hashtag-item:hover {
-  opacity: 0.8;
+.collar-tag-chip:hover {
+  background: #F3EEFF;
+  border-color: #C084FC;
+  transform: translateY(-1px);
 }
 
-.view-comments-link {
-  font-size: 12px;
-  font-weight: 600;
+.tag-bone {
+  font-size: 10px;
+}
+
+.open-bark-thread-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 11.5px;
+  font-weight: 700;
   color: var(--ink-muted);
-  margin-top: 6px;
-  display: block;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light);
   transition: color 0.15s ease;
 }
 
-.view-comments-link:hover {
+.open-bark-thread-btn:hover {
   color: var(--brand-primary);
 }
 </style>
+
 

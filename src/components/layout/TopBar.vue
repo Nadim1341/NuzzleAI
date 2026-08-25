@@ -9,6 +9,18 @@
         <NuzzleLogo :size="28" />
         <span class="brand-text">Nuzzle</span>
       </div>
+
+      <!-- Quick Active Pet Perspective Switcher Pill -->
+      <button 
+        v-if="!showBackButton && pets.length > 0" 
+        class="pet-perspective-pill"
+        @click="cyclePetPerspective"
+        :title="'Switch perspective from ' + currentBrowsingName"
+      >
+        <span class="perspective-emoji">{{ currentBrowsingEmoji }}</span>
+        <span class="perspective-name">{{ currentBrowsingName }}</span>
+        <span class="perspective-badge">Perspective</span>
+      </button>
     </div>
 
     <!-- Center Title (If subview) -->
@@ -18,12 +30,12 @@
 
     <!-- Right Actions -->
     <div class="header-right-actions">
-      <!-- 🚨 Emergency Lost & Found -->
+      <!-- 🚨 Emergency 5-Mile Lost & Found Radar -->
       <button 
         class="header-action-btn emergency-btn" 
         :class="{ active: currentTab === 'lostfound' }"
         @click="setTab('lostfound')" 
-        title="Lost & Found Emergency Center"
+        title="5-Mile Lost & Found Radar"
       >
         <AlertTriangle :size="18" />
         <span class="pulse-dot"></span>
@@ -61,6 +73,9 @@ import NuzzleLogo from '../common/NuzzleLogo.vue';
 import { 
   currentTab, 
   setTab, 
+  owner, 
+  pets, 
+  activeProfileId, 
   unreadMessagesCount, 
   unreadNotificationsCount 
 } from '../../stores/appStore';
@@ -73,6 +88,28 @@ const props = defineProps<{
 const showBackButton = computed(() => {
   return props.canGoBack || !['feed', 'explore', 'ai', 'reels', 'profile'].includes(currentTab.value);
 });
+
+const currentBrowsingName = computed(() => {
+  if (activeProfileId.value === 'owner_me') return owner.displayName.split(' ')[0];
+  const pet = pets.find(p => p.id === activeProfileId.value);
+  return pet ? pet.name : 'Waffles';
+});
+
+const currentBrowsingEmoji = computed(() => {
+  if (activeProfileId.value === 'owner_me') return '👤';
+  const pet = pets.find(p => p.id === activeProfileId.value);
+  return pet?.species === 'Cat' ? '🐱' : '🐾';
+});
+
+function cyclePetPerspective() {
+  if (activeProfileId.value === 'owner_me' && pets[0]) {
+    activeProfileId.value = pets[0].id;
+  } else if (pets[1] && activeProfileId.value === pets[0]?.id) {
+    activeProfileId.value = pets[1].id;
+  } else {
+    activeProfileId.value = 'owner_me';
+  }
+}
 
 function goBack() {
   setTab('feed');
@@ -97,6 +134,7 @@ function goBack() {
 .header-left {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .brand-badge {
@@ -115,6 +153,50 @@ function goBack() {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
+}
+
+.pet-perspective-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, #F3EEFF 0%, #FAF5FF 100%);
+  border: 1.5px solid #DDD6FE;
+  padding: 3px 8px 3px 6px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  color: #6D28D9;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(148, 125, 238, 0.12);
+}
+
+.pet-perspective-pill:hover {
+  transform: translateY(-1px);
+  border-color: #8B5CF6;
+  background: #EDE9FE;
+}
+
+.perspective-emoji {
+  font-size: 12px;
+}
+
+.perspective-name {
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.perspective-badge {
+  font-size: 8.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: #7C3AED;
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
 }
 
 .header-center-title {

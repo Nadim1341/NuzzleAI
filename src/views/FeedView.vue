@@ -3,22 +3,36 @@
     <TopBar />
 
     <div class="feed-scroll-body">
-      <!-- Stories Tray -->
+      <!-- Stories Pods Tray -->
       <StoryTray />
+
+      <!-- Species / Pack Filter Chips -->
+      <div class="pet-species-filter-bar">
+        <button 
+          v-for="filter in speciesFilters" 
+          :key="filter.id"
+          class="species-filter-chip"
+          :class="{ active: activeSpeciesFilter === filter.id }"
+          @click="activeSpeciesFilter = filter.id"
+        >
+          <span class="chip-icon">{{ filter.icon }}</span>
+          <span class="chip-label">{{ filter.label }}</span>
+        </button>
+      </div>
 
       <!-- Emergency Alert Banner if any active lost pet -->
       <div v-if="activeLostPet" class="emergency-banner" @click="setTab('lostfound')">
         <div class="alert-pulse-circle">🚨</div>
         <div class="alert-banner-text">
-          <span class="alert-title">Emergency: Lost {{ activeLostPet.species }} ({{ activeLostPet.petName }})</span>
-          <span class="alert-subtitle">{{ activeLostPet.location }} • Click to help</span>
+          <span class="alert-title">Emergency Radar: Lost {{ activeLostPet.species }} ({{ activeLostPet.petName }})</span>
+          <span class="alert-subtitle">{{ activeLostPet.location }} • Tap to dispatch help</span>
         </div>
       </div>
 
       <!-- Posts List -->
       <div class="posts-feed-container">
         <PostCard 
-          v-for="post in activePosts" 
+          v-for="post in filteredFeedPosts" 
           :key="post.id" 
           :post="post" 
         />
@@ -28,14 +42,46 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import TopBar from '../components/layout/TopBar.vue';
 import StoryTray from '../components/feed/StoryTray.vue';
 import PostCard from '../components/feed/PostCard.vue';
 import { activePosts, lostFoundList, setTab } from '../stores/appStore';
 
+const activeSpeciesFilter = ref('all');
+
+const speciesFilters = [
+  { id: 'all', label: 'All Pets', icon: '🐾' },
+  { id: 'dog', label: 'Canines', icon: '🐕' },
+  { id: 'cat', label: 'Felines', icon: '🐱' },
+  { id: 'bird', label: 'Aviary', icon: '🦜' },
+  { id: 'bunny', label: 'Bunnies', icon: '🐰' },
+];
+
 const activeLostPet = computed(() => {
   return lostFoundList.find(p => p.status === 'lost' && !p.isResolved) || null;
+});
+
+const filteredFeedPosts = computed(() => {
+  if (activeSpeciesFilter.value === 'all') return activePosts.value;
+  return activePosts.value.filter(post => {
+    const breed = (post.petBreed || '').toLowerCase();
+    const caption = (post.caption || '').toLowerCase();
+    const text = breed + ' ' + caption;
+    if (activeSpeciesFilter.value === 'dog') {
+      return text.includes('dog') || text.includes('corgi') || text.includes('golden') || text.includes('frenchie') || text.includes('husky');
+    }
+    if (activeSpeciesFilter.value === 'cat') {
+      return text.includes('cat') || text.includes('persian') || text.includes('bengal') || text.includes('kitten');
+    }
+    if (activeSpeciesFilter.value === 'bird') {
+      return text.includes('bird') || text.includes('parrot') || text.includes('conure') || text.includes('kiwi');
+    }
+    if (activeSpeciesFilter.value === 'bunny') {
+      return text.includes('bun') || text.includes('rabbit') || text.includes('lop');
+    }
+    return true;
+  });
 });
 </script>
 
@@ -52,8 +98,55 @@ const activeLostPet = computed(() => {
   padding-bottom: 84px;
 }
 
+.pet-species-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.pet-species-filter-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.species-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--border-subtle);
+  color: var(--ink-secondary);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.species-filter-chip:hover {
+  background: #F3EEFF;
+  border-color: #D5C8F2;
+  transform: translateY(-1px);
+}
+
+.species-filter-chip.active {
+  background: linear-gradient(135deg, #7C3AED 0%, #947DEE 100%);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.chip-icon {
+  font-size: 13px;
+}
+
 .emergency-banner {
-  margin: 10px 14px 4px;
+  margin: 4px 14px 8px;
   background: linear-gradient(135deg, #FFF1F2, #FFE4E6);
   border: 1.5px solid #FDA4AF;
   border-radius: var(--radius-md);
@@ -99,6 +192,6 @@ const activeLostPet = computed(() => {
 .posts-feed-container {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 </style>

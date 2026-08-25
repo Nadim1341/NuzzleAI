@@ -31,6 +31,24 @@
         </button>
       </div>
 
+      <!-- Pet Marketplace Shortcut Banner -->
+      <div class="marketplace-shortcut-card" @click="setTab('market')">
+        <div class="mkt-shortcut-left">
+          <span class="mkt-shortcut-emoji">🛍️</span>
+          <div>
+            <div class="mkt-title-line">
+              <h4 class="mkt-shortcut-title">Pet Supplies & Food Bazaar</h4>
+              <span class="mkt-shop-badge">Verified Shops</span>
+            </div>
+            <p class="mkt-shortcut-sub">Organic food, GPS collars, beds & pre-loved pet gear</p>
+          </div>
+        </div>
+        <button class="mkt-explore-btn">
+          <span>Shop Market</span>
+          <ShoppingBag :size="13" />
+        </button>
+      </div>
+
       <!-- Trending Hashtags Section -->
       <div class="section-container">
         <div class="section-head">
@@ -112,7 +130,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { Search, X, Heart } from 'lucide-vue-next';
+import { Search, X, Heart, ShoppingBag } from 'lucide-vue-next';
 import TopBar from '../components/layout/TopBar.vue';
 import { exploreTrendingTags, speciesCommunities } from '../data/mockData';
 import { searchQuery, activeHashtag, setTab } from '../stores/appStore';
@@ -160,6 +178,95 @@ const exploreImages = [
   overflow-y: auto;
   padding-bottom: 84px;
 }
+
+/* Marketplace Shortcut Card */
+.marketplace-shortcut-card {
+  margin: 6px 14px 10px;
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1.5px solid #FCD34D;
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
+  transition: transform 0.15s ease;
+}
+
+:global([data-theme='dark']) .marketplace-shortcut-card {
+  background: rgba(45, 30, 10, 0.6);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.marketplace-shortcut-card:hover {
+  transform: translateY(-1px);
+}
+
+.mkt-shortcut-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.mkt-shortcut-emoji {
+  font-size: 24px;
+}
+
+.mkt-title-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mkt-shortcut-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #92400E;
+}
+
+:global([data-theme='dark']) .mkt-shortcut-title {
+  color: #FCD34D;
+}
+
+.mkt-shop-badge {
+  font-size: 9px;
+  font-weight: 900;
+  color: #fff;
+  background: #D97706;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+}
+
+.mkt-shortcut-sub {
+  font-size: 10.5px;
+  color: #B45309;
+  line-height: 1.25;
+}
+
+:global([data-theme='dark']) .mkt-shortcut-sub {
+  color: #FDE68A;
+}
+
+.mkt-explore-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #92400E;
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: var(--radius-full);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+:global([data-theme='dark']) .mkt-explore-btn {
+  background: #78350F;
+  color: #FDE68A;
+}
+
 
 .search-bar-wrapper {
   padding: 10px 16px 4px;

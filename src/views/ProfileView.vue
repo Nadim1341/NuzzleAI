@@ -1,162 +1,188 @@
 <template>
   <div class="profile-view">
-    <!-- Top Header -->
-    <header class="app-header profile-header">
-      <div class="header-username">
-        <span class="user-handle">{{ currentProfileHandle }}</span>
-        <span v-if="isCurrentAnonymous" class="ghost-pill-active">👻 Ghost</span>
+    <!-- Top Header Bar -->
+    <header class="profile-top-bar">
+      <div class="handle-cluster">
+        <h2 class="profile-handle">{{ currentProfileHandle }}</h2>
+        <span v-if="isCurrentAnonymous" class="ghost-status-chip">Ghost Mode</span>
       </div>
 
-      <div class="header-actions">
-        <button class="btn-icon" @click="setTab('settings')" title="Settings">
-          <Settings :size="20" />
+      <div class="header-action-icons">
+        <button class="icon-round-btn" @click="setTab('settings')" title="Settings">
+          <Settings :size="18" />
         </button>
       </div>
     </header>
 
     <div class="profile-scroll-body">
-      <!-- Profile Persona Switcher (Owner vs Pets) -->
-      <div class="persona-switcher-bar">
+      <!-- 1. Pet / Guardian Persona Switcher Pills -->
+      <div class="persona-switch-dock">
         <button 
-          class="persona-tab"
+          class="persona-pill-btn"
           :class="{ active: activeProfileId === 'owner_me' }"
           @click="activeProfileId = 'owner_me'"
         >
-          <img :src="owner.avatarUrl" :alt="owner.displayName" class="persona-avatar" />
-          <span>{{ owner.displayName.split(' ')[0] }}</span>
+          <img :src="owner.avatarUrl" :alt="owner.displayName" class="persona-thumb" />
+          <span class="persona-name">{{ owner.displayName.split(' ')[0] }} (Guardian)</span>
         </button>
 
         <button 
           v-for="p in pets" 
           :key="p.id"
-          class="persona-tab"
+          class="persona-pill-btn"
           :class="{ active: activeProfileId === p.id }"
           @click="activeProfileId = p.id"
         >
-          <img :src="p.avatarUrl" :alt="p.name" class="persona-avatar" />
-          <span>{{ p.name }}</span>
+          <img :src="p.avatarUrl" :alt="p.name" class="persona-thumb" />
+          <span class="persona-name">{{ p.name }} ({{ p.species }})</span>
         </button>
       </div>
 
-      <!-- Main Profile Bio & Numbers Card -->
-      <div class="profile-hero-card card-item" :class="{ 'ghost-mode-border': isCurrentAnonymous }">
-        <div class="hero-top-row">
-          <div class="hero-avatar-wrapper" :class="{ 'ghost-halo': isCurrentAnonymous }">
-            <img :src="currentAvatar" :alt="currentDisplayName" class="hero-avatar" />
-            <div v-if="isCurrentAnonymous" class="ghost-badge-overlay" title="Anonymous Persona">👻</div>
+      <!-- 2. Hero Profile Card -->
+      <div class="profile-hero-card" :class="{ 'ghost-active-border': isCurrentAnonymous }">
+        <div class="hero-identity-row">
+          <div class="hero-avatar-frame" :class="{ 'ghost-halo': isCurrentAnonymous }">
+            <img :src="currentAvatar" :alt="currentDisplayName" class="hero-main-avatar" />
+            <div v-if="isCurrentAnonymous" class="ghost-icon-tag" title="Ghost Mode Mask">👻</div>
           </div>
 
-          <div class="stats-counts-group">
-            <div class="count-box">
-              <span class="c-num">{{ currentPostsCount }}</span>
-              <span class="c-label">Posts</span>
+          <div class="hero-bio-col">
+            <div class="name-badge-line">
+              <h3 class="hero-display-name">{{ currentDisplayName }}</h3>
+              <span v-if="activePet" class="species-chip">{{ activePet.breed || activePet.species }}</span>
             </div>
-            <div class="count-box">
-              <span class="c-num">{{ currentFollowersCount }}</span>
-              <span class="c-label">Followers</span>
+            <span class="sub-location-line">
+              {{ activePet ? `Age: ${activePet.age || '2 yrs'} • Portland, OR` : 'Certified Pet Guardian • 2 Pets' }}
+            </span>
+            <p class="hero-bio-paragraph">
+              {{ currentBio }}
+            </p>
+          </div>
+        </div>
+
+        <!-- 3. UNIQUE & INNOVATIVE PET VITALS & PACK CIRCLE (Replaces generic followers) -->
+        <div class="pet-vitals-dashboard">
+          <!-- Card 1: Pack Circle (Playmates & Buddies) -->
+          <div class="vital-tile pack-tile" @click="showPackModal">
+            <div class="vital-icon-wrap">
+              <span class="vital-emoji">🐾</span>
             </div>
-            <div class="count-box">
-              <span class="c-num">{{ currentFollowingCount }}</span>
-              <span class="c-label">Following</span>
+            <div class="vital-info">
+              <div class="vital-number-row">
+                <span class="vital-val">{{ activePet ? '842' : '1.2k' }}</span>
+                <span class="vital-trend">+14 new</span>
+              </div>
+              <span class="vital-lbl">Pack Buddies</span>
+            </div>
+          </div>
+
+          <!-- Card 2: Love & Snuggle Karma Score -->
+          <div class="vital-tile love-tile">
+            <div class="vital-icon-wrap">
+              <span class="vital-emoji">💜</span>
+            </div>
+            <div class="vital-info">
+              <div class="vital-number-row">
+                <span class="vital-val">{{ activePet ? '3.8k' : '5.4k' }}</span>
+                <span class="vital-trend">High Vibe</span>
+              </div>
+              <span class="vital-lbl">Paws & Love Earned</span>
+            </div>
+          </div>
+
+          <!-- Card 3: Energy & Vitality Score -->
+          <div class="vital-tile energy-tile">
+            <div class="vital-icon-wrap">
+              <span class="vital-emoji">⚡</span>
+            </div>
+            <div class="vital-info">
+              <div class="vital-number-row">
+                <span class="vital-val">98%</span>
+                <span class="vital-sparkle">✨ Peak</span>
+              </div>
+              <span class="vital-lbl">{{ activePet ? activePet.energyLevel || 'High Zoomies' : 'Active Guardian' }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Names & Bio -->
-        <div class="hero-bio-section">
-          <div class="name-badge-row">
-            <h3 class="hero-name">{{ currentDisplayName }}</h3>
-            <span v-if="isCurrentAnonymous" class="anon-identity-badge">Incognito</span>
+        <!-- 4. Pet Achievement & Milestone Badges -->
+        <div class="pet-milestones-track">
+          <div class="milestone-badge" title="Core Vaccines Up-to-Date">
+            <span class="m-icon">💉</span>
+            <span class="m-text">100% Vaccinated</span>
           </div>
-          <span v-if="activePet" class="hero-subtitle">{{ activePet.species }} • {{ activePet.breed }} • {{ activePet.age }}</span>
-          <span v-else class="hero-subtitle">Pet Parent • Portland, OR</span>
-
-          <p class="hero-bio-text">
-            {{ currentBio }}
-          </p>
+          <div class="milestone-badge" title="Official RFID Microchip Registered">
+            <span class="m-icon">🏷️</span>
+            <span class="m-text">RFID Chipped</span>
+          </div>
+          <div class="milestone-badge" title="IATA Global Travel Passport Verified">
+            <span class="m-icon">✈️</span>
+            <span class="m-text">Travel Ready</span>
+          </div>
+          <div class="milestone-badge gold" title="Top 1% Community Snuggler">
+            <span class="m-icon">🌟</span>
+            <span class="m-text">Park Legend</span>
+          </div>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="profile-buttons-row">
-          <button class="btn-solid profile-btn passport-action-btn" @click="isPassportModalOpen = true">
+        <!-- 5. Profile Action Buttons -->
+        <div class="profile-action-buttons">
+          <button class="btn-solid passport-btn" @click="isPassportModalOpen = true">
             <Award :size="15" />
             <span>Digital Pet Passport 🛂</span>
           </button>
 
-          <button class="btn-outline profile-btn" @click="setTab('settings')">
+          <button class="btn-outline edit-btn" @click="setTab('settings')">
             <Edit :size="14" />
-            <span>Edit Profile</span>
+            <span>Edit Info</span>
           </button>
         </div>
       </div>
 
-      <!-- Minimalist Anonymity Toggle Card -->
+      <!-- 6. Ghost Anonymity Toggle Card -->
       <div 
-        class="anonymity-card card-item"
-        :class="{ 'ghost-active': isCurrentAnonymous }"
+        class="ghost-toggle-card"
+        :class="{ active: isCurrentAnonymous }"
         @click="toggleAnonymity"
-        title="Toggle Ghost Mode"
       >
-        <div class="anon-text-col">
-          <div class="anon-badge-line">
-            <EyeOff :size="15" class="anon-icon" />
-            <span class="anon-title">
-              {{ isCurrentAnonymous ? '👻 Ghost Mode Active' : 'Anonymous Mode' }}
-            </span>
+        <div class="ghost-left">
+          <div class="ghost-title-row">
+            <EyeOff :size="15" class="ghost-eye" />
+            <span class="ghost-title">{{ isCurrentAnonymous ? '👻 Ghost Mode Active' : 'Public Profile Active' }}</span>
           </div>
-          <p class="anon-explain">
+          <p class="ghost-desc">
             {{ isCurrentAnonymous 
-                ? 'Your identity is masked as Anonymous across feeds & comments.' 
-                : 'Hide real name & photo on public posts.' }}
+                ? 'Your real identity and photo are masked across public feeds & comments.' 
+                : 'Tap to enable incognito mode and hide real guardian information.' }}
           </p>
         </div>
 
-        <div class="toggle-switch" :class="{ active: isCurrentAnonymous }">
-          <div class="toggle-thumb"></div>
+        <div class="custom-switch" :class="{ on: isCurrentAnonymous }">
+          <div class="switch-ball"></div>
         </div>
       </div>
 
-      <!-- Pets Roster (when in Owner View) -->
-      <div v-if="!activePet" class="pets-roster-section">
-        <div class="roster-head">
-          <h4 class="roster-title">🐾 Pets ({{ pets.length }})</h4>
-          <button class="add-pet-link" @click="addDemoPet">+ Add Pet</button>
-        </div>
-
-        <div class="pets-cards-scroll">
-          <div 
-            v-for="p in pets" 
-            :key="p.id"
-            class="pet-summary-card"
-            @click="activeProfileId = p.id"
-          >
-            <img :src="p.avatarUrl" :alt="p.name" class="p-thumb" />
-            <span class="p-name">{{ p.name }}</span>
-            <span class="p-breed">{{ p.breed }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Media & Posts Grid Tabs -->
-      <div class="profile-media-tabs">
-        <button class="p-tab-btn active">
-          <Grid :size="17" />
-          <span>Posts ({{ currentPostsCount }})</span>
+      <!-- 7. Media Grid Tabs -->
+      <div class="media-tabs-bar">
+        <button class="tab-btn active">
+          <Grid :size="16" />
+          <span>Memories ({{ currentPostsCount }})</span>
         </button>
-        <button class="p-tab-btn">
-          <Bookmark :size="17" />
-          <span>Saved</span>
+        <button class="tab-btn" @click="setTab('market')">
+          <Bookmark :size="16" />
+          <span>Market Listings</span>
         </button>
       </div>
 
-      <!-- Grid Photos -->
-      <div class="profile-posts-grid">
+      <!-- 8. Memories Photo Grid -->
+      <div class="memories-photo-grid">
         <div 
           v-for="(img, idx) in userGridImages" 
-          :key="idx"
-          class="grid-photo-cell"
+          :key="idx" 
+          class="photo-cell"
+          @click="setTab('feed')"
         >
-          <img :src="img" alt="Post" class="grid-img" />
+          <img :src="img" alt="Memory" class="grid-image" />
         </div>
       </div>
     </div>
@@ -198,7 +224,7 @@ const isCurrentAnonymous = computed(() => {
 
 const currentProfileHandle = computed(() => {
   if (isCurrentAnonymous.value) {
-    return activePet.value ? `anon_${activePet.value.name.toLowerCase()}` : 'anon_pet_parent_92';
+    return activePet.value ? `@anon_${activePet.value.name.toLowerCase()}` : '@anon_guardian_92';
   }
   if (activePet.value) return `@${activePet.value.name.toLowerCase()}_official`;
   return `@${owner.username}`;
@@ -206,7 +232,7 @@ const currentProfileHandle = computed(() => {
 
 const currentDisplayName = computed(() => {
   if (isCurrentAnonymous.value) {
-    return activePet.value ? `👻 Anonymous ${activePet.value.name}` : '👻 Anonymous Pet Parent';
+    return activePet.value ? `👻 Anon ${activePet.value.name}` : '👻 Anon Pet Guardian';
   }
   if (activePet.value) return activePet.value.name;
   return owner.displayName;
@@ -219,26 +245,25 @@ const currentAvatar = computed(() => {
 
 const currentBio = computed(() => {
   if (isCurrentAnonymous.value) {
-    return '🔒 Identity protected in Ghost Mode. Exploring pet community safely.';
+    return '🔒 Identity protected in Ghost Mode. Exploring pet community safely with encrypted passport.';
   }
-  if (activePet.value) return activePet.value.bio || 'Happy pet on Nuzzle!';
-  return owner.bio || 'Pet lover on Nuzzle!';
+  if (activePet.value) return activePet.value.bio || 'Happy, energetic adventure companion on Nuzzle! 🎾';
+  return owner.bio || 'Pet lover, weekend hiker, and passionate animal rescue advocate.';
 });
 
 const currentPostsCount = computed(() => {
-  if (activePet.value) return activePet.value.postsCount;
+  if (activePet.value) return activePet.value.postsCount || 18;
   return 48;
 });
 
-const currentFollowersCount = computed(() => {
-  if (activePet.value) return activePet.value.followersCount;
-  return owner.followersCount;
-});
-
-const currentFollowingCount = computed(() => {
-  if (activePet.value) return 42;
-  return owner.followingCount;
-});
+const userGridImages = [
+  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1513360309081-38f0762b781e?w=400&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=400&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&auto=format&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=400&auto=format&fit=crop&q=80'
+];
 
 function toggleAnonymity() {
   if (activePet.value) {
@@ -250,47 +275,21 @@ function toggleAnonymity() {
   const newState = isCurrentAnonymous.value;
   showProfileToast(
     newState 
-      ? '👻 Ghost Mode Activated: Real name & photo masked on feeds!' 
-      : '👤 Public Mode: Real name & photo visible'
+      ? '👻 Ghost Mode Enabled: Real name & photo masked on all feeds!' 
+      : '👤 Public Mode: Real name & photo visible to community.'
   );
+}
+
+function showPackModal() {
+  showProfileToast('🐾 Pack Circle: 842 playmates connected in Portland!');
 }
 
 function showProfileToast(msg: string) {
   profileToast.value = msg;
   setTimeout(() => {
     profileToast.value = null;
-  }, 2400);
+  }, 3200);
 }
-
-function addDemoPet() {
-  const newPet = {
-    id: `pet_${Date.now()}`,
-    ownerId: owner.id,
-    name: 'Pepper',
-    species: 'Dog' as const,
-    breed: 'Australian Shepherd',
-    bio: 'Speedy frisbee catcher! 🥏',
-    age: '6 mos',
-    avatarUrl: 'https://images.unsplash.com/photo-1503256207526-0d5d80fa2f47?w=200&auto=format&fit=crop&q=80',
-    isAnonymous: false,
-    weight: '14.2 kg',
-    microchipId: '985-0028-1194-PEPPER',
-    postsCount: 1,
-    followersCount: 12
-  };
-  pets.push(newPet);
-  activeProfileId.value = newPet.id;
-  showProfileToast(`🐾 ${newPet.name} registered with Digital Passport!`);
-}
-
-const userGridImages = [
-  'https://images.unsplash.com/photo-1552053831-71594a27632d?w=500&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=500&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=500&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?w=500&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=500&auto=format&fit=crop&q=80'
-];
 </script>
 
 <style scoped>
@@ -300,547 +299,491 @@ const userGridImages = [
   height: 100%;
 }
 
-.profile-header {
+/* Header */
+.profile-top-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
 }
 
-.header-username {
+.handle-cluster {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-.user-handle {
-  font-size: 16px;
+.profile-handle {
+  font-size: 15px;
   font-weight: 800;
   color: var(--ink-primary);
 }
 
-.ghost-pill-active {
-  background: #7C3AED;
-  color: #fff;
-  font-size: 10px;
+.ghost-status-chip {
+  font-size: 9.5px;
   font-weight: 800;
-  padding: 2px 7px;
+  color: #fff;
+  background: #7C3AED;
+  padding: 1px 6px;
   border-radius: var(--radius-full);
-  letter-spacing: 0.03em;
-  animation: pulse 2s infinite;
 }
 
-.passport-head-btn {
-  color: #D97706;
+.icon-round-btn {
+  color: var(--ink-muted);
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.15s ease;
 }
 
-.gold-icon {
-  color: #F59E0B;
+.icon-round-btn:hover {
+  background: var(--bg-card-subtle);
+  color: var(--ink-primary);
 }
 
 .profile-scroll-body {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 16px 84px;
+  padding: 10px 12px 30px;
 }
 
-.persona-switcher-bar {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin-bottom: 12px;
-}
-
-.persona-tab {
+/* 1. Persona Switcher */
+.persona-switch-dock {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px 6px 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: 10px;
+}
+
+.persona-switch-dock::-webkit-scrollbar {
+  display: none;
+}
+
+.persona-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 5px;
   border-radius: var(--radius-full);
   background: var(--bg-card);
   border: 1.5px solid var(--border-light);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--ink-secondary);
-  flex-shrink: 0;
+  cursor: pointer;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
-.persona-tab.active {
-  background: var(--brand-gradient);
-  border-color: transparent;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(148, 125, 238, 0.35);
-}
-
-.persona-avatar {
+.persona-thumb {
   width: 24px;
   height: 24px;
   border-radius: 50%;
   object-fit: cover;
 }
 
-/* ANONYMITY / GHOST MODE CARD */
-.anonymity-card {
-  padding: 12px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  background: var(--bg-card-subtle);
-  border: 1.5px solid var(--border-strong);
-  cursor: pointer;
-  user-select: none;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+.persona-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-secondary);
 }
 
-.anonymity-card:hover {
-  border-color: var(--brand-primary);
-  transform: translateY(-1px);
+.persona-pill-btn.active {
+  background: linear-gradient(135deg, #7C3AED 0%, #947DEE 100%);
+  border-color: transparent;
 }
 
-.anonymity-card.ghost-active {
-  background: linear-gradient(135deg, #F3EEFF 0%, #FAF5FF 100%);
-  border-color: #A855F7;
-  box-shadow: 0 4px 16px rgba(168, 85, 247, 0.22);
-}
-
-:global([data-theme='dark']) .anonymity-card.ghost-active {
-  background: linear-gradient(135deg, #2A1748 0%, #1D1333 100%);
-  border-color: #C084FC;
-}
-
-.anon-badge-line {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 2px;
-}
-
-.anon-icon {
-  color: var(--ink-muted);
-}
-
-.ghost-active .anon-icon {
-  color: #7C3AED;
-}
-
-.anon-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--ink-primary);
-}
-
-.ghost-active .anon-title {
-  color: #6D28D9;
-}
-
-.live-active-tag {
-  background: #10B981;
+.persona-pill-btn.active .persona-name {
   color: #fff;
-  font-size: 9px;
-  font-weight: 800;
-  padding: 1px 5px;
-  border-radius: var(--radius-full);
 }
 
-.anon-explain {
-  font-size: 11px;
-  color: var(--ink-muted);
-}
-
-/* HERO PROFILE CARD */
+/* 2. Hero Card */
 .profile-hero-card {
-  padding: 16px;
-  margin-bottom: 12px;
-  transition: all 0.2s ease;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 18px;
+  padding: 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
-.profile-hero-card.ghost-mode-border {
-  border-color: #C4B5FD;
-  box-shadow: 0 4px 18px rgba(148, 125, 238, 0.2);
+.profile-hero-card.ghost-active-border {
+  border-color: #A78BFA;
+  box-shadow: 0 4px 16px rgba(124, 58, 237, 0.15);
 }
 
-.hero-top-row {
+.hero-identity-row {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  gap: 12px;
+  align-items: flex-start;
 }
 
-.hero-avatar-wrapper {
+.hero-avatar-frame {
   position: relative;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  padding: 2px;
+  background: linear-gradient(135deg, #947DEE 0%, #F59E0B 100%);
+  flex-shrink: 0;
 }
 
-.hero-avatar-wrapper.ghost-halo .hero-avatar {
-  border: 2.5px solid #A855F7;
-  box-shadow: 0 0 12px rgba(168, 85, 247, 0.4);
+.hero-avatar-frame.ghost-halo {
+  background: linear-gradient(135deg, #7C3AED 0%, #C084FC 100%);
 }
 
-.hero-avatar {
-  width: 72px;
-  height: 72px;
+.hero-main-avatar {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--border-light);
-}
-
-.ghost-badge-overlay {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #7C3AED;
-  color: #fff;
-  font-size: 11px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
   border: 2px solid var(--bg-card);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.pet-star-badge {
+.ghost-icon-tag {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  background: #F59E0B;
-  color: #fff;
-  font-size: 11px;
+  bottom: -2px;
+  right: -2px;
+  font-size: 13px;
+  background: #7C3AED;
   width: 20px;
   height: 20px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  border: 2px solid var(--bg-card);
+  border: 1.5px solid #fff;
 }
 
-.stats-counts-group {
-  flex: 1;
-  display: flex;
-  justify-content: space-around;
-  text-align: center;
-}
-
-.count-box {
+.hero-bio-col {
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
-.c-num {
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--ink-primary);
-}
-
-.c-label {
-  font-size: 11px;
-  color: var(--ink-muted);
-}
-
-.hero-bio-section {
-  margin: 12px 0 14px;
-}
-
-.name-badge-row {
+.name-badge-line {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
-.hero-name {
+.hero-display-name {
   font-size: 16px;
   font-weight: 800;
   color: var(--ink-primary);
 }
 
-.anon-identity-badge {
+.species-chip {
   font-size: 10px;
   font-weight: 700;
+  color: var(--brand-primary);
   background: #F3EEFF;
-  border: 1px solid #D8B4FE;
-  color: #7C3AED;
-  padding: 1px 7px;
+  padding: 1px 6px;
   border-radius: var(--radius-full);
 }
 
-.hero-subtitle {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--brand-primary);
-  display: block;
-  margin-bottom: 4px;
+.sub-location-line {
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 1px;
 }
 
-.hero-bio-text {
-  font-size: 13px;
+.hero-bio-paragraph {
+  font-size: 12px;
   color: var(--ink-secondary);
   line-height: 1.4;
+  margin-top: 5px;
 }
 
-.profile-buttons-row {
+/* 3. UNIQUE PET VITALS DASHBOARD */
+.pet-vitals-dashboard {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+
+.vital-tile {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 8px 6px;
   display: flex;
-  gap: 8px;
-}
-
-.profile-btn {
-  flex: 1;
-  padding: 9px 0;
-  font-size: 13px;
-}
-
-.gold-gradient-btn {
-  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
-  color: #ffffff;
-  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
-}
-
-/* PASSPORT SUMMARY WIDGET */
-.passport-widget-card {
-  background: linear-gradient(135deg, #1E1735 0%, #150F28 100%);
-  border: 1.5px solid #D4AF37;
-  border-radius: var(--radius-lg);
-  padding: 14px;
-  color: #fff;
-  margin-bottom: 14px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(21, 15, 40, 0.35);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 
-.passport-widget-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(212, 175, 55, 0.25);
+.vital-tile:hover {
+  transform: translateY(-1px);
+  background: #F3EEFF;
+  border-color: #DDD6FE;
 }
 
-.p-widget-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
+.vital-icon-wrap {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.p-widget-emblem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.p-flag {
-  font-size: 22px;
-}
-
-.p-widget-title {
+.vital-emoji {
   font-size: 13px;
-  font-weight: 800;
-  color: #FDE047;
-  letter-spacing: 0.02em;
 }
 
-.p-widget-chip {
-  font-family: monospace;
-  font-size: 9.5px;
-  color: #CBD5E1;
-}
-
-.verified-seal-badge {
+.vital-number-row {
   display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 3px;
+}
+
+.vital-val {
+  font-size: 13.5px;
+  font-weight: 900;
+  color: var(--ink-primary);
+}
+
+.vital-trend, .vital-sparkle {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #059669;
+}
+
+.vital-lbl {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  line-height: 1.2;
+}
+
+/* 4. Milestones Track */
+.pet-milestones-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.milestone-badge {
+  display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(16, 185, 129, 0.25);
-  border: 1px solid #10B981;
-  color: #6EE7B7;
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
   padding: 3px 8px;
   border-radius: var(--radius-full);
 }
 
-.p-widget-metrics {
-  display: flex;
-  justify-content: space-around;
-  background: rgba(0, 0, 0, 0.35);
-  border-radius: var(--radius-md);
-  padding: 8px 10px;
-  margin-bottom: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.milestone-badge.gold {
+  color: #92400E;
+  background: #FEF3C7;
+  border-color: #FCD34D;
 }
 
-.p-metric {
+.m-icon {
+  font-size: 11px;
+}
+
+/* 5. Action Buttons */
+.profile-action-buttons {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.passport-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  font-weight: 800;
+  border-radius: var(--radius-full);
+}
+
+.edit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 8px;
+  font-size: 12px;
+  border-radius: var(--radius-full);
+}
+
+/* 6. Ghost Anonymity Toggle Card */
+.ghost-toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ghost-toggle-card.active {
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+  border-color: #C084FC;
+}
+
+:global([data-theme='dark']) .ghost-toggle-card.active {
+  background: rgba(88, 28, 135, 0.35);
+  border-color: #9333EA;
+}
+
+.ghost-left {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 2px;
 }
 
-.pm-val {
-  font-size: 11.5px;
-  font-weight: 800;
-  color: #F8FAFC;
-}
-
-.pm-lbl {
-  font-size: 9px;
-  color: #94A3B8;
-}
-
-.p-widget-cta {
+.ghost-title-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #FDE047;
-  padding-top: 4px;
+  gap: 5px;
 }
 
-.cta-arrow {
-  transition: transform 0.15s ease;
-}
-
-.passport-widget-card:hover .cta-arrow {
-  transform: translateX(4px);
-}
-
-/* Pets Roster */
-.pets-roster-section {
-  margin-bottom: 14px;
-}
-
-.roster-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.roster-title {
-  font-size: 13.5px;
-  font-weight: 800;
-  color: var(--ink-primary);
-}
-
-.add-pet-link {
-  font-size: 11.5px;
-  font-weight: 700;
+.ghost-eye {
   color: var(--brand-primary);
 }
 
-.pets-cards-scroll {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.pet-summary-card {
-  flex-shrink: 0;
-  width: 115px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease;
-}
-
-.pet-summary-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--brand-primary);
-}
-
-.p-thumb {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 4px;
-}
-
-.p-name {
+.ghost-title {
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--ink-primary);
 }
 
-.p-breed {
-  font-size: 10px;
+.ghost-desc {
+  font-size: 10.5px;
   color: var(--ink-muted);
-  text-align: center;
+  line-height: 1.3;
 }
 
-.profile-media-tabs {
+/* Custom Switch */
+.custom-switch {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--border-light);
+  position: relative;
+  transition: background 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-switch.on {
+  background: #7C3AED;
+}
+
+.switch-ball {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.custom-switch.on .switch-ball {
+  transform: translateX(16px);
+}
+
+/* 7. Media Tabs */
+.media-tabs-bar {
   display: flex;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 8px;
 }
 
-.p-tab-btn {
+.tab-btn {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 10px 0;
-  font-size: 12.5px;
+  gap: 5px;
+  padding: 8px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--ink-muted);
   border-bottom: 2px solid transparent;
+  cursor: pointer;
 }
 
-.p-tab-btn.active {
+.tab-btn.active {
   color: var(--brand-primary);
   border-bottom-color: var(--brand-primary);
 }
 
-.profile-posts-grid {
+/* 8. Photo Grid */
+.memories-photo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 3px;
-  border-radius: var(--radius-md);
+  gap: 4px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
-.grid-photo-cell {
-  aspect-ratio: 1 / 1;
+.photo-cell {
+  aspect-ratio: 1;
+  background: var(--bg-card-subtle);
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.grid-img {
+.grid-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.2s ease;
 }
 
-/* Toast Bar */
+.photo-cell:hover .grid-image {
+  transform: scale(1.05);
+}
+
+/* Toast */
 .profile-toast-bar {
-  position: absolute;
-  top: 50px;
+  position: fixed;
+  bottom: 80px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(26, 18, 42, 0.95);
   color: #fff;
-  padding: 8px 16px;
-  border-radius: var(--radius-full);
   font-size: 11.5px;
   font-weight: 700;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-  z-index: 100;
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
+  z-index: 999;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
 }
 
-.toast-slide-enter-active,
-.toast-slide-leave-active {
-  transition: opacity 0.2s, transform 0.2s;
+.toast-slide-enter-active, .toast-slide-leave-active {
+  transition: all 0.25s ease;
 }
 
-.toast-slide-enter-from,
-.toast-slide-leave-to {
+.toast-slide-enter-from, .toast-slide-leave-to {
   opacity: 0;
-  transform: translate(-50%, -10px);
+  transform: translate(-50%, 10px);
 }
 </style>
-

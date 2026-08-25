@@ -210,15 +210,21 @@ export interface Appointment {
 export interface MarketplaceListing {
   id: string;
   title: string;
-  category: 'Food & Treats' | 'Toys' | 'Beds & Cages' | 'Grooming' | 'Apparel' | 'Health';
+  category: 'Food & Treats' | 'Toys' | 'Beds & Cages' | 'Grooming' | 'Apparel' | 'Health' | 'Accessories';
   price: number;
   description: string;
   imageUrl: string;
   condition: 'Brand New' | 'Like New' | 'Good Condition';
   sellerName: string;
   sellerAvatar: string;
+  sellerType: 'verified_shop' | 'individual';
+  isVerifiedShop: boolean;
+  shopRating?: number;
+  shopBadge?: string;
   location: string;
   status: 'available' | 'sold';
+  stock?: number;
+  tags?: string[];
 }
 
 export interface ChatMessage {

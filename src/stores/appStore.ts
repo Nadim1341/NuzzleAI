@@ -581,3 +581,53 @@ export function markAllNotificationsAsRead() {
   notifications.forEach(n => n.isRead = true);
 }
 
+// Marketplace Store Actions
+export function addMarketListing(data: Omit<MarketplaceListing, 'id' | 'status'>) {
+  const newListing: MarketplaceListing = {
+    id: `mkt_${Date.now()}`,
+    status: 'available',
+    ...data
+  };
+
+  marketplace.unshift(newListing);
+
+  notifications.unshift({
+    id: `notif_mkt_${Date.now()}`,
+    type: 'ai_insight',
+    title: '🛍️ Item Listed Successfully!',
+    message: `Your listing "${newListing.title}" is now live on the Nuzzle Pet Marketplace.`,
+    avatarUrl: newListing.imageUrl,
+    timeAgo: 'Just now',
+    isRead: false
+  });
+
+  return newListing;
+}
+
+export function verifyShopSubscription(shopName: string, category: string, feePlan: string = '$19.99/mo') {
+  notifications.unshift({
+    id: `notif_verify_${Date.now()}`,
+    type: 'ai_insight',
+    title: '🌟 Shop Verification Approved!',
+    message: `Congratulations! "${shopName}" (${category}) is now an Official Nuzzle Verified Pet Shop with Gold Shield Status (${feePlan}).`,
+    avatarUrl: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=150&auto=format&fit=crop&q=80',
+    timeAgo: 'Just now',
+    isRead: false
+  });
+}
+
+export function buyMarketItem(itemId: string) {
+  const item = marketplace.find(m => m.id === itemId);
+  if (!item) return;
+
+  notifications.unshift({
+    id: `notif_buy_${Date.now()}`,
+    type: 'ai_insight',
+    title: '🛍️ Order Placed Successfully!',
+    message: `Your order for "${item.title}" ($${item.price}) with ${item.sellerName} is confirmed! Tracking code dispatched.`,
+    avatarUrl: item.imageUrl,
+    timeAgo: 'Just now',
+    isRead: false
+  });
+}
+

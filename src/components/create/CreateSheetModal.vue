@@ -338,8 +338,12 @@ function handleCreateMarket() {
     condition: 'Like New',
     sellerName: owner.displayName,
     sellerAvatar: owner.avatarUrl,
+    sellerType: 'individual',
+    isVerifiedShop: false,
+    shopBadge: '👤 Pet Parent',
     location: 'Portland, OR',
-    status: 'available'
+    status: 'available',
+    stock: 1
   });
   marketTitle.value = '';
   isCreateSheetOpen.value = false;

@@ -458,11 +458,18 @@ export const initialVets: Vet[] = [
     name: 'Dr. Evelyn Martinez, DVM',
     clinicName: 'Rose City Companion Animal Clinic',
     location: '1420 NW Lovejoy St, Portland, OR',
-    bio: '12+ years experience in small animal medicine, preventive wellness, and soft tissue surgery.',
+    bio: '12+ years experience in canine and feline preventive wellness, advanced dental scaling, and dermatology workups.',
     avatarUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&auto=format&fit=crop&q=80',
     rating: 4.9,
     reviewsCount: 142,
-    specialties: ['Wellness Exam', 'Dental Scaling', 'Vaccinations', 'Nutrition Counseling'],
+    isProSubscriber: true,
+    proBadgeLabel: '🌟 Nuzzle Pro Priority Clinic',
+    distanceMiles: 1.2,
+    acceptedSpecies: ['Dog', 'Cat', 'Rabbit'],
+    emergencyCare: false,
+    phone: '(503) 555-0192',
+    priceRange: '$$',
+    specialties: ['Routine Checkup', 'Vaccinations', 'Dental Scaling', 'Dermatology & Allergies', 'Nutrition Counseling'],
     slots: {
       'Today': [
         { time: '09:00 AM', isBooked: true },
@@ -479,15 +486,80 @@ export const initialVets: Vet[] = [
     }
   },
   {
+    id: 'vet_3',
+    name: 'Dr. Sarah Al-Mansoor, DVM, DACVS',
+    clinicName: 'Cascade 24/7 Emergency & Surgical Hospital',
+    location: '2100 SW River Pkwy, Portland, OR',
+    bio: 'Board-Certified Veterinary Surgeon specializing in trauma triage, orthopedics, ACL TPLO surgery, and urgent care.',
+    avatarUrl: 'https://images.unsplash.com/photo-1594824813584-ea23df1f0d36?w=200&auto=format&fit=crop&q=80',
+    rating: 5.0,
+    reviewsCount: 218,
+    isProSubscriber: true,
+    proBadgeLabel: '🌟 Nuzzle Pro Priority Hospital',
+    distanceMiles: 2.1,
+    acceptedSpecies: ['Dog', 'Cat', 'Bird', 'Rabbit', 'Reptile'],
+    emergencyCare: true,
+    phone: '(503) 555-2424',
+    priceRange: '$$$',
+    specialties: ['Emergency Surgery', 'Orthopedics & Joint Care', 'Trauma & ICU', 'Radiology & Ultrasound', 'Poison Triage'],
+    slots: {
+      'Today': [
+        { time: '08:30 AM', isBooked: false },
+        { time: '11:00 AM', isBooked: false },
+        { time: '02:00 PM', isBooked: false },
+        { time: '05:30 PM', isBooked: false }
+      ],
+      'Tomorrow': [
+        { time: '09:00 AM', isBooked: false },
+        { time: '01:00 PM', isBooked: false }
+      ]
+    }
+  },
+  {
+    id: 'vet_4',
+    name: 'Dr. Jennifer Wu, DVM, ABVP',
+    clinicName: 'Avian & Exotic Sanctuary Practice',
+    location: '450 NE Grand Ave, Portland, OR',
+    bio: 'Board specialist in avian medicine, parrots, rabbits, ferrets, reptiles, and specialized small exotic surgery.',
+    avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=80',
+    rating: 4.9,
+    reviewsCount: 86,
+    isProSubscriber: true,
+    proBadgeLabel: '🌟 Nuzzle Pro Priority Specialist',
+    distanceMiles: 3.4,
+    acceptedSpecies: ['Bird', 'Rabbit', 'Reptile', 'Cat'],
+    emergencyCare: false,
+    phone: '(503) 555-0811',
+    priceRange: '$$',
+    specialties: ['Avian Medicine', 'Exotic Pet Surgery', 'Beak & Feather Care', 'Rabbit GI Stasis', 'Dental Scaling'],
+    slots: {
+      'Today': [
+        { time: '01:00 PM', isBooked: false },
+        { time: '04:00 PM', isBooked: false }
+      ],
+      'Tomorrow': [
+        { time: '10:30 AM', isBooked: false },
+        { time: '02:30 PM', isBooked: false }
+      ]
+    }
+  },
+  {
     id: 'vet_2',
     name: 'Dr. Marcus Vance, BVSc',
-    clinicName: 'Paws & Claws Holistic Care',
+    clinicName: 'Paws & Claws Holistic Center',
     location: '880 SE Hawthorne Blvd, Portland, OR',
-    bio: 'Specialist in geriatric pet care, joint therapy, acupuncture, and feline behavioral management.',
+    bio: 'Specialist in geriatric senior pet care, joint acupuncture therapy, and feline behavioral management.',
     avatarUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=200&auto=format&fit=crop&q=80',
     rating: 4.8,
     reviewsCount: 98,
-    specialties: ['Geriatric Care', 'Acupuncture', 'Feline Medicine', 'Allergy Workups'],
+    isProSubscriber: false,
+    proBadgeLabel: '✓ Standard Clinic',
+    distanceMiles: 4.2,
+    acceptedSpecies: ['Dog', 'Cat'],
+    emergencyCare: false,
+    phone: '(503) 555-0344',
+    priceRange: '$$',
+    specialties: ['Geriatric Care', 'Acupuncture', 'Feline Medicine', 'Allergy Workups', 'Routine Checkup'],
     slots: {
       'Today': [
         { time: '11:30 AM', isBooked: true },

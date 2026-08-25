@@ -191,6 +191,13 @@ export interface Vet {
   rating: number;
   reviewsCount: number;
   specialties: string[];
+  isProSubscriber?: boolean;
+  proBadgeLabel?: string;
+  distanceMiles?: number;
+  acceptedSpecies?: string[];
+  emergencyCare?: boolean;
+  phone?: string;
+  priceRange?: string;
   slots: { [date: string]: VetSlot[] };
 }
 

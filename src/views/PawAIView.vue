@@ -12,7 +12,7 @@
             <span>Next-Gen Pet AI</span>
           </div>
           <h2 class="ai-hero-title">PawAI Intelligence Suite</h2>
-          <p class="ai-hero-sub">AI Vision health scanner, 24/7 symptom triage & pet emotion translator.</p>
+          <p class="ai-hero-sub">AI Vision scanner, Suggest Vet Pro Matcher & 24/7 triage.</p>
         </div>
         <div class="hero-robot-badge">🐾⚡</div>
       </div>
@@ -31,8 +31,193 @@
         </button>
       </div>
 
-      <!-- TAB 1: PET VISION & HEALTH SCANNER -->
-      <div v-if="activeAiTab === 'scanner'" class="tab-pane">
+      <!-- TAB 1: SUGGEST VET (AI PRIORITY MATCH ENGINE) -->
+      <div v-if="activeAiTab === 'suggest_vet'" class="tab-pane">
+        <!-- Pro Priority Explanation Banner -->
+        <div class="vet-matcher-hero card-item">
+          <div class="matcher-header-row">
+            <div class="ai-pulse-badge">
+              <span class="pulse-spark">✨</span>
+              <span>AI Priority Matcher</span>
+            </div>
+            <span class="pro-priority-tag">⭐ Pro Subscribers Ranked #1</span>
+          </div>
+          <h3 class="matcher-main-title">Suggest Best-Fit Vet for Your Pet</h3>
+          <p class="matcher-sub">
+            PawAI analyzes your pet's species, symptoms, and urgency to find qualified clinics. Clinics with <strong>Nuzzle Pro Partner Subscriptions</strong> are prioritized at the top.
+          </p>
+
+          <!-- Criteria Selection Form -->
+          <div class="matcher-filters-grid">
+            <!-- 1. Select Pet -->
+            <div class="filter-field">
+              <label class="field-label">🐾 Target Pet</label>
+              <select v-model="selectedPetId" class="field-select">
+                <option v-for="p in pets" :key="p.id" :value="p.id">
+                  {{ p.name }} ({{ p.species }} - {{ p.breed || 'Companion' }})
+                </option>
+              </select>
+            </div>
+
+            <!-- 2. Medical Concern / Specialty -->
+            <div class="filter-field">
+              <label class="field-label">🩺 Medical Need / Specialty</label>
+              <select v-model="selectedMedicalNeed" class="field-select">
+                <option value="All">All Routine & Wellness Needs</option>
+                <option value="Emergency Surgery">🚨 Emergency Trauma & Surgery (24/7)</option>
+                <option value="Dermatology & Allergies">🌿 Skin Itching, Allergies & Dermatology</option>
+                <option value="Dental Scaling">🦷 Dental Scaling & Oral Surgery</option>
+                <option value="Orthopedics & Joint Care">🦴 Joint Therapy, Limping & Orthopedics</option>
+                <option value="Vaccinations">💉 Core Vaccines & Microchipping</option>
+                <option value="Avian Medicine">🦜 Avian & Exotic Pet Specialization</option>
+                <option value="Geriatric Care">👴 Senior & Geriatric Pet Wellness</option>
+              </select>
+            </div>
+
+            <!-- 3. Distance Radius -->
+            <div class="filter-field">
+              <label class="field-label">📍 Distance Radius</label>
+              <select v-model="selectedMaxDistance" class="field-select">
+                <option :value="5">Within 5 Miles</option>
+                <option :value="10">Within 10 Miles</option>
+                <option :value="25">Within 25 Miles</option>
+                <option :value="999">Any Distance</option>
+              </select>
+            </div>
+
+            <!-- 4. Emergency Urgency Toggle -->
+            <div class="filter-field emergency-toggle-field" :class="{ urgent: isEmergencyUrgent }">
+              <label class="field-label">⚡ Urgent Triage</label>
+              <button 
+                type="button" 
+                class="urgent-toggle-btn"
+                :class="{ active: isEmergencyUrgent }"
+                @click="isEmergencyUrgent = !isEmergencyUrgent"
+              >
+                <span>{{ isEmergencyUrgent ? '🚨 24/7 Emergency Mode' : 'Standard Booking' }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matched Vets Results List -->
+        <div class="suggested-vets-section">
+          <div class="section-title-row">
+            <h4 class="section-heading">
+              🏥 Matched Vets ({{ suggestedVetsList.length }})
+            </h4>
+            <span class="sort-indicator">
+              ⚡ Sorted by Pro Partner Priority & Criteria Match
+            </span>
+          </div>
+
+          <div v-if="suggestedVetsList.length > 0" class="vets-cards-list">
+            <div 
+              v-for="(vet, idx) in suggestedVetsList" 
+              :key="vet.id"
+              class="suggested-vet-card"
+              :class="{ 'pro-priority-card': vet.isProSubscriber }"
+            >
+              <!-- Pro Priority Header Badge -->
+              <div v-if="vet.isProSubscriber" class="pro-partner-ribbon">
+                <span class="ribbon-star">🌟</span>
+                <span class="ribbon-text">NUZZLE PRO PRIORITY PARTNER • TOP MATCH #{{ idx + 1 }}</span>
+              </div>
+
+              <div class="vet-card-body">
+                <div class="vet-top-info-row">
+                  <img :src="vet.avatarUrl" :alt="vet.name" class="vet-avatar-img" />
+
+                  <div class="vet-text-col">
+                    <div class="vet-name-row">
+                      <h4 class="vet-doctor-name">{{ vet.name }}</h4>
+                      <span v-if="vet.isProSubscriber" class="pro-shield-badge" title="Verified Pro Subscriber">
+                        ✓ PRO
+                      </span>
+                    </div>
+
+                    <span class="vet-clinic-name">{{ vet.clinicName }}</span>
+
+                    <div class="vet-meta-chips">
+                      <span class="meta-chip rating">★ {{ vet.rating }} ({{ vet.reviewsCount }})</span>
+                      <span class="meta-chip distance">📍 {{ vet.distanceMiles || 1.5 }} mi away</span>
+                      <span v-if="vet.emergencyCare" class="meta-chip emergency">🚨 24/7 ICU</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- AI Match Rationale Badge -->
+                <div class="ai-match-rationale">
+                  <span class="ai-brain-icon">🧠</span>
+                  <span class="ai-rationale-text">
+                    <strong>PawAI Match:</strong>
+                    {{ getAiMatchReason(vet) }}
+                  </span>
+                </div>
+
+                <!-- Specialties Chips -->
+                <div class="vet-specialties-track">
+                  <span 
+                    v-for="spec in vet.specialties" 
+                    :key="spec"
+                    class="spec-chip"
+                    :class="{ highlighted: isSpecialtyHighlighted(spec) }"
+                  >
+                    {{ spec }}
+                  </span>
+                </div>
+
+                <!-- Available Slot & Action Buttons -->
+                <div class="vet-card-footer">
+                  <div class="next-slot-pill">
+                    <span class="slot-dot"></span>
+                    <span>Next Open: <strong>Tomorrow at 11:00 AM</strong></span>
+                  </div>
+
+                  <div class="vet-actions-btns">
+                    <button class="btn-solid instant-book-btn" @click="handleBookSlot(vet)">
+                      <Calendar :size="14" />
+                      <span>Book Slot</span>
+                    </button>
+                    
+                    <button class="btn-outline clinic-chat-btn" @click="contactClinic(vet)">
+                      <Send :size="13" />
+                      <span>Chat Clinic</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty Fallback -->
+          <div v-else class="empty-vet-state">
+            <span class="empty-emoji">🩺</span>
+            <h4>No clinics match all selected filters</h4>
+            <p>Try widening your distance radius or changing the medical specialty.</p>
+            <button class="btn-solid reset-btn" @click="resetVetFilters">
+              Reset Filters
+            </button>
+          </div>
+
+          <!-- Pro Vet Clinic Subscription Promotion -->
+          <div class="pro-clinic-enroll-card" @click="enrollClinicModal">
+            <div class="enroll-left">
+              <span class="enroll-icon">🏥⭐</span>
+              <div>
+                <h4 class="enroll-title">Are you a Veterinary Practice or Hospital?</h4>
+                <p class="enroll-sub">
+                  Join the <strong>Nuzzle Pro Partner Network ($49/mo)</strong> for #1 Priority Placement on PawAI Suggest Vet & Direct In-App Bookings.
+                </p>
+              </div>
+            </div>
+            <button class="enroll-btn">Join Pro Network →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: PET VISION & HEALTH SCANNER -->
+      <div v-else-if="activeAiTab === 'scanner'" class="tab-pane">
         <div class="scanner-card card-item">
           <div class="scanner-viewport">
             <img 
@@ -96,113 +281,80 @@
               <p class="nut-text">{{ currentScanResult.nutritionAdvice }}</p>
             </div>
 
-            <div class="funfact-box">
-              💡 <strong>Breed Intelligence:</strong> {{ currentScanResult.funFact }}
-            </div>
+            <!-- Quick Shortcut to Suggest Vet -->
+            <button class="btn-solid suggest-vet-quick-btn" @click="activeAiTab = 'suggest_vet'">
+              <span>🏥 Suggest Nearest Pro Vet for this Condition →</span>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- TAB 2: 24/7 TRIAGE DOCTOR -->
+      <!-- TAB 3: 24/7 SYMPTOM TRIAGE CHAT -->
       <div v-else-if="activeAiTab === 'triage'" class="tab-pane">
         <div class="triage-card card-item">
-          <div class="triage-header">
-            <div class="doc-avatar-badge">👨‍⚕️🤖</div>
-            <div class="doc-meta">
-              <h4 class="doc-title">PawDoctor 24/7 AI Triage</h4>
-              <span class="doc-sub">Veterinary-trained neural triage assistant</span>
-            </div>
-          </div>
-
-          <!-- Messages scroll -->
-          <div class="triage-messages" ref="triageBox">
+          <div class="triage-messages-container">
             <div 
               v-for="msg in aiTriageMessages" 
               :key="msg.id"
               class="triage-msg-row"
-              :class="msg.sender"
+              :class="{ user: msg.sender === 'user', ai: msg.sender === 'ai' }"
             >
-              <div 
-                class="triage-bubble"
-                :class="[msg.sender, msg.severity ? `severity-${msg.severity}` : '']"
-              >
-                <div v-if="msg.severity && msg.severity === 'urgent'" class="urgent-banner">
-                  🚨 EMERGENCY TRIAGE GUIDANCE
-                </div>
-                <p class="t-text">{{ msg.text }}</p>
-                <span class="t-stamp">{{ msg.timestamp }}</span>
+              <div v-if="msg.sender === 'ai'" class="ai-avatar-tiny">🩺</div>
+              <div class="msg-bubble" :class="msg.severity || 'low'">
+                <p class="msg-text">{{ msg.text }}</p>
+                <span class="msg-time">{{ msg.timestamp }}</span>
               </div>
             </div>
           </div>
 
-          <!-- Quick Symptom Prompts -->
-          <div class="triage-prompts">
+          <!-- Suggested Quick Prompts -->
+          <div class="quick-prompts-track">
             <button 
-              v-for="p in triagePrompts" 
-              :key="p"
-              class="triage-prompt-chip"
-              @click="handleTriagePrompt(p)"
+              v-for="prompt in triagePrompts" 
+              :key="prompt"
+              class="prompt-pill"
+              @click="handleTriagePrompt(prompt)"
             >
-              {{ p }}
+              {{ prompt }}
             </button>
           </div>
 
-          <!-- Input bar -->
+          <!-- Input Bar -->
           <div class="triage-input-bar">
             <input 
               v-model="triageInput" 
-              placeholder="Describe symptom (e.g. Dog ate chocolate)..." 
-              class="triage-input"
+              placeholder="Ask symptoms e.g., 'Dog ate chocolate'..." 
+              class="t-input"
               @keyup.enter="handleSendTriage"
             />
-            <button class="send-triage-btn" @click="handleSendTriage">
+            <button class="btn-solid send-triage-btn" @click="handleSendTriage">
               <Send :size="16" />
             </button>
           </div>
         </div>
       </div>
 
-      <!-- TAB 3: BARK & MEOW VOICE TRANSLATOR -->
+      <!-- TAB 4: PET EMOTION & VOICE TRANSLATOR -->
       <div v-else-if="activeAiTab === 'translator'" class="tab-pane">
         <div class="translator-card card-item">
-          <div class="mic-stage">
-            <div class="waveform-container" :class="{ listening: isListening }">
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-              <div class="wave-bar"></div>
-            </div>
-
-            <button 
-              class="record-circle-btn" 
-              :class="{ recording: isListening }"
-              @click="toggleAudioListen"
-            >
-              <Mic :size="32" />
+          <div class="translator-pulse-circle" :class="{ listening: isListening }">
+            <button class="mic-trigger-btn" @click="toggleAudioListen">
+              <Mic :size="32" class="mic-icon" />
             </button>
-
-            <span class="mic-status-text">
-              {{ isListening ? 'Listening to Pet Vocalization... 🎙️' : 'Tap Microphone to Translate Bark / Meow' }}
-            </span>
           </div>
 
-          <div v-if="translatedThought" class="thought-bubble-result">
-            <div class="thought-avatar">
-              <img :src="pets[0].avatarUrl" alt="Waffles" />
-            </div>
-            <div class="thought-content">
-              <span class="speaker-lbl">🐾 Waffles (Translated to English):</span>
-              <p class="translated-dialogue">"{{ translatedThought }}"</p>
-              <span class="emotion-detected">Emotion: Excitement Level 9.8/10 🎾</span>
-            </div>
+          <span class="translator-status">
+            {{ isListening ? '🐾 Listening to Pet Vocalizations & Barks...' : 'Tap Mic to Translate Pet Audio' }}
+          </span>
+
+          <div v-if="translatedThought" class="translation-output-bubble">
+            <span class="bubble-tag">PET THOUGHT TRANSLATION:</span>
+            <p class="translation-text">"{{ translatedThought }}"</p>
           </div>
         </div>
       </div>
 
-      <!-- TAB 4: PLAYDATE COMPATIBILITY -->
+      <!-- TAB 5: PLAYDATE COMPATIBILITY -->
       <div v-else-if="activeAiTab === 'matcher'" class="tab-pane">
         <div class="matcher-card card-item">
           <h4 class="matcher-title">⚡ AI Playdate Compatibility Engine</h4>
@@ -252,7 +404,7 @@
         </div>
       </div>
 
-      <!-- TAB 5: AI MAGIC PORTRAIT STUDIO -->
+      <!-- TAB 6: AI MAGIC PORTRAIT STUDIO -->
       <div v-else-if="activeAiTab === 'portraits'" class="tab-pane">
         <div class="portrait-card card-item">
           <h4 class="port-title">🎨 Magic Pet AI Portrait Studio</h4>
@@ -278,26 +430,58 @@
         </div>
       </div>
     </div>
+
+    <!-- BOOKING SUCCESS MODAL -->
+    <div v-if="bookedVetAppointment" class="modal-backdrop" @click.self="bookedVetAppointment = null">
+      <div class="booking-modal-box">
+        <span class="b-paw">🩺🎉</span>
+        <h3 class="b-title">Appointment Confirmed!</h3>
+        <p class="b-sub">
+          Booked with <strong>{{ bookedVetAppointment.name }}</strong> at <strong>{{ bookedVetAppointment.clinicName }}</strong>.
+        </p>
+        <div class="b-details-card">
+          <div class="b-line">
+            <span>Date & Time:</span>
+            <strong>Tomorrow at 11:00 AM</strong>
+          </div>
+          <div class="b-line">
+            <span>Pet:</span>
+            <strong>{{ targetPet?.name || 'Waffles' }}</strong>
+          </div>
+          <div class="b-line">
+            <span>Location:</span>
+            <strong>{{ bookedVetAppointment.location }}</strong>
+          </div>
+        </div>
+        <button class="btn-solid full-btn" @click="bookedVetAppointment = null">
+          Done 🐾
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Sparkles, Camera, CheckCircle2, Send, Mic, Calendar, Wand2 } from 'lucide-vue-next';
 import TopBar from '../components/layout/TopBar.vue';
 import { 
   pets, 
+  vets,
   aiTriageMessages, 
   sendAiTriageQuery, 
   isAiScanning, 
   currentScanResult, 
   runAiPetScan,
-  openChatWith
+  openChatWith,
+  bookVetSlot
 } from '../stores/appStore';
+import type { Vet } from '../types';
 
-const activeAiTab = ref<'scanner' | 'triage' | 'translator' | 'matcher' | 'portraits'>('scanner');
+const activeAiTab = ref<'suggest_vet' | 'scanner' | 'triage' | 'translator' | 'matcher' | 'portraits'>('suggest_vet');
 
 const aiTabs = [
+  { id: 'suggest_vet', label: 'Suggest Vet', emoji: '🏥' },
   { id: 'scanner', label: 'PetScan AI', emoji: '🔬' },
   { id: 'triage', label: 'PawDoctor 24/7', emoji: '🩺' },
   { id: 'translator', label: 'Voice Translator', emoji: '🎙️' },
@@ -305,6 +489,113 @@ const aiTabs = [
   { id: 'portraits', label: 'Magic Studio', emoji: '🎨' }
 ];
 
+// SUGGEST VET CRITERIA STATE
+const selectedPetId = ref(pets[0]?.id || 'pet_1');
+const selectedMedicalNeed = ref('All');
+const selectedMaxDistance = ref(15);
+const isEmergencyUrgent = ref(false);
+const bookedVetAppointment = ref<Vet | null>(null);
+
+const targetPet = computed(() => {
+  return pets.find(p => p.id === selectedPetId.value) || pets[0];
+});
+
+// SUGGEST VET AI PRIORITY ALGORITHM
+const suggestedVetsList = computed(() => {
+  const currentPet = targetPet.value;
+  const petSpecies = currentPet?.species || 'Dog';
+
+  return vets
+    .filter(vet => {
+      // 1. Criteria Match: Pet Species Compatibility
+      if (vet.acceptedSpecies && !vet.acceptedSpecies.includes(petSpecies)) {
+        return false;
+      }
+
+      // 2. Criteria Match: Emergency Mode
+      if (isEmergencyUrgent.value && !vet.emergencyCare) {
+        return false;
+      }
+
+      // 3. Criteria Match: Distance
+      if (vet.distanceMiles && vet.distanceMiles > selectedMaxDistance.value) {
+        return false;
+      }
+
+      // 4. Criteria Match: Medical Need / Specialty
+      if (selectedMedicalNeed.value !== 'All') {
+        const need = selectedMedicalNeed.value.toLowerCase();
+        const hasSpecialty = vet.specialties.some(s => 
+          s.toLowerCase().includes(need) || 
+          need.includes(s.toLowerCase()) ||
+          (need.includes('emergency') && vet.emergencyCare)
+        );
+        if (!hasSpecialty) return false;
+      }
+
+      return true;
+    })
+    .sort((a, b) => {
+      // PRIORITY 1: Pro Subscribers are ranked at the VERY TOP
+      const aPro = a.isProSubscriber ? 1 : 0;
+      const bPro = b.isProSubscriber ? 1 : 0;
+      if (aPro !== bPro) {
+        return bPro - aPro; // Pro subscribers come first
+      }
+
+      // PRIORITY 2: Rating
+      if (b.rating !== a.rating) {
+        return b.rating - a.rating;
+      }
+
+      // PRIORITY 3: Distance
+      return (a.distanceMiles || 0) - (b.distanceMiles || 0);
+    });
+});
+
+function getAiMatchReason(vet: Vet): string {
+  const petName = targetPet.value?.name || 'Your Pet';
+  if (vet.isProSubscriber && isEmergencyUrgent.value) {
+    return `99% Match • Pro Partner Hospital equipped with 24/7 ICU & surgical triage for ${petName}.`;
+  }
+  if (vet.isProSubscriber) {
+    return `98% Match • Verified Pro Partner with top ratings in ${vet.specialties[0]} & immediate slot availability.`;
+  }
+  return `92% Match • Qualified clinic for ${petName}'s routine wellness and preventive diagnostics.`;
+}
+
+function isSpecialtyHighlighted(spec: string): boolean {
+  if (selectedMedicalNeed.value === 'All') return false;
+  return spec.toLowerCase().includes(selectedMedicalNeed.value.toLowerCase());
+}
+
+function handleBookSlot(vet: Vet) {
+  const pet = targetPet.value;
+  bookVetSlot(vet.id, 'Tomorrow', '11:00 AM', pet?.id || 'pet_1', selectedMedicalNeed.value);
+  bookedVetAppointment.value = vet;
+}
+
+function contactClinic(vet: Vet) {
+  const pet = targetPet.value;
+  openChatWith(
+    vet.name,
+    vet.avatarUrl,
+    undefined,
+    `Hi ${vet.name}! I was matched via PawAI for ${pet?.name || 'my pet'} regarding ${selectedMedicalNeed.value === 'All' ? 'a general consultation' : selectedMedicalNeed.value}. Do you have openings tomorrow?`
+  );
+}
+
+function resetVetFilters() {
+  selectedMedicalNeed.value = 'All';
+  selectedMaxDistance.value = 25;
+  isEmergencyUrgent.value = false;
+}
+
+function enrollClinicModal() {
+  alert('🏥 Welcome to Nuzzle Pro Vet Network! Clinics receive #1 Priority Placement on PawAI Suggest Vet, zero booking fees, and direct client triage records.');
+}
+
+// Scanner
 const scanImage = ref('https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&auto=format&fit=crop&q=80');
 
 // Triage
@@ -379,21 +670,21 @@ function generateMagicArt() {
 .ai-scroll-body {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 16px 84px;
+  padding: 10px 12px 84px;
 }
 
 .ai-hero-card {
   position: relative;
   background: linear-gradient(135deg, #1E1B4B, #312E81 50%, #4C1D95);
   border-radius: var(--radius-xl);
-  padding: 18px;
+  padding: 14px 16px;
   color: #fff;
   overflow: hidden;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 10px 25px rgba(49, 46, 129, 0.35);
+  box-shadow: 0 8px 22px rgba(49, 46, 129, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -420,12 +711,12 @@ function generateMagicArt() {
   gap: 5px;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(8px);
-  padding: 3px 9px;
+  padding: 2px 8px;
   border-radius: var(--radius-full);
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 700;
   color: #E9D5FF;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .sparkle-icon {
@@ -434,30 +725,29 @@ function generateMagicArt() {
 
 .ai-hero-title {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 800;
   letter-spacing: -0.01em;
 }
 
 .ai-hero-sub {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #DDD6FE;
-  line-height: 1.35;
-  margin-top: 2px;
+  line-height: 1.3;
+  margin-top: 1px;
 }
 
 .hero-robot-badge {
-  font-size: 32px;
-  position: relative;
-  z-index: 2;
+  font-size: 28px;
 }
 
+/* Tabs */
 .ai-tabs-row {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   overflow-x: auto;
   scrollbar-width: none;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .ai-tabs-row::-webkit-scrollbar {
@@ -465,42 +755,482 @@ function generateMagicArt() {
 }
 
 .ai-tab-pill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 5px;
+  padding: 6px 12px;
   border-radius: var(--radius-full);
   background: var(--bg-card);
-  border: 1.5px solid var(--border-light);
-  font-size: 12.5px;
-  font-weight: 700;
+  border: 1px solid var(--border-light);
   color: var(--ink-secondary);
+  font-size: 11.5px;
+  font-weight: 700;
   white-space: nowrap;
+  cursor: pointer;
   transition: all 0.15s ease;
 }
 
 .ai-tab-pill.active {
-  background: var(--brand-gradient);
-  border-color: transparent;
+  background: linear-gradient(135deg, #7C3AED 0%, #947DEE 100%);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(148, 125, 238, 0.38);
+  border-color: transparent;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
 }
 
-.tab-pane {
+.t-emoji {
+  font-size: 12px;
+}
+
+/* TAB 1: SUGGEST VET STYLES */
+.vet-matcher-hero {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+
+.matcher-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.ai-pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #7C3AED;
+  background: #F3EEFF;
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+.pulse-spark {
+  animation: spin 3s linear infinite;
+}
+
+.pro-priority-tag {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #92400E;
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+}
+
+.matcher-main-title {
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--ink-primary);
+}
+
+.matcher-sub {
+  font-size: 11.5px;
+  color: var(--ink-secondary);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.matcher-filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-light);
+}
+
+.filter-field {
   display: flex;
   flex-direction: column;
+  gap: 3px;
 }
 
-/* Scanner Styles */
-.scanner-card {
+.field-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+
+.field-select {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 11.5px;
+  color: var(--ink-primary);
+  outline: none;
+}
+
+.urgent-toggle-btn {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.urgent-toggle-btn.active {
+  background: #FFE4E6;
+  border-color: #FDA4AF;
+  color: #E11D48;
+}
+
+/* Suggested Vets List */
+.section-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.section-heading {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--ink-primary);
+}
+
+.sort-indicator {
+  font-size: 10px;
+  font-weight: 700;
+  color: #D97706;
+}
+
+.vets-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.suggested-vet-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.suggested-vet-card.pro-priority-card {
+  border: 1.5px solid #FCD34D;
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+}
+
+.pro-partner-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
+  color: #fff;
+  padding: 4px 10px;
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.vet-card-body {
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vet-top-info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.vet-avatar-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border-subtle);
+}
+
+.vet-text-col {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.vet-name-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.vet-doctor-name {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--ink-primary);
+}
+
+.pro-shield-badge {
+  font-size: 8.5px;
+  font-weight: 900;
+  color: #fff;
+  background: #D97706;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.vet-clinic-name {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  font-weight: 600;
+}
+
+.vet-meta-chips {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+}
+
+.meta-chip {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+}
+
+.meta-chip.rating {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.meta-chip.distance {
+  background: var(--bg-card-subtle);
+  color: var(--ink-muted);
+}
+
+.meta-chip.emergency {
+  background: #FFE4E6;
+  color: #E11D48;
+}
+
+/* AI Match Rationale */
+.ai-match-rationale {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3EEFF 100%);
+  border: 1px dashed #DDD6FE;
+  border-radius: 8px;
+  padding: 5px 8px;
+}
+
+:global([data-theme='dark']) .ai-match-rationale {
+  background: rgba(88, 28, 135, 0.25);
+  border-color: rgba(147, 51, 234, 0.4);
+}
+
+.ai-brain-icon {
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.ai-rationale-text {
+  font-size: 10.5px;
+  color: #6D28D9;
+  line-height: 1.25;
+}
+
+:global([data-theme='dark']) .ai-rationale-text {
+  color: #DDD6FE;
+}
+
+.vet-specialties-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.spec-chip {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-secondary);
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+}
+
+.spec-chip.highlighted {
+  background: #F3EEFF;
+  border-color: #C084FC;
+  color: #7C3AED;
+  font-weight: 700;
+}
+
+.vet-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border-light);
+}
+
+.next-slot-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  color: var(--ink-secondary);
+}
+
+.slot-dot {
+  width: 6px;
+  height: 6px;
+  background: #059669;
+  border-radius: 50%;
+}
+
+.vet-actions-btns {
+  display: flex;
+  gap: 5px;
+}
+
+.instant-book-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 5px 10px;
+  border-radius: var(--radius-full);
+}
+
+.clinic-chat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  padding: 5px 8px;
+  border-radius: var(--radius-full);
+}
+
+/* Enroll Card */
+.pro-clinic-enroll-card {
+  margin-top: 14px;
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  border: 1.5px solid #FCD34D;
+  border-radius: 14px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+:global([data-theme='dark']) .pro-clinic-enroll-card {
+  background: rgba(45, 30, 10, 0.6);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.enroll-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.enroll-icon {
+  font-size: 24px;
+}
+
+.enroll-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: #92400E;
+}
+
+:global([data-theme='dark']) .enroll-title {
+  color: #FCD34D;
+}
+
+.enroll-sub {
+  font-size: 10px;
+  color: #B45309;
+  line-height: 1.25;
+}
+
+:global([data-theme='dark']) .enroll-sub {
+  color: #FDE68A;
+}
+
+.enroll-btn {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #92400E;
+  background: #fff;
+  padding: 5px 9px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+:global([data-theme='dark']) .enroll-btn {
+  background: #78350F;
+  color: #FDE68A;
+}
+
+/* Empty Vet State */
+.empty-vet-state {
+  text-align: center;
+  padding: 30px 16px;
+  background: var(--bg-card);
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+}
+
+.empty-emoji {
+  font-size: 36px;
+}
+
+.empty-vet-state h4 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink-primary);
+  margin-top: 6px;
+}
+
+.empty-vet-state p {
+  font-size: 11.5px;
+  color: var(--ink-muted);
+  margin: 4px 0 10px;
+}
+
+.reset-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 11.5px;
+}
+
+/* SCANNER STYLES */
+.scanner-card {
+  padding: 12px;
 }
 
 .scanner-viewport {
   position: relative;
   width: 100%;
-  height: 220px;
-  background: #000;
+  aspect-ratio: 4 / 3;
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--bg-card-subtle);
 }
 
 .scan-preview-img {
@@ -511,582 +1241,567 @@ function generateMagicArt() {
 }
 
 .scan-preview-img.scanning {
-  filter: contrast(1.2) brightness(0.85);
+  filter: brightness(0.8) contrast(1.2);
 }
 
 .scan-laser-line {
   position: absolute;
+  top: 0;
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, transparent, #38BDF8, #818CF8, transparent);
-  box-shadow: 0 0 14px #38BDF8, 0 0 24px #818CF8;
+  background: #A855F7;
+  box-shadow: 0 0 14px #A855F7, 0 0 24px #A855F7;
   animation: laserScan 1.6s ease-in-out infinite alternate;
-  z-index: 10;
 }
 
 @keyframes laserScan {
-  0% { top: 10%; }
-  100% { top: 90%; }
+  0% { top: 0%; }
+  100% { top: 96%; }
 }
 
 .scanning-badge {
   position: absolute;
-  bottom: 14px;
+  bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.75);
-  color: #38BDF8;
-  padding: 6px 14px;
-  border-radius: var(--radius-full);
-  font-size: 11.5px;
-  font-weight: 700;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(56, 189, 248, 0.4);
   display: flex;
   align-items: center;
-  gap: 8px;
-  z-index: 10;
+  gap: 6px;
+  background: rgba(26, 18, 42, 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  backdrop-filter: blur(8px);
 }
 
 .spinner-dot {
   width: 8px;
   height: 8px;
+  border: 2px solid #fff;
+  border-top-color: transparent;
   border-radius: 50%;
-  background: #38BDF8;
-  animation: pulse 1s infinite;
+  animation: spin 0.8s linear infinite;
 }
 
 .scan-prompt-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.35);
   color: #fff;
-  font-size: 12.5px;
+  font-size: 12px;
   font-weight: 700;
   backdrop-filter: blur(2px);
 }
 
 .scanner-actions-bar {
-  padding: 14px;
-  background: var(--bg-card);
+  margin-top: 10px;
 }
 
 .scan-btn {
   width: 100%;
-  background: linear-gradient(135deg, #6366F1, #8B5CF6);
-  padding: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px;
+  border-radius: var(--radius-full);
+  font-size: 12.5px;
+  font-weight: 800;
 }
 
 .scan-results-box {
-  padding: 14px 16px;
+  margin-top: 12px;
+  padding-top: 10px;
   border-top: 1px solid var(--border-light);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .res-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 }
 
 .res-badge {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
+  gap: 5px;
+  font-size: 13px;
   font-weight: 800;
-  color: var(--accent-emerald);
+  color: #059669;
 }
 
 .conf-score {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
   color: var(--ink-muted);
 }
 
-.mood-box {
+.mood-box, .nutrition-box, .funfact-box {
+  font-size: 11.5px;
+  line-height: 1.35;
   background: var(--bg-card-subtle);
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-  font-size: 12px;
-}
-
-.mood-lbl {
-  font-weight: 700;
-  margin-right: 4px;
-}
-
-.observations-list {
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-.obs-title {
-  font-size: 12.5px;
-  font-weight: 700;
-  margin-bottom: 4px;
+  padding: 8px 10px;
+  border-radius: 8px;
 }
 
 .observations-list ul {
   list-style: none;
-  padding-left: 4px;
-}
-
-.nutrition-box {
-  background: #ECFDF5;
-  border: 1px solid #A7F3D0;
-  color: #065F46;
-  padding: 10px 12px;
-  border-radius: var(--radius-md);
-  font-size: 12px;
-}
-
-.nut-lbl {
-  font-weight: 800;
-}
-
-.funfact-box {
-  font-size: 11.5px;
-  color: var(--ink-secondary);
-  background: var(--bg-card-subtle);
-  padding: 8px 12px;
-  border-radius: var(--radius-md);
-}
-
-/* Triage Styles */
-.triage-card {
+  padding: 0;
+  margin: 4px 0 0;
   display: flex;
   flex-direction: column;
-  height: 480px;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--ink-secondary);
 }
 
-.triage-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.doc-avatar-badge {
-  font-size: 24px;
-}
-
-.doc-title {
-  font-size: 14px;
+.obs-title {
+  font-size: 11.5px;
   font-weight: 800;
   color: var(--ink-primary);
 }
 
-.doc-sub {
-  font-size: 10.5px;
-  color: var(--ink-muted);
+.suggest-vet-quick-btn {
+  width: 100%;
+  padding: 8px;
+  font-size: 11.5px;
+  font-weight: 800;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  margin-top: 4px;
 }
 
-.triage-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 14px;
+/* TRIAGE STYLES */
+.triage-card {
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+}
+
+.triage-messages-container {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 4px;
 }
 
 .triage-msg-row {
   display: flex;
+  gap: 8px;
+  align-items: flex-start;
 }
 
 .triage-msg-row.user {
   justify-content: flex-end;
 }
 
-.triage-msg-row.ai {
-  justify-content: flex-start;
-}
-
-.triage-bubble {
-  max-width: 82%;
-  padding: 10px 14px;
-  border-radius: 18px;
+.ai-avatar-tiny {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #F3EEFF;
+  display: grid;
+  place-items: center;
   font-size: 13px;
-  line-height: 1.4;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  flex-shrink: 0;
 }
 
-.triage-bubble.user {
-  background: var(--brand-gradient);
+.msg-bubble {
+  max-width: 80%;
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.triage-msg-row.user .msg-bubble {
+  background: var(--brand-primary);
   color: #fff;
-  box-shadow: 0 2px 8px rgba(148, 125, 238, 0.25);
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 2px;
 }
 
-.triage-bubble.ai {
+.triage-msg-row.ai .msg-bubble {
   background: var(--bg-card-subtle);
   border: 1px solid var(--border-light);
-  color: var(--ink-primary);
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 2px;
 }
 
-.triage-bubble.severity-urgent {
+.msg-bubble.urgent {
   background: #FFF1F2;
-  border: 1.5px solid #F43F5E;
+  border-color: #FDA4AF;
   color: #9F1239;
 }
 
-.urgent-banner {
-  font-size: 10px;
-  font-weight: 800;
-  color: #E11D48;
-  letter-spacing: 0.05em;
-  margin-bottom: 2px;
+.msg-time {
+  display: block;
+  font-size: 9px;
+  opacity: 0.65;
+  margin-top: 2px;
 }
 
-.t-stamp {
-  font-size: 9.5px;
-  align-self: flex-end;
-  opacity: 0.7;
-}
-
-.triage-prompts {
+.quick-prompts-track {
   display: flex;
-  gap: 6px;
+  gap: 5px;
   overflow-x: auto;
-  padding: 8px 12px;
   scrollbar-width: none;
-  background: var(--bg-card-subtle);
-  border-top: 1px solid var(--border-light);
 }
 
-.triage-prompt-chip {
-  flex-shrink: 0;
-  font-size: 11px;
+.prompt-pill {
+  font-size: 10.5px;
   font-weight: 600;
-  padding: 4px 10px;
-  border-radius: var(--radius-full);
-  background: var(--bg-card);
+  padding: 4px 8px;
+  background: var(--bg-card-subtle);
   border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
   color: var(--ink-secondary);
+  cursor: pointer;
 }
 
 .triage-input-bar {
-  padding: 10px 12px;
   display: flex;
-  gap: 8px;
-  background: var(--bg-card);
-  border-top: 1px solid var(--border-light);
+  gap: 6px;
 }
 
-.triage-input {
+.t-input {
   flex: 1;
   background: var(--bg-card-subtle);
   border: 1px solid var(--border-light);
   border-radius: var(--radius-full);
-  padding: 8px 14px;
-  font-size: 13px;
+  padding: 7px 12px;
+  font-size: 12px;
+  color: var(--ink-primary);
   outline: none;
 }
 
 .send-triage-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #6366F1;
-  color: #fff;
-  display: grid;
-  place-items: center;
+  padding: 7px 12px;
+  border-radius: var(--radius-full);
 }
 
-/* Translator Styles */
+/* TRANSLATOR */
 .translator-card {
   padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   text-align: center;
-}
-
-.mic-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
 }
 
-.waveform-container {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  height: 40px;
-}
-
-.wave-bar {
-  width: 4px;
-  height: 10px;
-  background: var(--border-strong);
-  border-radius: 2px;
-  transition: height 0.2s ease;
-}
-
-.waveform-container.listening .wave-bar {
-  background: #6366F1;
-  animation: waveAnim 0.6s infinite alternate;
-}
-
-.waveform-container.listening .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-.waveform-container.listening .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-.waveform-container.listening .wave-bar:nth-child(4) { animation-delay: 0.3s; }
-.waveform-container.listening .wave-bar:nth-child(5) { animation-delay: 0.2s; }
-.waveform-container.listening .wave-bar:nth-child(6) { animation-delay: 0.1s; }
-
-@keyframes waveAnim {
-  0% { height: 8px; }
-  100% { height: 36px; }
-}
-
-.record-circle-btn {
-  width: 72px;
-  height: 72px;
+.translator-pulse-circle {
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  background: var(--brand-gradient);
+  background: rgba(148, 125, 238, 0.15);
+  display: grid;
+  place-items: center;
+  margin-bottom: 12px;
+}
+
+.translator-pulse-circle.listening {
+  animation: pulseMic 1.4s infinite;
+}
+
+@keyframes pulseMic {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(148, 125, 238, 0.5); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 16px rgba(148, 125, 238, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(148, 125, 238, 0); }
+}
+
+.mic-trigger-btn {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7C3AED 0%, #947DEE 100%);
   color: #fff;
   display: grid;
   place-items: center;
-  box-shadow: 0 8px 24px rgba(148, 125, 238, 0.42);
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
+  cursor: pointer;
 }
 
-.record-circle-btn.recording {
-  background: #F43F5E;
-  transform: scale(1.1);
-  box-shadow: 0 8px 24px rgba(244, 63, 94, 0.5);
-}
-
-.mic-status-text {
-  font-size: 12.5px;
+.translator-status {
+  font-size: 12px;
   font-weight: 700;
   color: var(--ink-secondary);
 }
 
-.thought-bubble-result {
-  margin-top: 20px;
-  display: flex;
-  gap: 12px;
-  background: var(--bg-card-subtle);
-  border: 1.5px solid var(--border-light);
-  border-radius: var(--radius-lg);
-  padding: 14px;
+.translation-output-bubble {
+  margin-top: 14px;
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+  border: 1.5px dashed #C084FC;
+  border-radius: 14px;
+  padding: 12px;
   text-align: left;
-  animation: fadeIn 0.3s ease;
 }
 
-.thought-avatar img {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
+.bubble-tag {
+  font-size: 9.5px;
+  font-weight: 900;
+  color: #7C3AED;
 }
 
-.speaker-lbl {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--brand-primary);
-}
-
-.translated-dialogue {
-  font-size: 14px;
-  font-weight: 600;
+.translation-text {
+  font-size: 13px;
+  font-style: italic;
   color: var(--ink-primary);
-  margin: 4px 0 6px;
-  line-height: 1.4;
+  line-height: 1.35;
+  margin-top: 2px;
 }
 
-.emotion-detected {
-  font-size: 11px;
-  color: var(--accent-emerald);
-  font-weight: 700;
-}
-
-/* Matcher Styles */
+/* MATCHER */
 .matcher-card {
-  padding: 16px;
+  padding: 14px;
 }
 
 .matcher-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 800;
+  color: var(--ink-primary);
 }
 
 .matcher-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--ink-muted);
-  margin-bottom: 14px;
 }
 
 .match-vs-row {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  margin-bottom: 16px;
+  margin: 12px 0;
 }
 
 .pet-pick-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
 }
 
 .m-avatar {
-  width: 58px;
-  height: 58px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--border-light);
+  border: 2px solid var(--brand-primary);
 }
 
 .m-name {
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 800;
 }
 
 .m-stat {
-  font-size: 10.5px;
-  color: var(--brand-primary);
+  font-size: 9.5px;
+  color: #7C3AED;
   font-weight: 700;
 }
 
 .vs-badge {
-  font-family: var(--font-display);
-  font-size: 14px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 900;
   background: var(--bg-card-subtle);
-  padding: 6px 12px;
+  border: 1px solid var(--border-light);
+  padding: 4px 8px;
   border-radius: var(--radius-full);
-  color: var(--ink-muted);
 }
 
 .match-gauge-box {
   background: var(--bg-card-subtle);
-  border-radius: var(--radius-lg);
-  padding: 14px;
+  border-radius: 12px;
+  padding: 12px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 14px;
+  gap: 14px;
+  margin-bottom: 12px;
 }
 
 .gauge-ring {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  border: 4px solid var(--accent-emerald);
+  border: 4px solid #059669;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .gauge-percent {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--accent-emerald);
+  font-size: 14px;
+  font-weight: 900;
+  color: #059669;
 }
 
 .gauge-label {
   font-size: 8px;
-  font-weight: 700;
-  text-transform: uppercase;
   color: var(--ink-muted);
 }
 
 .gauge-details {
-  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 11px;
+}
+
+.invite-playdate-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+}
+
+/* PORTRAITS */
+.portrait-card {
+  padding: 14px;
+}
+
+.port-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink-primary);
+}
+
+.port-sub {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.styles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.style-tile {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--border-light);
+  cursor: pointer;
+  position: relative;
+}
+
+.style-tile.active {
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.35);
+}
+
+.style-img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.style-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 6px;
+  text-align: center;
+}
+
+.generate-art-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+}
+
+/* MODAL */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.booking-modal-box {
+  background: var(--bg-card);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 360px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.b-paw {
+  font-size: 40px;
+}
+
+.b-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--ink-primary);
+  margin-top: 4px;
+}
+
+.b-sub {
+  font-size: 12px;
+  color: var(--ink-secondary);
+  margin-top: 4px;
+}
+
+.b-details-card {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 12px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
   font-size: 11.5px;
 }
 
-.g-line {
+.b-line {
   display: flex;
   justify-content: space-between;
 }
 
-.green {
-  color: var(--accent-emerald);
-}
-
-.invite-playdate-btn {
+.full-btn {
   width: 100%;
-  background: linear-gradient(135deg, #10B981, #059669);
-  padding: 10px;
+  padding: 8px;
+  border-radius: var(--radius-full);
 }
 
-/* Portrait Studio */
-.portrait-card {
-  padding: 16px;
-}
-
-.port-title {
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.port-sub {
-  font-size: 12px;
-  color: var(--ink-muted);
-  margin-bottom: 12px;
-}
-
-.styles-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.style-tile {
-  border: 2px solid var(--border-light);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-}
-
-.style-tile.active {
-  border-color: var(--brand-primary);
-  box-shadow: 0 0 0 2px var(--brand-soft);
-}
-
-.style-img {
-  width: 100%;
-  height: 100px;
-  object-fit: cover;
-}
-
-.style-label {
-  padding: 6px 8px;
-  font-size: 11.5px;
-  font-weight: 700;
-  text-align: center;
-  background: var(--bg-card);
-}
-
-.generate-art-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #8B5CF6, #EC4899);
-  padding: 10px;
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 </style>

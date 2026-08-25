@@ -146,14 +146,18 @@
         </div>
       </div>
 
-      <!-- Section 5: Logout & Version -->
+      <!-- Section 5: Switch Role & Logout -->
       <div class="settings-section">
+        <button class="btn-solid switch-role-btn" @click="setTab('auth')">
+          🔄 Switch Account / Sign In as Store or Vet
+        </button>
+
         <button class="btn-outline logout-btn" @click="handleLogout">
           Log Out of Nuzzle
         </button>
 
         <p class="app-version-text">
-          Nuzzle Client v1.0.0 • Built with Vue 3 & Vite
+          Nuzzle Client v1.0.0 • Multi-Role Ecosystem
         </p>
       </div>
     </div>
@@ -162,11 +166,11 @@
 
 <script setup lang="ts">
 import TopBar from '../components/layout/TopBar.vue';
-import { owner, isDarkMode, toggleTheme, setTab, isProModalOpen } from '../stores/appStore';
+import { owner, isDarkMode, toggleTheme, setTab, isProModalOpen, performLogout } from '../stores/appStore';
 
 function handleLogout() {
-  if (confirm('Log out of Nuzzle?')) {
-    setTab('feed');
+  if (confirm('Are you sure you want to log out of Nuzzle?')) {
+    performLogout();
   }
 }
 </script>
@@ -350,12 +354,20 @@ function handleLogout() {
   line-height: 1.35;
 }
 
+.switch-role-btn {
+  width: 100%;
+  padding: 11px;
+  font-size: 12.5px;
+  font-weight: 800;
+  border-radius: var(--radius-full);
+  margin-bottom: 6px;
+}
+
 .logout-btn {
   width: 100%;
   color: var(--accent-rose);
   border-color: #FECDD3;
-  padding: 12px;
-  margin-top: 8px;
+  padding: 10px;
 }
 
 .app-version-text {

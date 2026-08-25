@@ -15,7 +15,9 @@ import type {
   ChatConversation, 
   AppNotification,
   AiScanResult,
-  PetReactionType
+  PetReactionType,
+  UserRole,
+  UserAccount
 } from '../types';
 import { 
   initialOwner, 
@@ -45,6 +47,8 @@ export const activeProfileId = ref<string>('owner_me');
 export const isCommentsModalOpen = ref(false);
 export const activePostForComments = ref<Post | null>(null);
 export const isProModalOpen = ref(false);
+export const isAuthenticated = ref(true);
+export const currentRole = ref<UserRole>('parent');
 
 export const owner = reactive<Owner>({ ...initialOwner });
 export const pets = reactive<Pet[]>([
@@ -662,5 +666,115 @@ export function cancelPro() {
     p.isProMember = false;
   });
 }
+
+// Authentication System (Parent, Store, Vet Clinic)
+export function loginAsRole(role: UserRole, accountDetails?: Partial<UserAccount>) {
+  currentRole.value = role;
+  isAuthenticated.value = true;
+  owner.role = role;
+
+  if (role === 'store') {
+    owner.displayName = accountDetails?.displayName || 'UrbanHound Gear Lab';
+    owner.username = accountDetails?.username || 'urbanhound_official';
+    owner.avatarUrl = accountDetails?.avatarUrl || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200&auto=format&fit=crop&q=80';
+    owner.bio = 'Verified Premium Canine & Feline Gear Workshop • Official Nuzzle Verified Boutique';
+    owner.storeCategory = accountDetails?.storeCategory || 'Pet Gear & Accessories';
+  } else if (role === 'vet') {
+    owner.displayName = accountDetails?.displayName || 'Dr. Sarah Al-Mansoor, DVM';
+    owner.username = accountDetails?.username || 'cascade_emergency_vet';
+    owner.avatarUrl = accountDetails?.avatarUrl || 'https://images.unsplash.com/photo-1594824813584-ea23df1f0d36?w=200&auto=format&fit=crop&q=80';
+    owner.bio = 'Board-Certified Veterinary Surgeon • Cascade 24/7 Emergency & Surgical Hospital';
+    owner.clinicName = accountDetails?.clinicName || 'Cascade 24/7 Animal Hospital';
+  } else {
+    // Parent
+    owner.displayName = accountDetails?.displayName || 'Alex Rivers';
+    owner.username = accountDetails?.username || 'alex_rivers';
+    owner.avatarUrl = accountDetails?.avatarUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80';
+    owner.bio = 'Golden Retriever & Scottish Fold pet parent • Portland, OR 🌲';
+  }
+
+  currentTab.value = 'feed';
+
+  notifications.unshift({
+    id: `notif_auth_${Date.now()}`,
+    type: 'ai_insight',
+    title: `🌟 Signed In as ${role === 'store' ? 'Pet Store' : role === 'vet' ? 'Vet Clinic' : 'Pet Guardian'}`,
+    message: `Welcome, ${owner.displayName}! You are signed in with full access.`,
+    avatarUrl: owner.avatarUrl,
+    timeAgo: 'Just now',
+    isRead: false
+  });
+}
+
+export function registerNewAccount(role: UserRole, data: {
+  displayName: string;
+  username: string;
+  email: string;
+  petName?: string;
+  petSpecies?: string;
+  storeCategory?: string;
+  clinicName?: string;
+  isPro?: boolean;
+}) {
+  currentRole.value = role;
+  isAuthenticated.value = true;
+  owner.role = role;
+  owner.displayName = data.displayName;
+  owner.username = data.username.toLowerCase().replace(/\s+/g, '_');
+
+  if (role === 'store') {
+    owner.avatarUrl = 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=200&auto=format&fit=crop&q=80';
+    owner.bio = `Official Pet Store: ${data.storeCategory || 'Pet Supplies'} • Verified Boutique`;
+    owner.storeCategory = data.storeCategory;
+  } else if (role === 'vet') {
+    owner.avatarUrl = 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=200&auto=format&fit=crop&q=80';
+    owner.bio = `Licensed Veterinary Practice: ${data.clinicName || 'Animal Care Center'} • Verified Clinic`;
+    owner.clinicName = data.clinicName;
+  } else {
+    // Parent
+    owner.avatarUrl = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&auto=format&fit=crop&q=80';
+    owner.bio = `Loving pet parent to ${data.petName || 'Companion'} • Nuzzle Community`;
+    if (data.petName) {
+      pets.unshift({
+        id: `pet_${Date.now()}`,
+        ownerId: owner.id,
+        name: data.petName,
+        species: (data.petSpecies as any) || 'Dog',
+        breed: 'Companion',
+        avatarUrl: data.petSpecies === 'Cat' 
+          ? 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=200&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=200&auto=format&fit=crop&q=80',
+        isAnonymous: false,
+        postsCount: 0,
+        followersCount: 1,
+        aiPersonality: 'Enthusiastic New Companion',
+        energyLevel: 'High Zoomies',
+        isProMember: data.isPro || false
+      });
+    }
+  }
+
+  if (data.isPro) {
+    subscribeToPro('monthly', 'bKash');
+  }
+
+  currentTab.value = 'feed';
+
+  notifications.unshift({
+    id: `notif_welcome_${Date.now()}`,
+    type: 'ai_insight',
+    title: '🎉 Welcome to Nuzzle!',
+    message: `Account created successfully for ${data.displayName} (${role === 'store' ? 'Pet Store' : role === 'vet' ? 'Vet Clinic' : 'Pet Guardian'}).`,
+    avatarUrl: owner.avatarUrl,
+    timeAgo: 'Just now',
+    isRead: false
+  });
+}
+
+export function performLogout() {
+  isAuthenticated.value = false;
+  currentTab.value = 'auth';
+}
+
 
 

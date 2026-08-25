@@ -14,7 +14,8 @@
 
       <!-- Active Screen Viewport -->
       <div class="screen-viewport">
-        <FeedView v-if="currentTab === 'feed'" />
+        <AuthView v-if="currentTab === 'auth'" />
+        <FeedView v-else-if="currentTab === 'feed'" />
         <ExploreView v-else-if="currentTab === 'explore'" />
         <PawAIView v-else-if="currentTab === 'ai'" />
         <ReelsView v-else-if="currentTab === 'reels'" />
@@ -30,7 +31,7 @@
       </div>
 
       <!-- Bottom Navigation -->
-      <BottomNav v-if="currentTab !== 'reels'" />
+      <BottomNav v-if="currentTab !== 'reels' && currentTab !== 'auth'" />
 
       <!-- Overlays & Modals -->
       <StoryViewerModal />
@@ -51,6 +52,7 @@ import CreateSheetModal from './components/create/CreateSheetModal.vue';
 import ProUpgradeModal from './components/subscription/ProUpgradeModal.vue';
 
 // Views
+import AuthView from './views/AuthView.vue';
 import FeedView from './views/FeedView.vue';
 import ExploreView from './views/ExploreView.vue';
 import PawAIView from './views/PawAIView.vue';

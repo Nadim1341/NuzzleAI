@@ -1,4 +1,25 @@
-export type TabType = 'feed' | 'explore' | 'ai' | 'reels' | 'activity' | 'profile' | 'health' | 'vets' | 'adoption' | 'market' | 'lostfound' | 'messages' | 'settings';
+export type TabType = 'feed' | 'explore' | 'ai' | 'reels' | 'activity' | 'profile' | 'health' | 'vets' | 'adoption' | 'market' | 'lostfound' | 'messages' | 'settings' | 'auth';
+
+export type UserRole = 'parent' | 'store' | 'vet';
+
+export interface UserAccount {
+  id: string;
+  role: UserRole;
+  email: string;
+  displayName: string;
+  username: string;
+  avatarUrl: string;
+  isVerified?: boolean;
+  isProMember?: boolean;
+  storeCategory?: string;
+  storeAddress?: string;
+  businessLicense?: string;
+  clinicName?: string;
+  doctorName?: string;
+  medicalLicense?: string;
+  specialties?: string[];
+  phone?: string;
+}
 
 export interface Owner {
   id: string;
@@ -6,6 +27,7 @@ export interface Owner {
   displayName: string;
   avatarUrl: string;
   bio?: string;
+  role?: UserRole;
   isAnonymous: boolean;
   isPrivate: boolean;
   notifyLikes: boolean;
@@ -16,6 +38,8 @@ export interface Owner {
   isProMember?: boolean;
   proPlan?: string;
   proRenewalDate?: string;
+  storeCategory?: string;
+  clinicName?: string;
 }
 
 export interface Pet {

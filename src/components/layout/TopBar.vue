@@ -1,16 +1,17 @@
 <template>
   <header class="app-header clean-topbar">
-    <div class="header-left">
+    <!-- Left Section: Back Button or Brand Logo -->
+    <div class="topbar-left">
       <button v-if="showBackButton" class="back-btn" @click="goBack" title="Back">
-        <ArrowLeft :size="20" />
+        <ArrowLeft :size="19" />
       </button>
       
       <div v-else class="brand-badge" @click="setTab('feed')">
-        <NuzzleLogo :size="28" />
+        <NuzzleLogo :size="26" />
         <span class="brand-text">Nuzzle</span>
       </div>
 
-      <!-- Quick Active Pet Perspective Switcher Pill -->
+      <!-- Quick Active Pet Perspective Switcher Pill on Feed -->
       <button 
         v-if="!showBackButton && pets.length > 0" 
         class="pet-perspective-pill"
@@ -23,13 +24,14 @@
       </button>
     </div>
 
-    <!-- Center Title (If subview) -->
-    <div v-if="showBackButton && title" class="header-center-title">
-      <h3>{{ title }}</h3>
+    <!-- Center / Inline Title Section (Flex-bounded: Never Overlaps!) -->
+    <div v-if="showBackButton && title" class="topbar-title-container">
+      <h3 class="topbar-title-text">{{ title }}</h3>
     </div>
+    <div v-else class="topbar-spacer"></div>
 
-    <!-- Right Actions -->
-    <div class="header-right-actions">
+    <!-- Right Action Buttons (Always Fixed Width & Spaced) -->
+    <div class="topbar-right-actions">
       <!-- 🚨 Emergency 5-Mile Lost & Found Radar -->
       <button 
         class="header-action-btn emergency-btn" 
@@ -37,7 +39,7 @@
         @click="setTab('lostfound')" 
         title="5-Mile Lost & Found Radar"
       >
-        <AlertTriangle :size="18" />
+        <AlertTriangle :size="17" />
         <span class="pulse-dot"></span>
       </button>
 
@@ -48,7 +50,7 @@
         @click="setTab('messages')" 
         title="Messages"
       >
-        <MessageCircle :size="19" />
+        <MessageCircle :size="18" />
         <span v-if="unreadMessagesCount > 0" class="unread-pill">{{ unreadMessagesCount }}</span>
       </button>
 
@@ -59,7 +61,7 @@
         @click="setTab('activity')" 
         title="Notifications"
       >
-        <Bell :size="19" />
+        <Bell :size="18" />
         <span v-if="unreadNotificationsCount > 0" class="unread-dot"></span>
       </button>
     </div>
@@ -121,33 +123,36 @@ function goBack() {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 56px;
-  padding: 0 16px;
+  height: 52px;
+  padding: 0 10px 0 12px;
   background: var(--bg-card);
   border-bottom: 1px solid var(--border-light);
   position: sticky;
   top: 0;
   z-index: 50;
   backdrop-filter: blur(16px);
+  gap: 8px;
 }
 
-.header-left {
+/* Left side */
+.topbar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .brand-badge {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   user-select: none;
 }
 
 .brand-text {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 19px;
   font-weight: 800;
   background: var(--brand-gradient);
   -webkit-background-clip: text;
@@ -158,17 +163,17 @@ function goBack() {
 .pet-perspective-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: linear-gradient(135deg, #F3EEFF 0%, #FAF5FF 100%);
   border: 1.5px solid #DDD6FE;
-  padding: 3px 8px 3px 6px;
+  padding: 2px 7px 2px 5px;
   border-radius: var(--radius-full);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   color: #6D28D9;
   cursor: pointer;
-  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(148, 125, 238, 0.12);
+  transition: all 0.18s ease;
+  box-shadow: 0 1px 4px rgba(148, 125, 238, 0.1);
 }
 
 .pet-perspective-pill:hover {
@@ -178,47 +183,31 @@ function goBack() {
 }
 
 .perspective-emoji {
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .perspective-name {
-  max-width: 60px;
+  max-width: 55px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .perspective-badge {
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 800;
   text-transform: uppercase;
   background: #7C3AED;
   color: #fff;
-  padding: 1px 4px;
-  border-radius: 4px;
+  padding: 1px 3px;
+  border-radius: 3px;
   letter-spacing: 0.02em;
-}
-
-.header-center-title {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: 55%;
-  text-align: center;
-}
-
-.header-center-title h3 {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--ink-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .back-btn {
   color: var(--ink-primary);
-  padding: 6px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -229,16 +218,39 @@ function goBack() {
   background: var(--bg-card-subtle);
 }
 
-.header-right-actions {
+/* Center / Title bounded in flex */
+.topbar-title-container {
+  flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 6px;
+}
+
+.topbar-title-text {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--ink-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-spacer {
+  flex: 1;
+}
+
+/* Right side actions */
+.topbar-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
 }
 
 .header-action-btn {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: grid;
   place-items: center;
@@ -266,26 +278,26 @@ function goBack() {
 
 .pulse-dot {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 7px;
-  height: 7px;
+  top: 5px;
+  right: 5px;
+  width: 6px;
+  height: 6px;
   background: #E11D48;
   border-radius: 50%;
-  border: 1.5px solid var(--bg-card);
+  border: 1px solid var(--bg-card);
 }
 
 .unread-pill {
   position: absolute;
-  top: 4px;
-  right: 3px;
+  top: 3px;
+  right: 2px;
   background: var(--brand-primary);
   color: #fff;
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 800;
-  min-width: 15px;
-  height: 15px;
-  padding: 0 3px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 2px;
   border-radius: var(--radius-full);
   display: grid;
   place-items: center;
@@ -294,12 +306,12 @@ function goBack() {
 
 .unread-dot {
   position: absolute;
-  top: 7px;
-  right: 8px;
-  width: 7px;
-  height: 7px;
+  top: 6px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
   background: var(--brand-primary);
   border-radius: 50%;
-  border: 1.5px solid var(--bg-card);
+  border: 1px solid var(--bg-card);
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="marketplace-view">
-    <TopBar title="🛍️ Pet Supplies & Gear Market" />
+    <TopBar title="🛍️ Pet Marketplace" />
 
     <div class="market-scroll-body">
       <!-- 1. Search & Action Row -->

@@ -31,183 +31,380 @@
         </button>
       </div>
 
-      <!-- TAB 1: SUGGEST VET (AI PRIORITY MATCH ENGINE) -->
+      <!-- TAB 1: SUGGEST BEST-FIT VET (USER POV + PRO PRIORITY ENGINE) -->
       <div v-if="activeAiTab === 'suggest_vet'" class="tab-pane">
-        <!-- Pro Priority Explanation Banner -->
-        <div class="vet-matcher-hero card-item">
-          <div class="matcher-header-row">
-            <div class="ai-pulse-badge">
-              <span class="pulse-spark">✨</span>
-              <span>AI Priority Matcher</span>
+        <!-- 1. Pet Condition Intake Form (User POV) -->
+        <div class="condition-intake-card card-item">
+          <div class="intake-header">
+            <div class="ai-pulse-pill">
+              <Sparkles :size="13" class="spin-icon" />
+              <span>AI Clinical Matcher</span>
             </div>
-            <span class="pro-priority-tag">⭐ Pro Subscribers Ranked #1</span>
+            <span class="pro-ranking-indicator">⭐ Pro Partner Vets Ranked #1</span>
           </div>
-          <h3 class="matcher-main-title">Suggest Best-Fit Vet for Your Pet</h3>
-          <p class="matcher-sub">
-            PawAI analyzes your pet's species, symptoms, and urgency to find qualified clinics. Clinics with <strong>Nuzzle Pro Partner Subscriptions</strong> are prioritized at the top.
+
+          <h3 class="intake-title">Find the Best-Fit Vet for Your Pet</h3>
+          <p class="intake-sub">
+            Tell PawAI about your pet's current condition or medical need. Our AI will analyze your pet's species, symptoms, and urgency to find qualified clinics, prioritizing <strong>Verified Pro Partner Clinics</strong> at the top.
           </p>
 
-          <!-- Criteria Selection Form -->
-          <div class="matcher-filters-grid">
-            <!-- 1. Select Pet -->
-            <div class="filter-field">
-              <label class="field-label">🐾 Target Pet</label>
-              <select v-model="selectedPetId" class="field-select">
-                <option v-for="p in pets" :key="p.id" :value="p.id">
-                  {{ p.name }} ({{ p.species }} - {{ p.breed || 'Companion' }})
-                </option>
-              </select>
+          <!-- Step A: Select Pet -->
+          <div class="form-row pet-selection-row">
+            <label class="row-label">1. Select Pet</label>
+            <div class="pets-picker-strip">
+              <div 
+                v-for="p in pets" 
+                :key="p.id"
+                class="pet-chip-option"
+                :class="{ active: selectedPetId === p.id }"
+                @click="selectedPetId = p.id"
+              >
+                <img :src="p.avatarUrl" :alt="p.name" class="p-chip-avatar" />
+                <div class="p-chip-info">
+                  <span class="p-chip-name">{{ p.name }}</span>
+                  <span class="p-chip-species">{{ p.species }} • {{ p.breed || 'Companion' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step B: Add Pet Condition & Symptoms -->
+          <div class="form-row condition-input-row">
+            <label class="row-label">2. Pet Condition & Symptoms</label>
+            <div class="condition-input-wrapper">
+              <input 
+                v-model="customConditionText" 
+                type="text" 
+                placeholder="Describe condition e.g., Limping on front paw, severe ear scratching..." 
+                class="condition-text-field"
+              />
+              <button 
+                v-if="customConditionText" 
+                class="clear-cond-btn" 
+                @click="customConditionText = ''"
+              >
+                ✕
+              </button>
             </div>
 
-            <!-- 2. Medical Concern / Specialty -->
-            <div class="filter-field">
-              <label class="field-label">🩺 Medical Need / Specialty</label>
-              <select v-model="selectedMedicalNeed" class="field-select">
-                <option value="All">All Routine & Wellness Needs</option>
-                <option value="Emergency Surgery">🚨 Emergency Trauma & Surgery (24/7)</option>
-                <option value="Dermatology & Allergies">🌿 Skin Itching, Allergies & Dermatology</option>
-                <option value="Dental Scaling">🦷 Dental Scaling & Oral Surgery</option>
-                <option value="Orthopedics & Joint Care">🦴 Joint Therapy, Limping & Orthopedics</option>
-                <option value="Vaccinations">💉 Core Vaccines & Microchipping</option>
-                <option value="Avian Medicine">🦜 Avian & Exotic Pet Specialization</option>
-                <option value="Geriatric Care">👴 Senior & Geriatric Pet Wellness</option>
-              </select>
+            <!-- Quick Preset Condition Chips -->
+            <div class="presets-label-row">
+              <span class="presets-hint">Or tap common conditions:</span>
+            </div>
+            <div class="condition-presets-track">
+              <button 
+                v-for="preset in conditionPresets" 
+                :key="preset.label"
+                type="button"
+                class="preset-chip"
+                :class="{ active: selectedConditionKey === preset.key }"
+                @click="applyConditionPreset(preset)"
+              >
+                <span>{{ preset.emoji }}</span>
+                <span>{{ preset.label }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Step C: Medical Urgency & Distance -->
+          <div class="form-row grid-2-col">
+            <div class="filter-col">
+              <label class="row-label">3. Urgency Level</label>
+              <div class="urgency-selector">
+                <button 
+                  type="button" 
+                  class="urg-btn"
+                  :class="{ active: !isEmergencyUrgent }"
+                  @click="isEmergencyUrgent = false"
+                >
+                  🟢 Standard Care
+                </button>
+                <button 
+                  type="button" 
+                  class="urg-btn emergency"
+                  :class="{ active: isEmergencyUrgent }"
+                  @click="isEmergencyUrgent = true"
+                >
+                  🚨 24/7 Emergency
+                </button>
+              </div>
             </div>
 
-            <!-- 3. Distance Radius -->
-            <div class="filter-field">
-              <label class="field-label">📍 Distance Radius</label>
-              <select v-model="selectedMaxDistance" class="field-select">
+            <div class="filter-col">
+              <label class="row-label">4. Max Distance Radius</label>
+              <select v-model="selectedMaxDistance" class="distance-dropdown">
                 <option :value="5">Within 5 Miles</option>
                 <option :value="10">Within 10 Miles</option>
                 <option :value="25">Within 25 Miles</option>
                 <option :value="999">Any Distance</option>
               </select>
             </div>
+          </div>
 
-            <!-- 4. Emergency Urgency Toggle -->
-            <div class="filter-field emergency-toggle-field" :class="{ urgent: isEmergencyUrgent }">
-              <label class="field-label">⚡ Urgent Triage</label>
-              <button 
-                type="button" 
-                class="urgent-toggle-btn"
-                :class="{ active: isEmergencyUrgent }"
-                @click="isEmergencyUrgent = !isEmergencyUrgent"
-              >
-                <span>{{ isEmergencyUrgent ? '🚨 24/7 Emergency Mode' : 'Standard Booking' }}</span>
-              </button>
+          <!-- Step D: Big Analyze Action CTA -->
+          <button 
+            class="btn-solid run-ai-analysis-btn"
+            :disabled="isAnalyzingCondition"
+            @click="runClinicalAnalysis"
+          >
+            <Sparkles :size="16" />
+            <span>{{ isAnalyzingCondition ? 'AI Analyzing Clinical Criteria...' : '🔍 Analyze Condition & Match Best-Fit Vets' }}</span>
+          </button>
+        </div>
+
+        <!-- 2. Live AI Clinical Diagnostic & Cross-Referencing Visualizer -->
+        <div v-if="isAnalyzingCondition" class="ai-analyzing-card card-item">
+          <div class="analyzing-header">
+            <div class="scanning-radar-pulse"></div>
+            <h4 class="analyzing-title">PawAI Clinical Verification Engine Active</h4>
+          </div>
+
+          <div class="stepped-analysis-list">
+            <div class="step-item" :class="{ done: analysisProgress >= 30, active: analysisProgress < 30 }">
+              <span class="step-num">1</span>
+              <span class="step-desc">Analyzing symptom pathology for {{ activeTargetPet.name }} ({{ activeTargetPet.species }})...</span>
             </div>
+
+            <div class="step-item" :class="{ done: analysisProgress >= 70, active: analysisProgress >= 30 && analysisProgress < 70 }">
+              <span class="step-num">2</span>
+              <span class="step-desc">Cross-referencing {{ activeTargetPet.species }} clearance & medical credentials across all clinics...</span>
+            </div>
+
+            <div class="step-item" :class="{ done: analysisProgress >= 100, active: analysisProgress >= 70 }">
+              <span class="step-num">3</span>
+              <span class="step-desc">Strict criteria verified! Prioritizing Nuzzle Pro Partner Clinics to Rank #1...</span>
+            </div>
+          </div>
+
+          <div class="progress-bar-track">
+            <div class="progress-bar-fill" :style="{ width: `${analysisProgress}%` }"></div>
           </div>
         </div>
 
-        <!-- Matched Vets Results List -->
-        <div class="suggested-vets-section">
-          <div class="section-title-row">
-            <h4 class="section-heading">
-              🏥 Matched Vets ({{ suggestedVetsList.length }})
-            </h4>
-            <span class="sort-indicator">
-              ⚡ Sorted by Pro Partner Priority & Criteria Match
-            </span>
+        <!-- 3. Matched Results Breakdown (Strict Clinical Fit + Pro Priority) -->
+        <div v-else-if="hasRunAnalysis" class="analysis-results-wrapper">
+          <!-- Summary Header -->
+          <div class="results-summary-card">
+            <div class="sum-badge-row">
+              <span class="sum-status-badge">✅ Clinical Verification Complete</span>
+              <span class="sum-count-pill">{{ totalStrictMatchesCount }} Clinics Qualified</span>
+            </div>
+            <p class="sum-condition-text">
+              Target Pet: <strong>{{ activeTargetPet.name }} ({{ activeTargetPet.species }})</strong> • Condition: <em>"{{ activeConditionDisplayName }}"</em>
+            </p>
+            <div class="sum-priority-banner">
+              ⭐ <strong>Pro Partner Ranking:</strong> Vets with Nuzzle Pro Partner Subscriptions are ranked at the top of your results.
+            </div>
           </div>
 
-          <div v-if="suggestedVetsList.length > 0" class="vets-cards-list">
-            <div 
-              v-for="(vet, idx) in suggestedVetsList" 
-              :key="vet.id"
-              class="suggested-vet-card"
-              :class="{ 'pro-priority-card': vet.isProSubscriber }"
-            >
-              <!-- Pro Priority Header Badge -->
-              <div v-if="vet.isProSubscriber" class="pro-partner-ribbon">
-                <span class="ribbon-star">🌟</span>
-                <span class="ribbon-text">NUZZLE PRO PRIORITY PARTNER • TOP MATCH #{{ idx + 1 }}</span>
+          <!-- GROUP 1: Verified Pro Partner Clinics (TOP PRIORITY #1) -->
+          <div v-if="proMatchedVets.length > 0" class="vets-group pro-group">
+            <div class="group-header">
+              <div class="group-title-row">
+                <span class="group-crown">👑</span>
+                <h4 class="group-title">Nuzzle Pro Partner Best-Fit Clinics (Priority #1)</h4>
               </div>
+              <span class="group-tag gold">Top Match ({{ proMatchedVets.length }})</span>
+            </div>
 
-              <div class="vet-card-body">
-                <div class="vet-top-info-row">
-                  <img :src="vet.avatarUrl" :alt="vet.name" class="vet-avatar-img" />
+            <div class="vets-cards-list">
+              <div 
+                v-for="(vet, idx) in proMatchedVets" 
+                :key="vet.id"
+                class="suggested-vet-card pro-card-highlight"
+              >
+                <!-- Top Ribbon -->
+                <div class="pro-partner-ribbon">
+                  <span class="ribbon-star">🌟</span>
+                  <span class="ribbon-text">NUZZLE PRO PRIORITY PARTNER • TOP MATCH #{{ idx + 1 }}</span>
+                </div>
 
-                  <div class="vet-text-col">
-                    <div class="vet-name-row">
-                      <h4 class="vet-doctor-name">{{ vet.name }}</h4>
-                      <span v-if="vet.isProSubscriber" class="pro-shield-badge" title="Verified Pro Subscriber">
-                        ✓ PRO
-                      </span>
-                    </div>
+                <div class="vet-card-body">
+                  <div class="vet-top-info-row">
+                    <img :src="vet.avatarUrl" :alt="vet.name" class="vet-avatar-img gold-ring" />
 
-                    <span class="vet-clinic-name">{{ vet.clinicName }}</span>
+                    <div class="vet-text-col">
+                      <div class="vet-name-row">
+                        <h4 class="vet-doctor-name">{{ vet.name }}</h4>
+                        <span class="pro-shield-badge">✓ PRO PARTNER</span>
+                      </div>
 
-                    <div class="vet-meta-chips">
-                      <span class="meta-chip rating">★ {{ vet.rating }} ({{ vet.reviewsCount }})</span>
-                      <span class="meta-chip distance">📍 {{ vet.distanceMiles || 1.5 }} mi away</span>
-                      <span v-if="vet.emergencyCare" class="meta-chip emergency">🚨 24/7 ICU</span>
+                      <span class="vet-clinic-name">{{ vet.clinicName }}</span>
+
+                      <div class="vet-meta-chips">
+                        <span class="meta-chip rating">★ {{ vet.rating }} ({{ vet.reviewsCount }})</span>
+                        <span class="meta-chip distance">📍 {{ vet.distanceMiles || 1.2 }} mi away</span>
+                        <span v-if="vet.emergencyCare" class="meta-chip emergency">🚨 24/7 ICU</span>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <!-- AI Match Rationale Badge -->
-                <div class="ai-match-rationale">
-                  <span class="ai-brain-icon">🧠</span>
-                  <span class="ai-rationale-text">
-                    <strong>PawAI Match:</strong>
-                    {{ getAiMatchReason(vet) }}
-                  </span>
-                </div>
-
-                <!-- Specialties Chips -->
-                <div class="vet-specialties-track">
-                  <span 
-                    v-for="spec in vet.specialties" 
-                    :key="spec"
-                    class="spec-chip"
-                    :class="{ highlighted: isSpecialtyHighlighted(spec) }"
-                  >
-                    {{ spec }}
-                  </span>
-                </div>
-
-                <!-- Available Slot & Action Buttons -->
-                <div class="vet-card-footer">
-                  <div class="next-slot-pill">
-                    <span class="slot-dot"></span>
-                    <span>Next Open: <strong>Tomorrow at 11:00 AM</strong></span>
+                  <!-- AI Diagnostic Match Rationale -->
+                  <div class="ai-match-rationale pro-rationale">
+                    <span class="ai-brain-icon">🧠</span>
+                    <div class="ai-rationale-col">
+                      <span class="ai-match-score">99% Clinical Criteria Match</span>
+                      <p class="ai-rationale-text">
+                        {{ getDetailedMatchRationale(vet, true) }}
+                      </p>
+                    </div>
                   </div>
 
-                  <div class="vet-actions-btns">
-                    <button class="btn-solid instant-book-btn" @click="handleBookSlot(vet)">
-                      <Calendar :size="14" />
-                      <span>Book Slot</span>
-                    </button>
-                    
-                    <button class="btn-outline clinic-chat-btn" @click="contactClinic(vet)">
-                      <Send :size="13" />
-                      <span>Chat Clinic</span>
-                    </button>
+                  <!-- Specialties Chips -->
+                  <div class="vet-specialties-track">
+                    <span 
+                      v-for="spec in vet.specialties" 
+                      :key="spec"
+                      class="spec-chip"
+                      :class="{ highlighted: isSpecialtyRelevant(spec) }"
+                    >
+                      {{ spec }}
+                    </span>
+                  </div>
+
+                  <!-- Card Footer Actions -->
+                  <div class="vet-card-footer">
+                    <div class="next-slot-pill">
+                      <span class="slot-dot"></span>
+                      <span>Next Available: <strong>Tomorrow at 11:00 AM</strong></span>
+                    </div>
+
+                    <div class="vet-actions-btns">
+                      <button class="btn-solid instant-book-btn pro-book" @click="handleBookSlot(vet)">
+                        <Calendar :size="13" />
+                        <span>Book Slot</span>
+                      </button>
+                      <button class="btn-outline clinic-chat-btn" @click="contactClinic(vet)">
+                        <Send :size="13" />
+                        <span>Chat Clinic</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Empty Fallback -->
-          <div v-else class="empty-vet-state">
+          <!-- GROUP 2: Other Clinically Qualified Clinics (Standard Placement) -->
+          <div v-if="standardMatchedVets.length > 0" class="vets-group standard-group">
+            <div class="group-header">
+              <div class="group-title-row">
+                <span class="group-icon">🏥</span>
+                <h4 class="group-title">Other Clinically Qualified Vets</h4>
+              </div>
+              <span class="group-tag">Standard Placement ({{ standardMatchedVets.length }})</span>
+            </div>
+
+            <div class="vets-cards-list">
+              <div 
+                v-for="vet in standardMatchedVets" 
+                :key="vet.id"
+                class="suggested-vet-card standard-card"
+              >
+                <div class="vet-card-body">
+                  <div class="vet-top-info-row">
+                    <img :src="vet.avatarUrl" :alt="vet.name" class="vet-avatar-img" />
+
+                    <div class="vet-text-col">
+                      <div class="vet-name-row">
+                        <h4 class="vet-doctor-name">{{ vet.name }}</h4>
+                        <span class="standard-verified-badge">✓ Verified</span>
+                      </div>
+
+                      <span class="vet-clinic-name">{{ vet.clinicName }}</span>
+
+                      <div class="vet-meta-chips">
+                        <span class="meta-chip rating">★ {{ vet.rating }} ({{ vet.reviewsCount }})</span>
+                        <span class="meta-chip distance">📍 {{ vet.distanceMiles || 3.5 }} mi</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- AI Rationale -->
+                  <div class="ai-match-rationale standard-rationale">
+                    <span class="ai-brain-icon">🩺</span>
+                    <div class="ai-rationale-col">
+                      <span class="ai-match-score">92% Clinical Fit</span>
+                      <p class="ai-rationale-text">
+                        {{ getDetailedMatchRationale(vet, false) }}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div class="vet-specialties-track">
+                    <span 
+                      v-for="spec in vet.specialties" 
+                      :key="spec"
+                      class="spec-chip"
+                      :class="{ highlighted: isSpecialtyRelevant(spec) }"
+                    >
+                      {{ spec }}
+                    </span>
+                  </div>
+
+                  <div class="vet-card-footer">
+                    <div class="next-slot-pill">
+                      <span class="slot-dot"></span>
+                      <span>Next Open: <strong>Tomorrow at 02:30 PM</strong></span>
+                    </div>
+
+                    <div class="vet-actions-btns">
+                      <button class="btn-solid instant-book-btn" @click="handleBookSlot(vet)">
+                        <Calendar :size="13" />
+                        <span>Book Slot</span>
+                      </button>
+                      <button class="btn-outline clinic-chat-btn" @click="contactClinic(vet)">
+                        <Send :size="13" />
+                        <span>Chat Clinic</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty Fallback If Zero Matches -->
+          <div v-if="totalStrictMatchesCount === 0" class="empty-vet-state">
             <span class="empty-emoji">🩺</span>
-            <h4>No clinics match all selected filters</h4>
-            <p>Try widening your distance radius or changing the medical specialty.</p>
-            <button class="btn-solid reset-btn" @click="resetVetFilters">
-              Reset Filters
+            <h4>No Clinics Matched Strict Clinical Criteria</h4>
+            <p>None of the registered clinics handle this exact species or emergency level within your chosen distance.</p>
+            <button class="btn-solid reset-btn" @click="resetIntakeFilters">
+              Reset Filters & Try Again
             </button>
           </div>
 
-          <!-- Pro Vet Clinic Subscription Promotion -->
+          <!-- Section 4: Strict Clinical Safety Exclusions Accordion -->
+          <div v-if="excludedVetsList.length > 0" class="excluded-clinics-card">
+            <div class="ex-header" @click="isExcludedOpen = !isExcludedOpen">
+              <div class="ex-title-left">
+                <span class="shield-ex-icon">🛡️</span>
+                <span class="ex-title">Strict Medical Safety Filter ({{ excludedVetsList.length }} Excluded)</span>
+              </div>
+              <span class="ex-toggle-indicator">{{ isExcludedOpen ? '▲ Hide' : '▼ View Safety Exclusions' }}</span>
+            </div>
+
+            <div v-if="isExcludedOpen" class="ex-body">
+              <p class="ex-desc">
+                PawAI strictly verified clinical criteria before ranking. The following clinics were safely filtered out:
+              </p>
+              <div class="ex-items-list">
+                <div v-for="ex in excludedVetsList" :key="ex.vet.id" class="ex-item">
+                  <span class="ex-name">🏥 {{ ex.vet.clinicName }}</span>
+                  <span class="ex-reason">❌ {{ ex.reason }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pro Vet Practice Enrollment Banner -->
           <div class="pro-clinic-enroll-card" @click="enrollClinicModal">
             <div class="enroll-left">
               <span class="enroll-icon">🏥⭐</span>
               <div>
-                <h4 class="enroll-title">Are you a Veterinary Practice or Hospital?</h4>
+                <h4 class="enroll-title">Are you a Veterinary Clinic or Animal Hospital?</h4>
                 <p class="enroll-sub">
-                  Join the <strong>Nuzzle Pro Partner Network ($49/mo)</strong> for #1 Priority Placement on PawAI Suggest Vet & Direct In-App Bookings.
+                  Join the <strong>Nuzzle Pro Partner Network ($49/mo)</strong> for #1 Priority Placement on PawAI Suggest Vet & direct client triage logs.
                 </p>
               </div>
             </div>
@@ -227,7 +424,6 @@
               :class="{ scanning: isAiScanning }"
             />
 
-            <!-- Scan Laser Animation Overlay -->
             <div v-if="isAiScanning" class="scan-laser-line"></div>
             
             <div v-if="isAiScanning" class="scanning-badge">
@@ -446,7 +642,7 @@
           </div>
           <div class="b-line">
             <span>Pet:</span>
-            <strong>{{ targetPet?.name || 'Waffles' }}</strong>
+            <strong>{{ activeTargetPet.name }}</strong>
           </div>
           <div class="b-line">
             <span>Location:</span>
@@ -489,106 +685,217 @@ const aiTabs = [
   { id: 'portraits', label: 'Magic Studio', emoji: '🎨' }
 ];
 
-// SUGGEST VET CRITERIA STATE
+// SUGGEST VET INTAKE STATE
 const selectedPetId = ref(pets[0]?.id || 'pet_1');
-const selectedMedicalNeed = ref('All');
-const selectedMaxDistance = ref(15);
+const customConditionText = ref('Limping on right front paw after park fetch');
+const selectedConditionKey = ref<string>('limping');
 const isEmergencyUrgent = ref(false);
+const selectedMaxDistance = ref(25);
+
+// Analysis Visualizer State
+const isAnalyzingCondition = ref(false);
+const analysisProgress = ref(0);
+const hasRunAnalysis = ref(true);
+const isExcludedOpen = ref(false);
 const bookedVetAppointment = ref<Vet | null>(null);
 
-const targetPet = computed(() => {
+const conditionPresets = [
+  { key: 'limping', emoji: '🐾', label: 'Paw Limping / Joint Injury', query: 'Limping on front paw, joint pain', category: 'Orthopedics & Joint Care' },
+  { key: 'poison', emoji: '🍫', label: 'Ate Chocolate / Toxin (Urgent)', query: 'Accidentally ingested dark chocolate', category: 'Emergency Surgery', isUrgent: true },
+  { key: 'itching', emoji: '🌿', label: 'Skin Itching / Hot Spots', query: 'Severe itching, red belly & ear shaking', category: 'Dermatology & Allergies' },
+  { key: 'dental', emoji: '🦷', label: 'Tartar / Bad Breath', query: 'Bad breath, tartar scaling needed', category: 'Dental Scaling' },
+  { key: 'avian', emoji: '🦜', label: 'Feather Plucking / Beak', query: 'Feather plucking, lethargic avian', category: 'Avian Medicine' },
+  { key: 'vaccine', emoji: '💉', label: 'Routine Core Vaccines', query: 'Annual wellness checkup and rabies vaccine', category: 'Vaccinations' }
+];
+
+const activeTargetPet = computed(() => {
   return pets.find(p => p.id === selectedPetId.value) || pets[0];
 });
 
-// SUGGEST VET AI PRIORITY ALGORITHM
-const suggestedVetsList = computed(() => {
-  const currentPet = targetPet.value;
-  const petSpecies = currentPet?.species || 'Dog';
+const activeConditionDisplayName = computed(() => {
+  if (customConditionText.value.trim()) return customConditionText.value;
+  const preset = conditionPresets.find(p => p.key === selectedConditionKey.value);
+  return preset ? preset.label : 'Routine Wellness & Health Assessment';
+});
 
-  return vets
-    .filter(vet => {
-      // 1. Criteria Match: Pet Species Compatibility
-      if (vet.acceptedSpecies && !vet.acceptedSpecies.includes(petSpecies)) {
-        return false;
+function applyConditionPreset(preset: typeof conditionPresets[0]) {
+  selectedConditionKey.value = preset.key;
+  customConditionText.value = preset.query;
+  if (preset.isUrgent) {
+    isEmergencyUrgent.value = true;
+  }
+}
+
+function runClinicalAnalysis() {
+  isAnalyzingCondition.value = true;
+  analysisProgress.value = 10;
+  hasRunAnalysis.value = true;
+
+  const interval = setInterval(() => {
+    analysisProgress.value += 30;
+    if (analysisProgress.value >= 100) {
+      clearInterval(interval);
+      setTimeout(() => {
+        isAnalyzingCondition.value = false;
+      }, 350);
+    }
+  }, 350);
+}
+
+// STRICT CLINICAL FILTERING ENGINE
+interface EvaluatedVet {
+  vet: Vet;
+  matches: boolean;
+  exclusionReason?: string;
+}
+
+const evaluatedVetsList = computed<EvaluatedVet[]>(() => {
+  const currentPet = activeTargetPet.value;
+  const petSpecies = currentPet.species;
+  const query = (customConditionText.value || '').toLowerCase();
+
+  return vets.map(vet => {
+    // 1. Strict Species Check
+    if (vet.acceptedSpecies && !vet.acceptedSpecies.includes(petSpecies)) {
+      return {
+        vet,
+        matches: false,
+        exclusionReason: `Does not treat ${petSpecies}s (Treats: ${vet.acceptedSpecies.join(', ')})`
+      };
+    }
+
+    // 2. Strict Emergency Mode Check
+    if (isEmergencyUrgent.value && !vet.emergencyCare) {
+      return {
+        vet,
+        matches: false,
+        exclusionReason: 'Not equipped for 24/7 ICU & Immediate Trauma Surgery'
+      };
+    }
+
+    // 3. Distance Check
+    if (vet.distanceMiles && vet.distanceMiles > selectedMaxDistance.value) {
+      return {
+        vet,
+        matches: false,
+        exclusionReason: `Exceeds max distance (${vet.distanceMiles} mi > ${selectedMaxDistance.value} mi)`
+      };
+    }
+
+    // 4. Clinical Condition Check
+    if (query.includes('chocolate') || query.includes('poison') || query.includes('emergency') || query.includes('toxin')) {
+      if (!vet.emergencyCare && !vet.specialties.some(s => s.toLowerCase().includes('emergency') || s.toLowerCase().includes('poison') || s.toLowerCase().includes('trauma'))) {
+        return {
+          vet,
+          matches: false,
+          exclusionReason: 'Lacks specialized toxicology & emergency trauma unit'
+        };
       }
-
-      // 2. Criteria Match: Emergency Mode
-      if (isEmergencyUrgent.value && !vet.emergencyCare) {
-        return false;
+    } else if (query.includes('avian') || query.includes('feather') || query.includes('beak') || query.includes('bird')) {
+      if (!vet.specialties.some(s => s.toLowerCase().includes('avian') || s.toLowerCase().includes('exotic'))) {
+        return {
+          vet,
+          matches: false,
+          exclusionReason: 'Lacks certified Avian / Exotic board specialist'
+        };
       }
-
-      // 3. Criteria Match: Distance
-      if (vet.distanceMiles && vet.distanceMiles > selectedMaxDistance.value) {
-        return false;
+    } else if (query.includes('limp') || query.includes('joint') || query.includes('bone') || query.includes('orthoped')) {
+      if (!vet.specialties.some(s => s.toLowerCase().includes('orthoped') || s.toLowerCase().includes('joint') || s.toLowerCase().includes('surgery') || s.toLowerCase().includes('checkup'))) {
+        return {
+          vet,
+          matches: false,
+          exclusionReason: 'Lacks orthopedic diagnostic equipment'
+        };
       }
+    }
 
-      // 4. Criteria Match: Medical Need / Specialty
-      if (selectedMedicalNeed.value !== 'All') {
-        const need = selectedMedicalNeed.value.toLowerCase();
-        const hasSpecialty = vet.specialties.some(s => 
-          s.toLowerCase().includes(need) || 
-          need.includes(s.toLowerCase()) ||
-          (need.includes('emergency') && vet.emergencyCare)
-        );
-        if (!hasSpecialty) return false;
-      }
+    return { vet, matches: true };
+  });
+});
 
-      return true;
-    })
+// Eligible matched vets sorted by Pro Subscriber Priority first!
+const strictlyMatchedVets = computed(() => {
+  return evaluatedVetsList.value
+    .filter(e => e.matches)
+    .map(e => e.vet);
+});
+
+// Group 1: Pro Subscriber Vets (Priority #1)
+const proMatchedVets = computed(() => {
+  return strictlyMatchedVets.value
+    .filter(v => v.isProSubscriber)
     .sort((a, b) => {
-      // PRIORITY 1: Pro Subscribers are ranked at the VERY TOP
-      const aPro = a.isProSubscriber ? 1 : 0;
-      const bPro = b.isProSubscriber ? 1 : 0;
-      if (aPro !== bPro) {
-        return bPro - aPro; // Pro subscribers come first
-      }
-
-      // PRIORITY 2: Rating
-      if (b.rating !== a.rating) {
-        return b.rating - a.rating;
-      }
-
-      // PRIORITY 3: Distance
+      if (b.rating !== a.rating) return b.rating - a.rating;
       return (a.distanceMiles || 0) - (b.distanceMiles || 0);
     });
 });
 
-function getAiMatchReason(vet: Vet): string {
-  const petName = targetPet.value?.name || 'Your Pet';
-  if (vet.isProSubscriber && isEmergencyUrgent.value) {
-    return `99% Match • Pro Partner Hospital equipped with 24/7 ICU & surgical triage for ${petName}.`;
+// Group 2: Other Clinically Qualified Vets (Standard Placement)
+const standardMatchedVets = computed(() => {
+  return strictlyMatchedVets.value
+    .filter(v => !v.isProSubscriber)
+    .sort((a, b) => {
+      if (b.rating !== a.rating) return b.rating - a.rating;
+      return (a.distanceMiles || 0) - (b.distanceMiles || 0);
+    });
+});
+
+const totalStrictMatchesCount = computed(() => {
+  return proMatchedVets.value.length + standardMatchedVets.value.length;
+});
+
+// Group 3: Excluded Vets List
+const excludedVetsList = computed(() => {
+  return evaluatedVetsList.value
+    .filter(e => !e.matches)
+    .map(e => ({ vet: e.vet, reason: e.exclusionReason || 'Criteria mismatch' }));
+});
+
+function getDetailedMatchRationale(vet: Vet, isPro: boolean): string {
+  const pet = activeTargetPet.value;
+  const cond = activeConditionDisplayName.value;
+
+  if (isPro && isEmergencyUrgent.value) {
+    return `Strict Match: Board-certified trauma team with 24/7 ICU & surgical triage for ${pet.name}. Priority #1 Pro Partner.`;
   }
-  if (vet.isProSubscriber) {
-    return `98% Match • Verified Pro Partner with top ratings in ${vet.specialties[0]} & immediate slot availability.`;
+  if (isPro) {
+    return `Strict Match for "${cond}": Top-rated expertise in ${vet.specialties[0]} for ${pet.species}s. Verified Nuzzle Pro Priority Partner.`;
   }
-  return `92% Match • Qualified clinic for ${petName}'s routine wellness and preventive diagnostics.`;
+  return `Clinical Match for "${cond}": Qualified ${pet.species} diagnostics and medical care. Standard placement.`;
 }
 
-function isSpecialtyHighlighted(spec: string): boolean {
-  if (selectedMedicalNeed.value === 'All') return false;
-  return spec.toLowerCase().includes(selectedMedicalNeed.value.toLowerCase());
+function isSpecialtyRelevant(spec: string): boolean {
+  const query = customConditionText.value.toLowerCase();
+  if (query.includes('limp') && (spec.includes('Orthoped') || spec.includes('Joint') || spec.includes('Surgery'))) return true;
+  if (query.includes('itch') && (spec.includes('Dermatology') || spec.includes('Allergy'))) return true;
+  if (query.includes('dental') && spec.includes('Dental')) return true;
+  if (query.includes('avian') && spec.includes('Avian')) return true;
+  if (query.includes('chocolate') && (spec.includes('Emergency') || spec.includes('Trauma') || spec.includes('Poison'))) return true;
+  return false;
 }
 
 function handleBookSlot(vet: Vet) {
-  const pet = targetPet.value;
-  bookVetSlot(vet.id, 'Tomorrow', '11:00 AM', pet?.id || 'pet_1', selectedMedicalNeed.value);
+  const pet = activeTargetPet.value;
+  bookVetSlot(vet.id, 'Tomorrow', '11:00 AM', pet.id, activeConditionDisplayName.value);
   bookedVetAppointment.value = vet;
 }
 
 function contactClinic(vet: Vet) {
-  const pet = targetPet.value;
+  const pet = activeTargetPet.value;
   openChatWith(
     vet.name,
     vet.avatarUrl,
     undefined,
-    `Hi ${vet.name}! I was matched via PawAI for ${pet?.name || 'my pet'} regarding ${selectedMedicalNeed.value === 'All' ? 'a general consultation' : selectedMedicalNeed.value}. Do you have openings tomorrow?`
+    `Hi ${vet.name}! PawAI matched your clinic for ${pet.name} (${pet.species}) regarding condition: "${activeConditionDisplayName.value}". Do you have slots available tomorrow?`
   );
 }
 
-function resetVetFilters() {
-  selectedMedicalNeed.value = 'All';
+function resetIntakeFilters() {
+  customConditionText.value = 'Limping on right front paw after park fetch';
+  selectedConditionKey.value = 'limping';
   selectedMaxDistance.value = 25;
   isEmergencyUrgent.value = false;
+  runClinicalAnalysis();
 }
 
 function enrollClinicModal() {
@@ -781,23 +1088,24 @@ function generateMagicArt() {
   font-size: 12px;
 }
 
-/* TAB 1: SUGGEST VET STYLES */
-.vet-matcher-hero {
+/* 1. CONDITION INTAKE CARD */
+.condition-intake-card {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
-  border-radius: 16px;
-  padding: 12px 14px;
+  border-radius: 18px;
+  padding: 14px 16px;
   margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.matcher-header-row {
+.intake-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
-.ai-pulse-badge {
+.ai-pulse-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -805,125 +1113,441 @@ function generateMagicArt() {
   font-weight: 800;
   color: #7C3AED;
   background: #F3EEFF;
-  padding: 2px 7px;
+  padding: 2px 8px;
   border-radius: var(--radius-full);
 }
 
-.pulse-spark {
-  animation: spin 3s linear infinite;
-}
-
-.pro-priority-tag {
+.pro-ranking-indicator {
   font-size: 9.5px;
   font-weight: 800;
   color: #92400E;
   background: #FEF3C7;
   border: 1px solid #FCD34D;
-  padding: 2px 6px;
+  padding: 2px 7px;
   border-radius: var(--radius-full);
 }
 
-.matcher-main-title {
+.intake-title {
   font-size: 15px;
   font-weight: 900;
   color: var(--ink-primary);
 }
 
-.matcher-sub {
+.intake-sub {
   font-size: 11.5px;
   color: var(--ink-secondary);
   line-height: 1.35;
-  margin-top: 2px;
+  margin: 3px 0 12px;
 }
 
-.matcher-filters-grid {
+.form-row {
+  margin-bottom: 10px;
+}
+
+.row-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-primary);
+  margin-bottom: 4px;
+}
+
+/* Pets Strip */
+.pets-picker-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.pet-chip-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px 5px 6px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--border-light);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pet-chip-option.active {
+  background: #F3EEFF;
+  border-color: #7C3AED;
+}
+
+.p-chip-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.p-chip-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-chip-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-primary);
+  line-height: 1.1;
+}
+
+.p-chip-species {
+  font-size: 8.5px;
+  color: var(--ink-muted);
+}
+
+/* Condition Text Input */
+.condition-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.condition-text-field {
+  width: 100%;
+  background: var(--bg-card-subtle);
+  border: 1.5px solid var(--border-light);
+  border-radius: 10px;
+  padding: 8px 30px 8px 10px;
+  font-size: 12px;
+  color: var(--ink-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.condition-text-field:focus {
+  border-color: #7C3AED;
+  background: var(--bg-card);
+}
+
+.clear-cond-btn {
+  position: absolute;
+  right: 8px;
+  font-size: 12px;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.presets-label-row {
+  margin: 6px 0 3px;
+}
+
+.presets-hint {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.condition-presets-track {
+  display: flex;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.condition-presets-track::-webkit-scrollbar {
+  display: none;
+}
+
+.preset-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-chip:hover {
+  border-color: #7C3AED;
+}
+
+.preset-chip.active {
+  background: #F3EEFF;
+  border-color: #7C3AED;
+  color: #6D28D9;
+}
+
+.grid-2-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 10px;
-  padding-top: 10px;
-  border-top: 1px solid var(--border-light);
 }
 
-.filter-field {
+.filter-col {
   display: flex;
   flex-direction: column;
-  gap: 3px;
 }
 
-.field-label {
-  font-size: 10.5px;
+.urgency-selector {
+  display: flex;
+  gap: 4px;
+}
+
+.urg-btn {
+  flex: 1;
+  padding: 6px 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-card-subtle);
+  font-size: 10px;
   font-weight: 700;
   color: var(--ink-secondary);
+  cursor: pointer;
 }
 
-.field-select {
-  background: var(--bg-card-subtle);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  padding: 6px 8px;
-  font-size: 11.5px;
-  color: var(--ink-primary);
-  outline: none;
+.urg-btn.active {
+  background: #ECFDF5;
+  border-color: #10B981;
+  color: #065F46;
 }
 
-.urgent-toggle-btn {
+.urg-btn.emergency.active {
+  background: #FFF1F2;
+  border-color: #F43F5E;
+  color: #9F1239;
+}
+
+.distance-dropdown {
   background: var(--bg-card-subtle);
   border: 1px solid var(--border-light);
   border-radius: 8px;
   padding: 6px 8px;
   font-size: 11px;
+  color: var(--ink-primary);
+  outline: none;
+}
+
+.run-ai-analysis-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  border-radius: var(--radius-full);
+  font-size: 12.5px;
   font-weight: 800;
-  color: var(--ink-secondary);
-  cursor: pointer;
-  transition: all 0.15s ease;
+  margin-top: 4px;
+  background: linear-gradient(135deg, #7C3AED 0%, #947DEE 100%);
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
 }
 
-.urgent-toggle-btn.active {
-  background: #FFE4E6;
-  border-color: #FDA4AF;
-  color: #E11D48;
+/* 2. LIVE ANALYSIS VISUALIZER */
+.ai-analyzing-card {
+  background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+  border: 1.5px solid #818CF8;
+  border-radius: 18px;
+  padding: 16px;
+  color: #fff;
+  margin-bottom: 12px;
 }
 
-/* Suggested Vets List */
-.section-title-row {
+.analyzing-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.scanning-radar-pulse {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #34D399;
+  box-shadow: 0 0 10px #34D399;
+  animation: pulse 1s infinite alternate;
+}
+
+.analyzing-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.stepped-analysis-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #A5B4FC;
+  transition: all 0.2s ease;
+}
+
+.step-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: grid;
+  place-items: center;
+  font-size: 9.5px;
+  font-weight: 800;
+}
+
+.step-item.active {
+  color: #FDE047;
+  font-weight: 700;
+}
+
+.step-item.done {
+  color: #6EE7B7;
+}
+
+.step-item.done .step-num {
+  background: #10B981;
+  color: #fff;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10B981, #34D399);
+  transition: width 0.3s ease;
+}
+
+/* 3. RESULTS BREAKDOWN */
+.analysis-results-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.results-summary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 10px 12px;
+}
+
+.sum-badge-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
-.section-heading {
-  font-size: 13.5px;
+.sum-status-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #059669;
+}
+
+.sum-count-pill {
+  font-size: 9.5px;
+  font-weight: 800;
+  background: var(--bg-card-subtle);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
+  color: var(--ink-secondary);
+}
+
+.sum-condition-text {
+  font-size: 11px;
+  color: var(--ink-secondary);
+  line-height: 1.3;
+}
+
+.sum-priority-banner {
+  font-size: 10px;
+  color: #92400E;
+  background: #FEF3C7;
+  padding: 4px 8px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+
+:global([data-theme='dark']) .sum-priority-banner {
+  background: rgba(45, 30, 10, 0.6);
+  color: #FCD34D;
+}
+
+/* GROUPS */
+.vets-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.group-title-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.group-crown {
+  font-size: 14px;
+}
+
+.group-icon {
+  font-size: 14px;
+}
+
+.group-title {
+  font-size: 12.5px;
   font-weight: 800;
   color: var(--ink-primary);
 }
 
-.sort-indicator {
-  font-size: 10px;
-  font-weight: 700;
-  color: #D97706;
+.group-tag {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--ink-muted);
+  background: var(--bg-card-subtle);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
 }
 
-.vets-cards-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.group-tag.gold {
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
 }
 
+/* CARDS */
 .suggested-vet-card {
   background: var(--bg-card);
   border: 1px solid var(--border-light);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-  position: relative;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  margin-bottom: 8px;
 }
 
-.suggested-vet-card.pro-priority-card {
+.suggested-vet-card.pro-card-highlight {
   border: 1.5px solid #FCD34D;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.18);
 }
 
 .pro-partner-ribbon {
@@ -933,7 +1557,7 @@ function generateMagicArt() {
   background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
   color: #fff;
   padding: 4px 10px;
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 900;
   letter-spacing: 0.02em;
 }
@@ -960,6 +1584,11 @@ function generateMagicArt() {
   border: 1.5px solid var(--border-subtle);
 }
 
+.vet-avatar-img.gold-ring {
+  border-color: #F59E0B;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
+}
+
 .vet-text-col {
   display: flex;
   flex-direction: column;
@@ -983,7 +1612,16 @@ function generateMagicArt() {
   font-weight: 900;
   color: #fff;
   background: #D97706;
-  padding: 1px 4px;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.standard-verified-badge {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #059669;
+  background: #ECFDF5;
+  padding: 1px 5px;
   border-radius: 4px;
 }
 
@@ -1001,7 +1639,7 @@ function generateMagicArt() {
 }
 
 .meta-chip {
-  font-size: 9.5px;
+  font-size: 9px;
   font-weight: 700;
   padding: 1px 5px;
   border-radius: var(--radius-full);
@@ -1025,32 +1663,49 @@ function generateMagicArt() {
 /* AI Match Rationale */
 .ai-match-rationale {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
-  background: linear-gradient(135deg, #FAF5FF 0%, #F3EEFF 100%);
-  border: 1px dashed #DDD6FE;
   border-radius: 8px;
-  padding: 5px 8px;
+  padding: 6px 8px;
 }
 
-:global([data-theme='dark']) .ai-match-rationale {
+.ai-match-rationale.pro-rationale {
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3EEFF 100%);
+  border: 1px dashed #DDD6FE;
+}
+
+:global([data-theme='dark']) .ai-match-rationale.pro-rationale {
   background: rgba(88, 28, 135, 0.25);
   border-color: rgba(147, 51, 234, 0.4);
 }
 
+.ai-match-rationale.standard-rationale {
+  background: var(--bg-card-subtle);
+  border: 1px solid var(--border-light);
+}
+
 .ai-brain-icon {
-  font-size: 12px;
+  font-size: 13px;
   flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.ai-rationale-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ai-match-score {
+  font-size: 10px;
+  font-weight: 800;
+  color: #7C3AED;
 }
 
 .ai-rationale-text {
   font-size: 10.5px;
-  color: #6D28D9;
-  line-height: 1.25;
-}
-
-:global([data-theme='dark']) .ai-rationale-text {
-  color: #DDD6FE;
+  color: var(--ink-secondary);
+  line-height: 1.3;
 }
 
 .vet-specialties-track {
@@ -1060,7 +1715,7 @@ function generateMagicArt() {
 }
 
 .spec-chip {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
   color: var(--ink-secondary);
   background: var(--bg-card-subtle);
@@ -1073,7 +1728,7 @@ function generateMagicArt() {
   background: #F3EEFF;
   border-color: #C084FC;
   color: #7C3AED;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .vet-card-footer {
@@ -1088,8 +1743,8 @@ function generateMagicArt() {
 .next-slot-pill {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 10.5px;
+  gap: 4px;
+  font-size: 10px;
   color: var(--ink-secondary);
 }
 
@@ -1111,22 +1766,106 @@ function generateMagicArt() {
   gap: 4px;
   font-size: 11px;
   font-weight: 800;
-  padding: 5px 10px;
+  padding: 5px 9px;
   border-radius: var(--radius-full);
+}
+
+.instant-book-btn.pro-book {
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 100%);
 }
 
 .clinic-chat-btn {
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  font-size: 11px;
+  font-size: 10.5px;
   padding: 5px 8px;
   border-radius: var(--radius-full);
 }
 
-/* Enroll Card */
+/* 4. SAFETY EXCLUSIONS ACCORDION */
+.excluded-clinics-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ex-header {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: var(--bg-card-subtle);
+}
+
+.ex-title-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.shield-ex-icon {
+  font-size: 12px;
+}
+
+.ex-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-secondary);
+}
+
+.ex-toggle-indicator {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--brand-primary);
+}
+
+.ex-body {
+  padding: 10px 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+.ex-desc {
+  font-size: 10.5px;
+  color: var(--ink-muted);
+  margin-bottom: 6px;
+}
+
+.ex-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ex-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  padding: 3px 0;
+  border-bottom: 1px dashed var(--border-light);
+}
+
+.ex-item:last-child {
+  border-bottom: none;
+}
+
+.ex-name {
+  font-weight: 700;
+  color: var(--ink-secondary);
+}
+
+.ex-reason {
+  color: #DC2626;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* PRO CLINIC ENROLL */
 .pro-clinic-enroll-card {
-  margin-top: 14px;
+  margin-top: 6px;
   background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
   border: 1.5px solid #FCD34D;
   border-radius: 14px;
@@ -1190,25 +1929,25 @@ function generateMagicArt() {
 /* Empty Vet State */
 .empty-vet-state {
   text-align: center;
-  padding: 30px 16px;
+  padding: 24px 16px;
   background: var(--bg-card);
   border-radius: 14px;
   border: 1px solid var(--border-light);
 }
 
 .empty-emoji {
-  font-size: 36px;
+  font-size: 32px;
 }
 
 .empty-vet-state h4 {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 800;
   color: var(--ink-primary);
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .empty-vet-state p {
-  font-size: 11.5px;
+  font-size: 11px;
   color: var(--ink-muted);
   margin: 4px 0 10px;
 }
@@ -1803,5 +2542,10 @@ function generateMagicArt() {
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+  from { opacity: 0.6; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1.15); }
 }
 </style>

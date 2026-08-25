@@ -134,7 +134,10 @@ export const initialPosts: Post[] = [
     petBreed: 'Golden Retriever',
     petAvatar: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=200&auto=format&fit=crop&q=80',
     isAnonymous: false,
-    caption: 'Found the most majestic stick in the whole forest today. Carried it for 3 whole miles with absolute pride! 🌲🐕 #goldenretriever #forestwalk #dogsofinstagram #happypup',
+    caption: 'Found the most majestic stick in the whole forest today. Carried it for 3 whole miles with absolute pride! 🌲🐕 #goldenretriever #forestwalk #happypup',
+    petDialogue: 'I am the Supreme Branch Master. This stick belongs in the Smithsonian.',
+    petMood: '🐾 Zoomies & Fetch Mode',
+    petSoundBite: '🎵 Excited Panting & Tail Wag',
     mediaUrls: [
       'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800&auto=format&fit=crop&q=80',
       'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?w=800&auto=format&fit=crop&q=80'
@@ -142,6 +145,14 @@ export const initialPosts: Post[] = [
     likesCount: 184,
     commentsCount: 23,
     isLiked: true,
+    selectedReaction: 'nuzzle',
+    reactions: {
+      paw: 68,
+      nuzzle: 54,
+      treat: 38,
+      ball: 19,
+      purr: 5
+    },
     isSaved: true,
     createdAt: '2h ago',
     location: 'Pine Crest Trail, OR',
@@ -179,12 +190,23 @@ export const initialPosts: Post[] = [
     petAvatar: 'https://images.unsplash.com/photo-1513360309081-38f0762b781e?w=200&auto=format&fit=crop&q=80',
     isAnonymous: false,
     caption: 'She discovered the top of the refrigerator is warm. We have officially lost all kitchen supremacy. 👑🐾 #bengalcat #catlife #queenstatus',
+    petDialogue: 'Bow down, peasant. Feed me salmon from down there.',
+    petMood: '👑 Mischief & Royalty',
+    petSoundBite: '🎵 Gentle Low Rumble Purr',
     mediaUrls: [
       'https://images.unsplash.com/photo-1513360309081-38f0762b781e?w=800&auto=format&fit=crop&q=80'
     ],
     likesCount: 312,
     commentsCount: 42,
     isLiked: false,
+    selectedReaction: null,
+    reactions: {
+      paw: 94,
+      nuzzle: 88,
+      treat: 72,
+      ball: 11,
+      purr: 47
+    },
     isSaved: false,
     createdAt: '5h ago',
     location: 'Seattle, WA',
@@ -212,12 +234,23 @@ export const initialPosts: Post[] = [
     petAvatar: 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=200&auto=format&fit=crop&q=80',
     isAnonymous: true,
     caption: 'First swimming lesson with the life jacket on! 10% paddling, 90% looking fabulous. 🌊🦺 #frenchie #swimmingdog #summerfun',
+    petDialogue: 'I am a fierce amphibious beast. Fear my tiny paddle toes.',
+    petMood: '🎾 Splash & Play Time',
+    petSoundBite: '🎵 Tiny Snort & Splash',
     mediaUrls: [
       'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=800&auto=format&fit=crop&q=80'
     ],
     likesCount: 489,
     commentsCount: 56,
     isLiked: true,
+    selectedReaction: 'treat',
+    reactions: {
+      paw: 145,
+      nuzzle: 120,
+      treat: 112,
+      ball: 78,
+      purr: 34
+    },
     isSaved: false,
     createdAt: '8h ago',
     location: 'Lake Tahoe',

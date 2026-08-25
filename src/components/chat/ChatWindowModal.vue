@@ -34,7 +34,7 @@
     <div class="chat-messages-container" ref="messagesBox">
       <!-- Conversation Start Pill -->
       <div class="conversation-starter-pill">
-        🔒 End-to-end encrypted • Messaging for PetSocial community
+        🔒 End-to-end encrypted • Messaging for Nuzzle community
       </div>
 
       <div 

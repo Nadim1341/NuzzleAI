@@ -379,7 +379,7 @@ function generateMagicArt() {
 .ai-scroll-body {
   flex: 1;
   overflow-y: auto;
-  padding: 12px 16px 28px;
+  padding: 12px 16px 84px;
 }
 
 .ai-hero-card {
@@ -480,10 +480,10 @@ function generateMagicArt() {
 }
 
 .ai-tab-pill.active {
-  background: linear-gradient(135deg, #6366F1, #8B5CF6);
-  border-color: #6366F1;
+  background: var(--brand-gradient);
+  border-color: transparent;
   color: #fff;
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 14px rgba(148, 125, 238, 0.38);
 }
 
 .tab-pane {
@@ -724,8 +724,9 @@ function generateMagicArt() {
 }
 
 .triage-bubble.user {
-  background: #6366F1;
+  background: var(--brand-gradient);
   color: #fff;
+  box-shadow: 0 2px 8px rgba(148, 125, 238, 0.25);
   border-bottom-right-radius: 4px;
 }
 
@@ -856,11 +857,11 @@ function generateMagicArt() {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366F1, #8B5CF6);
+  background: var(--brand-gradient);
   color: #fff;
   display: grid;
   place-items: center;
-  box-shadow: 0 8px 24px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 8px 24px rgba(148, 125, 238, 0.42);
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -1065,8 +1066,8 @@ function generateMagicArt() {
 }
 
 .style-tile.active {
-  border-color: #6366F1;
-  box-shadow: 0 0 0 1px #6366F1;
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 2px var(--brand-soft);
 }
 
 .style-img {

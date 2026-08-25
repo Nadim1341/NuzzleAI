@@ -49,7 +49,7 @@ const activeLostPet = computed(() => {
 .feed-scroll-body {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 24px;
+  padding-bottom: 84px;
 }
 
 .emergency-banner {

@@ -113,7 +113,7 @@
           <div class="setting-toggle-row">
             <div class="toggle-text">
               <span class="t-main">Dark Theme</span>
-              <span class="t-sub">Switch between warm paper palette and obsidian dark mode.</span>
+              <span class="t-sub">Switch between soothing lavender palette and obsidian dark mode.</span>
             </div>
             <div 
               class="toggle-switch" 
@@ -129,11 +129,11 @@
       <!-- Section 5: Logout & Version -->
       <div class="settings-section">
         <button class="btn-outline logout-btn" @click="handleLogout">
-          Log Out of PetSocial
+          Log Out of Nuzzle
         </button>
 
         <p class="app-version-text">
-          PetSocial Client v1.0.0 • Built with Vue 3 & Vite
+          Nuzzle Client v1.0.0 • Built with Vue 3 & Vite
         </p>
       </div>
     </div>
@@ -145,7 +145,7 @@ import TopBar from '../components/layout/TopBar.vue';
 import { owner, isDarkMode, toggleTheme, setTab } from '../stores/appStore';
 
 function handleLogout() {
-  if (confirm('Log out of PetSocial?')) {
+  if (confirm('Log out of Nuzzle?')) {
     setTab('feed');
   }
 }

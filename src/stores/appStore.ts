@@ -14,7 +14,8 @@ import type {
   MarketplaceListing, 
   ChatConversation, 
   AppNotification,
-  AiScanResult
+  AiScanResult,
+  PetReactionType
 } from '../types';
 import { 
   initialOwner, 
@@ -118,12 +119,35 @@ export function toggleTheme() {
   }
 }
 
-export function togglePostLike(postId: string) {
+export function reactToPost(postId: string, reaction: PetReactionType) {
   const post = posts.find(p => p.id === postId);
-  if (post) {
-    post.isLiked = !post.isLiked;
-    post.likesCount += post.isLiked ? 1 : -1;
+  if (!post) return;
+
+  if (!post.reactions) {
+    post.reactions = { paw: 0, nuzzle: 0, treat: 0, ball: 0, purr: 0 };
   }
+
+  // If already selected the same reaction, toggle off
+  if (post.selectedReaction === reaction) {
+    post.reactions[reaction] = Math.max(0, post.reactions[reaction] - 1);
+    post.selectedReaction = null;
+    post.isLiked = false;
+    post.likesCount = Math.max(0, post.likesCount - 1);
+  } else {
+    // If switching from another reaction
+    if (post.selectedReaction && post.reactions[post.selectedReaction] > 0) {
+      post.reactions[post.selectedReaction]--;
+    } else {
+      post.likesCount++;
+    }
+    post.selectedReaction = reaction;
+    post.reactions[reaction] = (post.reactions[reaction] || 0) + 1;
+    post.isLiked = true;
+  }
+}
+
+export function togglePostLike(postId: string) {
+  reactToPost(postId, 'nuzzle');
 }
 
 export function togglePostSave(postId: string) {
@@ -440,6 +464,120 @@ export function reportLostPet(data: Omit<LostFoundPost, 'id' | 'reportedAt' | 'i
   });
 }
 
+export function claimLostFoundPet(
+  postId: string, 
+  claimType: 'owner_reunited' | 'volunteer_rescue' | 'foster_care', 
+  notes?: string
+) {
+  const item = lostFoundList.find(p => p.id === postId);
+  if (!item) return;
+
+  item.isClaimed = true;
+  item.claimedBy = owner.displayName;
+  item.claimedAt = 'Just now';
+  item.claimType = claimType;
+  item.claimNotes = notes || '';
+  if (claimType === 'owner_reunited') {
+    item.isResolved = true;
+  }
+
+  const title = claimType === 'owner_reunited'
+    ? '🎉 Pet Reunited with Family!'
+    : '🛡️ Rescue Dispatch Locked & Claimed';
+
+  const message = claimType === 'owner_reunited'
+    ? `${item.petName} has been claimed and safely reunited by their family!`
+    : `${owner.displayName} has locked dispatch and claimed rescue coordination for ${item.petName}.`;
+
+  notifications.unshift({
+    id: `notif_claim_${Date.now()}`,
+    type: 'lost_alert',
+    title,
+    message,
+    avatarUrl: item.imageUrl,
+    timeAgo: 'Just now',
+    isRead: false
+  });
+}
+
+export function releaseLostFoundClaim(postId: string) {
+  const item = lostFoundList.find(p => p.id === postId);
+  if (!item) return;
+
+  item.isClaimed = false;
+  item.claimedBy = undefined;
+  item.claimedAt = undefined;
+  item.claimType = undefined;
+  item.claimNotes = undefined;
+  item.isResolved = false;
+}
+
+export function bookOrClaimAdoption(
+  petId: string, 
+  claimType: 'meet_greet' | 'adoption_hold' | 'foster_sponsor', 
+  date: string = 'Tomorrow', 
+  time: string = '2:00 PM'
+) {
+  const pet = adoptions.find(a => a.id === petId);
+  if (!pet) return;
+
+  pet.isClaimed = true;
+  pet.claimedBy = owner.displayName;
+  pet.claimedAt = 'Just now';
+  pet.bookedMeetDate = date;
+  pet.bookedMeetTime = time;
+  pet.claimType = claimType;
+  pet.status = 'pending';
+
+  const title = claimType === 'meet_greet'
+    ? '📅 Meet & Greet Confirmed!'
+    : (claimType === 'adoption_hold' ? '🔒 48-Hour Adoption Hold Placed' : '🤝 Foster / Sponsorship Active');
+
+  const message = claimType === 'meet_greet'
+    ? `Meet & Greet booked for ${pet.name} with ${pet.shelterName} on ${date} at ${time}.`
+    : `Adoption hold reserved for ${pet.name}. Shelter screening coordinator notified.`;
+
+  notifications.unshift({
+    id: `notif_adopt_${Date.now()}`,
+    type: 'appointment',
+    title,
+    message,
+    avatarUrl: pet.imageUrl,
+    timeAgo: 'Just now',
+    isRead: false
+  });
+
+  // Also add to appointments if it's a meet & greet
+  if (claimType === 'meet_greet') {
+    appointments.unshift({
+      id: `apt_adopt_${Date.now()}`,
+      petId: pet.id,
+      petName: `${pet.name} (${pet.breed})`,
+      vetId: 'shelter_1',
+      vetName: `${pet.shelterName} Meet & Greet`,
+      clinicName: pet.location,
+      reason: `Adoption Meet & Greet for ${pet.name}`,
+      date,
+      time,
+      status: 'confirmed'
+    });
+  }
+}
+
+export function cancelAdoptionClaim(petId: string) {
+  const pet = adoptions.find(a => a.id === petId);
+  if (!pet) return;
+
+  pet.isClaimed = false;
+  pet.claimedBy = undefined;
+  pet.claimedAt = undefined;
+  pet.bookedMeetDate = undefined;
+  pet.bookedMeetTime = undefined;
+  pet.claimType = undefined;
+  pet.status = 'available';
+}
+
 export function markAllNotificationsAsRead() {
   notifications.forEach(n => n.isRead = true);
 }
+

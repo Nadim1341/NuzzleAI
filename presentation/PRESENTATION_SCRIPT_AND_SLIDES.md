@@ -1,119 +1,130 @@
-# 🐾 PetSocial (Nuzzle) — 5-Minute UI/UX Presentation Script & Slides
+# 🐾 Nuzzle — 10-Slide Comprehensive UI/UX Presentation Script & Structure
 
-> **Session-01**: UI/UX Presentation  
-> **Topic**: PetSocial — AI-Powered Mobile-First Pet Community App  
-> **Presenter**: Abu Zafor  
-> **Prototype Tech**: Vue.js 3 + TypeScript + Vite  
-> **Time Limit**: 5 Minutes (300 Seconds)  
-> **Interactive Slide Deck URL**: Open [`presentation/index.html`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation/index.html) in any browser.
+> **Event**: Gigalogy Technopreneurship 2026  
+> **Session**: Session-01: UI/UX (5-Minute Participant Presentation)  
+> **Project Title**: **Nuzzle — The Social Network for Pets (AI-Powered, Built for Bangladesh)**  
+> **Team Members**: **Abu Zafor • Nadim Rahman • Rizvi Sarker** (July 2026, Dhaka, Bangladesh)  
+> **Live Prototype & Deck**:  
+> - **Interactive Slide Deck**: [`presentation/index.html`](file:///c:/Users/Nadim/Downloads/nuzzle/presentation/index.html)  
+> - **PowerPoint File**: [`presentation/Nuzzle_UIUX_Presentation.pptx`](file:///c:/Users/Nadim/Downloads/nuzzle/presentation/Nuzzle_UIUX_Presentation.pptx)  
+> - **Live Vue.js 3 App**: [http://localhost:5173/](http://localhost:5173/)  
+> - **Palette Theme**: Soothing Lavender (`#947DEE`) & Pearl White (`#FCFAFF`) with Textured Glassmorphism  
 
 ---
 
-## ⏱️ Presentation Timing & Structure Overview
+## ⏱️ 10-Slide Presentation Structure & Timing Breakdown (5 Minutes)
 
-| Slide # | Guideline Section | Slide Title | Allotted Time | Key Screenshot |
+| Slide # | Slide Title | Guideline Section | Timing | Key Content & Visual Focus |
 | :---: | :--- | :--- | :---: | :--- |
-| **Slide 1** | **1. Introduction** | Title, Name & 1-Sentence Summary | 0:30 (30s) | Brand & Hero |
-| **Slide 2** | **2. Key UI/UX Learnings** | Core UI/UX Principles & Insights | 0:45 (45s) | [`01_home_feed.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/01_home_feed.png) |
-| **Slide 3** | **3. Problem & Users** | Problem Statement & User Personas | 0:45 (45s) | [`13_dual_profile.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/13_dual_profile.png) |
-| **Slide 4** | **4. Design Process** | User Needs, Architecture & Flows | 0:30 (30s) | [`14_pet_persona_profile.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/14_pet_persona_profile.png) |
-| **Slide 5** | **5. Prototype (AI Suite)** | PetScan AI Vision & 24/7 Triage | 0:45 (45s) | [`03_pawai_scanner.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/03_pawai_scanner.png) |
-| **Slide 6** | **5. Prototype (AI Social)** | Playdate Matcher & Voice Translator | 0:30 (30s) | [`06_pawai_matcher.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/06_pawai_matcher.png) |
-| **Slide 7** | **5. Prototype (Feed & AI)** | Stories & First-Person AI Captions | 0:30 (30s) | [`02_story_viewer.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/02_story_viewer.png) |
-| **Slide 8** | **5. Prototype (Safety & Vet)** | Emergency Lost Alerts & Adoption | 0:30 (30s) | [`09_lost_and_found.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/09_lost_and_found.png) |
-| **Slide 9** | **5. Design System** | Palette, Typography & Dark Mode | 0:20 (20s) | [`17_dark_theme_mode.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/17_dark_theme_mode.png) |
-| **Slide 10**| **6. Conclusion** | Learnings, Roadmap & Closing Remark | 0:25 (25s) | Q&A Summary |
+| **Slide 1** | **Title & Introduction** | Section 1: Introduction | 0:30 (30s) | Team names, project title, 1-sentence summary, brand emblem. |
+| **Slide 2** | **What is Nuzzle & What Are We Solving?** | Core Concept & Insight | 0:30 (30s) | Pet-first account architecture, the 4 unaddressed Bangladesh crises, symbiotic social-AI loop. |
+| **Slide 3** | **Key Learnings from UI/UX Session** | Section 2: Key Learnings | 0:30 (30s) | Pet-As-Entity IA, Calm Lavender Ergonomics, Zero-Barrier Emergency UX, Tactile Pet Reactions. |
+| **Slide 4** | **Problem Statement & Target Users** | Section 3: Problem & Users | 0:30 (30s) | +170% ownership growth, Tk 500 Cr market, Segment A (B2C), Segment B (B2B), Segment C (Welfare). |
+| **Slide 5** | **Design Process & System Workflows** | Section 4: Design Process | 0:30 (30s) | Locality-Ranked Den Feed, 3-Tier Escalation Triage, Progressive Radius Claim-and-Lock. |
+| **Slide 6** | **UI Deep Dive: Den Feed & Facebook Reactions** | Section 5: Prototype (Feed) | 0:30 (30s) | Moment card anatomy, mood pills, soundbites, thought bubbles, Facebook reaction dock (1.4x zoom). |
+| **Slide 7** | **UI Deep Dive: PawAI Intelligence Suite** | Section 5: Prototype (AI) | 0:30 (30s) | PetScan AI Vision scanner, 24/7 symptom triage in Bangla/English, audio voice translator. |
+| **Slide 8** | **UI Deep Dive: Safety Radar, Stories & Passport** | Section 5: Prototype (Safety) | 0:30 (30s) | 5-mile emergency radar, <30s rescue flow, Snuggle Circles story tray, Pet Passport & on-the-fly switching. |
+| **Slide 9** | **Design System & Accessibility** | Section 5: Design Rationale | 0:30 (30s) | Lavender tokens (`#947DEE`), typography (`Outfit`/`Plus Jakarta Sans`), frosted glass, dual theme. |
+| **Slide 10**| **Conclusion & Six-Month Roadmap** | Section 6: Conclusion | 0:30 (30s) | Prototype learnings, 6-Month Dhaka MVP gate criteria (10k users, 12k pets, 150 shops), closing remark. |
 
 ---
 
-## 🎙️ Verbatim Slide-by-Slide Script
+## 🎙️ Verbatim Slide-by-Slide Presenter Script (30 Seconds per Slide)
 
 ### Slide 1: Introduction (0:00 – 0:30)
-- **Visual**: Slide 1 Title Screen with warm glowing badge.
-- **Verbatim Script**:
-  > *"Good day everyone! My name is Abu Zafor, and today I'm excited to present **PetSocial**—the next-generation, AI-powered mobile social network built exclusively for pet parents and their furry family members.*
-  >
-  > *In one sentence: **PetSocial is a mobile-first ecosystem empowering pet parents with dedicated pet profiles, 24/7 AI health triage, and community safety networks.** Let's dive in!"*
+> *"Good day honorable judges and participants. My name is Abu Zafor, presenting alongside Nadim Rahman and Rizvi Sarker. Today I am excited to present **Nuzzle**.*
+>
+> *In one sentence: **Nuzzle is an AI-powered, pet-first mobile social ecosystem that combines everyday locality-based pet social networking with 24/7 AI health triage, visual lost-pet matching, and emergency rescue dispatch for Bangladesh's rapidly growing pet community.** Let's dive in!"*
 
 ---
 
-### Slide 2: Key Learnings from the UI/UX Session (0:30 – 1:15)
-- **Visual**: Slide 2 + Screenshot [`01_home_feed.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/01_home_feed.png).
-- **Verbatim Script**:
-  > *"During our UI/UX sessions, four core principles profoundly influenced our design approach:*
-  > 1. ***Purpose-Driven Information Architecture**: We eliminated the clutter of generic social apps to focus exclusively on pet welfare.*
-  > 2. ***Emotional Resonance**: We crafted a warm paper palette (`#FFFCF9`) and soft coral primary (`#F4915C`) that evokes trust, care, and comfort.*
-  > 3. ***Thumb-Zone Ergonomics**: Optimized for single-hand mobile use with bottom-sheet modals, bottom navigation, and quick floating action triggers.*
-  > 4. ***Privacy & Anonymity by Design**: Decoupling the owner's identity from the pet's profile, providing a seamless Ghost Mode without breaking app features.*"
+### Slide 2: What is Nuzzle & What Are We Solving? (0:30 – 1:00)
+> *"**What is Nuzzle and what are we solving?** In Nuzzle, the pet is the account—not a sub-photo on a human profile. An animal has its own followers, milestone records, and medical passport.*
+>
+> *We solve the four critical failures of today's Facebook pet groups: lost pets getting lost in feed noise, medical symptom panic, zero dispatch coordination for injured street strays, and fragmented local discovery.*
+>
+> *Crucially: **our daily social layer builds the local density and multi-photo training dataset that makes our AI accurate during episodic crises.** Neither half works alone."*
 
 ---
 
-### Slide 3: Problem Statement & Target Users (1:15 – 2:00)
-- **Visual**: Slide 3 + Screenshot [`13_dual_profile.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/13_dual_profile.png).
-- **Verbatim Script**:
-  > *"**The Problem**: Today, pet parents post on Instagram or TikTok, but these platforms treat pets as an afterthought. There is no central place for medical logs, no verified lost-pet safety network, and no way to know if a neighborhood dog is safe for a playdate.*
-  >
-  > *Our primary persona is **Alex**, a devoted dog parent who wants a dedicated digital journal for her Golden Retriever, instant AI advice when her pup feels sick, and a safe local community to connect with.*"
+### Slide 3: Key Learnings from the UI/UX Session (1:00 – 1:30)
+> *"From our UI/UX sessions, four core principles shaped our architecture:*
+>
+> 1. ***Pet-As-Entity IA**: Structures multi-angle photographs and milestone logs for downstream AI models.*
+> 2. ***Calm Lavender Ergonomics**: Our soothing lavender and pearl white palette de-escalates anxiety during medical emergencies or lost-pet panic.*
+> 3. ***Zero-Barrier Emergency UX**: Anyone can report an injured street animal in under 30 seconds with no mandatory login.*
+> 4. ***Tactile Pet Micro-Reactions**: Replaced generic likes with Facebook-style pet interactions.*"
 
 ---
 
-### Slide 4: Design Process & Approach (2:00 – 2:30)
-- **Visual**: Slide 4 + Screenshots [`14_pet_persona_profile.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/14_pet_persona_profile.png) & [`15_health_passport.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/15_health_passport.png).
-- **Verbatim Script**:
-  > *"Our design process followed user empathy mapping and rapid prototyping in Vue.js 3.*
-  >
-  > *We innovated a **Dual-Persona Architecture**: a pet owner can switch seamlessly between their human profile and individual pet profiles (like Waffles the Golden Retriever). The pet has its own followers, its own posts, and its own digital health passport—making pet parenting organized and joyful.*"
+### Slide 4: Problem Statement & Target Users (1:30 – 2:00)
+> *"**The Market Reality**: Bangladesh pet ownership surged **170% in three years**, with a **Tk 500 Crore (~$43M)** cat food market and **4,000+ pet shops**.*
+>
+> *We serve three distinct segments:*
+> - ***Segment A (B2C)**: 64M social users in Dhaka (Dhanmondi, Gulshan, Uttara) seeking care, identity, and local playdates.*
+> - ***Segment B (B2B)**: 4,225+ pet businesses and 225+ clinics needing verified storefronts (monetized via Tk 500/month subscriptions).*
+> - ***Segment C (Welfare)**: Dedicated rescue volunteers using our geo-fenced claim-and-lock dispatch free of charge.*"
 
 ---
 
-### Slide 5: Prototype Walkthrough — PawAI Suite (2:30 – 3:15)
-- **Visual**: Slide 5 + Screenshots [`03_pawai_scanner.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/03_pawai_scanner.png) & [`04_pawai_triage.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/04_pawai_triage.png).
-- **Verbatim Script**:
-  > *"Now let's look at the core differentiator that sets PetSocial apart from Instagram: the **PawAI Intelligence Suite**.*
-  >
-  > *First, **PetScan AI**: uses computer vision to analyze breed purity (98.4%), body condition score, coat health, and mood detection from a single photo.*
-  >
-  > *Second, **PawDoctor 24/7 AI Triage**: when your pet accidentally eats chocolate or starts limping, you get immediate emergency triage with urgency badges (Low, Moderate, Critical) before you panic.*"
+### Slide 5: Design Process & Architectural Decisions (2:00 – 2:30)
+> *"Our design process created three defensible workflows:*
+>
+> 1. ***Locality-First Den Feed**: Ranked strictly by recency and neighborhood proximity rather than dopamine engagement algorithms, creating tight neighborhood familiarity.*
+> 2. ***3-Tier AI Health Triage**: Pet parents describe symptoms in Bangla or English, classified into Monitor at Home, See Vet within 24–48h, or Emergency Care Now. Escalation-biased for safety.*
+> 3. ***Claim-and-Lock Rescue Dispatch**: Progressive geo-fenced alerts to nearby NGO volunteers, locking reports upon acceptance so volunteers never duplicate effort.*"
 
 ---
 
-### Slide 6: Prototype Walkthrough — AI Playdates & Voice (3:15 – 3:45)
-- **Visual**: Slide 6 + Screenshots [`06_pawai_matcher.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/06_pawai_matcher.png) & [`05_pawai_translator.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/05_pawai_translator.png).
-- **Verbatim Script**:
-  > *"Third, the **AI Playdate Matcher**: calculates harmony between pets—for example, matching high-energy dogs like Waffles and Oliver with a 96% compatibility score.*
-  >
-  > *And fourth, our **Voice Translator**: captures bark and meow audio waveforms to translate pet vocalizations into humorous first-person thoughts!*"
+### Slide 6: UI Deep Dive — Den Feed & Facebook-Style Reactions (2:30 – 3:00)
+> *"Looking at our UI in detail:*
+>
+> *The **Den Feed** features magazine-style moment cards with live pet mood tags (`🐾 Zoomies`), soundbite indicators (`🎵 Excited Panting`), and our **Facebook-style Pet Multi-Reaction Dock**.*
+>
+> *Users tap or hover over the React button to reveal a floating frosted glass dock with 1.4x magnification and floating tooltips: **Paw Five 🐾, Nuzzle 💜, Treat 🦴, Fetch 🎾, and Purr 😻**, complete with celebratory double-tap bursts and first-person thought bubbles!*"
 
 ---
 
-### Slide 7: Prototype Walkthrough — Feed & Creation (3:45 – 4:15)
-- **Visual**: Slide 7 + Screenshots [`02_story_viewer.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/02_story_viewer.png) & [`16_post_creation_ai.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/16_post_creation_ai.png).
-- **Verbatim Script**:
-  > *"For daily social sharing, we created an interactive **Story Viewer** with auto-advancing progress bars and gesture navigation.*
-  >
-  > *When publishing posts, our **AI First-Person Caption Writer** writes humorous or heartwarming captions in the pet's unique voice with just one tap (Silly, Sweet, Dramatic, Poetic).*"
+### Slide 7: UI Deep Dive — PawAI Intelligence Suite (3:00 – 3:30)
+> *"Our **PawAI Suite** delivers 4 intelligent tools:*
+>
+> 1. ***PetScan AI Vision**: Computer vision scanning breed purity (98.4%), body condition, coat sheen, and facial emotion.*
+> 2. ***PawDoctor 24/7 Triage**: Natural language triage in Bangla and English with clinic routing.*
+> 3. ***Audio Voice Translator**: Captures bark and meow audio waveforms to translate vocalizations into humorous thoughts.*
+> 4. ***AI Playdate Matcher**: Calculates harmony between local neighborhood pets.*"
 
 ---
 
-### Slide 8: Safety & Community Network (4:15 – 4:35)
-- **Visual**: Slide 8 + Screenshots [`09_lost_and_found.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/09_lost_and_found.png) & [`08_explore_communities.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/08_explore_communities.png).
-- **Verbatim Script**:
-  > *"Community safety is vital. When a pet goes missing, a **5-mile Emergency Broadcast** alerts all nearby owners with reward badges and 1-tap calls.*
-  >
-  > *We also offer verified **Pet Adoption Listings** and a **Conflict-Free Vet Booking Calendar** that prevents double-booking.*"
+### Slide 8: UI Deep Dive — Safety Radar, Stories & Passport (3:30 – 4:00)
+> *"For safety and community connection:*
+>
+> - *Our **5-Mile Lost & Found Radar** compares missing pet photos against found strays and shelter intakes using image embedding similarity.*
+> - ***Snuggle Circles**: Squircle daily story trays showing live statuses like `☁️ Zoomies` and `🎶 Singing`.*
+> - *Our **Floating Island Navigation Bar** includes a digital **Pet Passport** with vaccination logs and an on-the-fly pet perspective switcher.*"
 
 ---
 
-### Slide 9: Design System & Theming (4:35 – 4:45)
-- **Visual**: Slide 9 + Screenshot [`17_dark_theme_mode.png`](file:///e:/nuzzle%20project/forntenduse%20vue%20js/presentation_screenshots/17_dark_theme_mode.png).
-- **Verbatim Script**:
-  > *"Our design system uses Plus Jakarta Sans typography, clean glassmorphism, and a true **Obsidian Dark Mode** (`#181615`) for night walks and low-light battery efficiency.*"
+### Slide 9: Design System & Accessibility (4:00 – 4:30)
+> *"Our **Design System** utilizes a soothing Lavender (`#947DEE`) and Pearl White (`#FCFAFF`) textured palette, frosted glassmorphism (`backdrop-filter: blur(24px)`), and premium titanium bezels.*
+>
+> *It supports seamless light and dark mode toggling with WCAG AAA compliant text contrast for high legibility day or night.*"
 
 ---
 
-### Slide 10: Conclusion & Next Steps (4:45 – 5:00)
-- **Visual**: Slide 10 Summary & Thank You.
-- **Verbatim Script**:
-  > *"**Conclusion**: We learned that domain-specific UX wins when it solves deep emotional and practical needs. For our next steps, we plan IoT Smart Collar GPS integration and telehealth video calls.*
-  >
-  > *Pets are family. PetSocial gives them the dedicated, intelligent platform they deserve. Thank you, and I welcome any questions!*"
+### Slide 10: Conclusion & Six-Month Roadmap (4:30 – 5:00)
+> *"To conclude:*
+>
+> *Creating this prototype proved our core insight: **the social layer builds daily local density, while the AI provides critical crisis support.** Neither half works alone.*
+>
+> *Our **6-Month MVP Roadmap** targets a public launch in Dhaka with **10,000 registered users, 12,000 pet profiles, and 150 verified businesses** across strict gate criteria.*
+>
+> *To close: **Pets are family. Nuzzle gives them the dedicated, intelligent, and compassionate platform they deserve.** Thank you, and we welcome your questions!*"
+
+---
+
+## ⌨️ Interactive Deck Shortcuts
+- **Next Slide**: `→` (Right Arrow), `Space`, or `Page Down`
+- **Previous Slide**: `←` (Left Arrow) or `Page Up`
+- **Toggle Speaker Script**: Press `S` or click `🎙️ Script`
+- **Toggle Fullscreen**: Press `F` or click `⛶ Fullscreen`
+- **Pause/Resume 5-Minute Timer**: Click the `⏱️ 05:00` pill

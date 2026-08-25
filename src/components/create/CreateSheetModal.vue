@@ -413,8 +413,8 @@ function handleCreateMarket() {
 }
 
 .ai-caption-helper {
-  background: linear-gradient(135deg, #EEF2FF, #FAF5FF);
-  border: 1px solid #C7D2FE;
+  background: linear-gradient(135deg, #F5F0FF, #FAF5FF);
+  border: 1px solid #D5C8F2;
   border-radius: var(--radius-md);
   padding: 10px 12px;
   margin-bottom: 12px;
@@ -429,7 +429,7 @@ function handleCreateMarket() {
 .ai-help-title {
   font-size: 11.5px;
   font-weight: 800;
-  color: #4338CA;
+  color: var(--brand-primary);
 }
 
 .ai-tones-row {
@@ -444,15 +444,17 @@ function handleCreateMarket() {
   padding: 3px 9px;
   border-radius: var(--radius-full);
   background: #fff;
-  border: 1px solid #A5B4FC;
-  color: #4338CA;
+  border: 1px solid var(--border-strong);
+  color: var(--ink-primary);
   white-space: nowrap;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.15s ease;
 }
 
-.tone-btn:active {
-  background: #6366F1;
+.tone-btn:active, .tone-btn:hover {
+  background: var(--brand-gradient);
   color: #fff;
+  border-color: transparent;
 }
 
 .form-input, .form-textarea, .form-select {

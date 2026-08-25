@@ -3,27 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PetSocial (Nuzzle) — UI/UX Pitch & Prototype Presentation</title>
+  <title>Nuzzle — Comprehensive UI/UX Pitch & Prototype Presentation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #0D0C0B;
-      --bg-slide: #161413;
-      --bg-card: #201D1A;
-      --bg-subtle: #2A2622;
-      --primary: #F4915C;
-      --primary-gradient: linear-gradient(135deg, #F4915C, #E15B1E);
-      --ai-gradient: linear-gradient(135deg, #6366F1, #8B5CF6, #D946EF);
-      --text-main: #FAF7F2;
-      --text-muted: #A3968D;
-      --text-dim: #70655E;
-      --border: #332D28;
+      /* Soothing Lavender & White Corporate Contrast Palette */
+      --bg-stage: #EDE7F6;
+      --bg-slide: #FCFAFF;
+      --bg-card: #FFFFFF;
+      --bg-card-subtle: #F6F2FB;
+      --bg-glass: rgba(252, 250, 255, 0.92);
+      --bg-dark-accent: #261E38;
+      
+      --brand-primary: #947DEE;
+      --brand-primary-hover: #8268E6;
+      --brand-secondary: #BAA7F8;
+      --brand-gradient: linear-gradient(135deg, #947DEE 0%, #7C3AED 100%);
+      --brand-gradient-soft: linear-gradient(135deg, #F3EEFF 0%, #FAF5FF 100%);
+      
+      --ink-primary: #261E38;
+      --ink-secondary: #5F5377;
+      --ink-muted: #9589B0;
+      
+      --border-light: rgba(148, 125, 238, 0.16);
+      --border-strong: #D5C8F2;
+      
       --accent-emerald: #10B981;
       --accent-rose: #F43F5E;
-      --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --font-heading: 'Outfit', system-ui, sans-serif;
+      --accent-amber: #F59E0B;
+      --accent-indigo: #7C3AED;
+      
+      --shadow-sm: 0 2px 8px rgba(45, 25, 80, 0.05);
+      --shadow-md: 0 8px 24px -4px rgba(45, 25, 80, 0.1);
+      --shadow-lg: 0 16px 40px -6px rgba(45, 25, 80, 0.14);
+      --shadow-glow: 0 0 30px rgba(148, 125, 238, 0.22);
+      
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-display: 'Outfit', system-ui, sans-serif;
     }
 
     * {
@@ -34,8 +52,12 @@
 
     body {
       font-family: var(--font-main);
-      background-color: var(--bg-dark);
-      color: var(--text-main);
+      background-color: var(--bg-stage);
+      background-image: 
+        radial-gradient(circle at 10% 15%, rgba(186, 167, 248, 0.35) 0%, transparent 40%),
+        radial-gradient(circle at 90% 85%, rgba(148, 125, 238, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(252, 250, 255, 0.6) 0%, transparent 60%);
+      color: var(--ink-primary);
       height: 100vh;
       overflow: hidden;
       display: flex;
@@ -43,16 +65,16 @@
       user-select: none;
     }
 
-    /* Top Navigation Header */
+    /* Top Corporate Presentation Header */
     .deck-header {
-      height: 56px;
+      height: 60px;
       padding: 0 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-      background: rgba(22, 20, 19, 0.8);
-      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-light);
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
       z-index: 100;
     }
 
@@ -62,63 +84,78 @@
       gap: 12px;
     }
 
-    .paw-badge {
-      width: 32px;
-      height: 32px;
+    .brand-logo-img {
+      width: 34px;
+      height: 34px;
       border-radius: 10px;
-      background: var(--primary-gradient);
-      display: grid;
-      place-items: center;
-      font-size: 16px;
+      object-fit: contain;
+      box-shadow: 0 2px 8px rgba(148, 125, 238, 0.3);
+      border: 1px solid var(--border-strong);
+      background: #fff;
     }
 
     .deck-title {
-      font-family: var(--font-heading);
+      font-family: var(--font-display);
       font-weight: 800;
-      font-size: 16px;
-      letter-spacing: -0.01em;
+      font-size: 17px;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
     }
 
     .deck-tag {
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 700;
-      background: rgba(244, 145, 92, 0.15);
-      color: var(--primary);
-      padding: 3px 8px;
+      background: var(--brand-gradient-soft);
+      color: #6B46C1;
+      padding: 3px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(244, 145, 92, 0.3);
+      border: 1px solid var(--border-strong);
     }
 
     .timer-group {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .slide-counter {
       font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
+      font-weight: 800;
+      color: var(--ink-secondary);
+      background: #FFFFFF;
+      padding: 4px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-sm);
     }
 
-    .nav-ctrl-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
+    .timer-badge {
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.15s ease;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-strong);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: var(--brand-primary);
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
     }
 
-    .nav-ctrl-btn:hover {
-      background: var(--bg-subtle);
-      border-color: var(--primary);
+    .timer-badge:hover {
+      background: #F4EEFF;
+      transform: scale(1.04);
+    }
+
+    .timer-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      animation: pulse 1.5s infinite;
     }
 
     /* Main Deck Stage */
@@ -127,812 +164,1180 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
-      position: relative;
+      padding: 16px 28px 10px;
+      overflow: hidden;
     }
 
-    .slide {
-      position: absolute;
-      inset: 24px;
+    .slide-container {
+      width: 100%;
+      max-width: 1240px;
+      height: 100%;
+      max-height: 650px;
       background: var(--bg-slide);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 40px 48px;
-      display: none;
+      border-radius: 28px;
+      border: 1.5px solid var(--border-light);
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Individual Slide Panels */
+    .slide-panel {
+      position: absolute;
+      inset: 0;
+      padding: 32px 42px;
+      display: flex;
+      flex-direction: column;
       opacity: 0;
-      transform: scale(0.98);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      transform: translateY(16px) scale(0.985);
+      transition: all 0.38s cubic-bezier(0.16, 1, 0.3, 1);
       overflow-y: auto;
     }
 
-    .slide.active {
-      display: flex;
-      flex-direction: column;
+    .slide-panel.active {
       opacity: 1;
-      transform: scale(1);
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
     }
 
-    /* Slide Header */
-    .slide-eyebrow {
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--primary);
-      margin-bottom: 8px;
+    /* Slide Header Area */
+    .slide-top-bar {
       display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .slide-meta-badge {
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .slide-title {
-      font-family: var(--font-heading);
-      font-size: 32px;
-      font-weight: 900;
-      line-height: 1.15;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
-    }
-
-    .slide-grid {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1fr 1.15fr;
-      gap: 36px;
-      align-items: center;
-    }
-
-    .slide-grid.equal {
-      grid-template-columns: 1fr 1fr;
-    }
-
-    .slide-grid.single-col {
-      grid-template-columns: 1fr;
-    }
-
-    /* Cards & Points */
-    .points-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .point-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 16px 20px;
-      display: flex;
-      gap: 14px;
-      align-items: flex-start;
-      transition: transform 0.2s ease, border-color 0.2s ease;
-    }
-
-    .point-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(244, 145, 92, 0.4);
-    }
-
-    .p-icon {
-      font-size: 24px;
-      line-height: 1;
-      padding-top: 2px;
-    }
-
-    .p-content h4 {
-      font-size: 15px;
+      font-size: 11px;
       font-weight: 800;
-      color: var(--text-main);
-      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--brand-primary);
+      background: var(--brand-gradient-soft);
+      border: 1px solid var(--border-strong);
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 5px;
     }
 
-    .p-content p {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.45;
+    .slide-heading {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+      line-height: 1.2;
     }
 
-    /* Mockup Showcase Holder */
-    .mockup-holder {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: radial-gradient(circle at center, rgba(244, 145, 92, 0.08), transparent 70%);
-      border-radius: 20px;
-      padding: 12px;
-      height: 100%;
-      max-height: 520px;
+    .slide-subheading {
+      font-size: 13.5px;
+      color: var(--ink-secondary);
+      font-weight: 500;
+      margin-top: 3px;
     }
 
-    .mockup-img {
-      max-height: 500px;
-      max-width: 100%;
-      object-fit: contain;
-      border-radius: 28px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 0 4px #2A2521;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Grids */
+    .slide-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      flex: 1;
+      min-height: 0;
     }
 
-    .dual-mockups {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-    }
-
-    .dual-mockups .mockup-img {
-      max-height: 440px;
-      max-width: 48%;
-    }
-
-    .multi-mockups-grid {
+    .slide-grid-3 {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      height: 100%;
-    }
-
-    .multi-mockups-grid .mockup-img {
-      max-height: 380px;
-      width: 100%;
-    }
-
-    /* Title Slide Hero */
-    .hero-slide-wrapper {
+      gap: 16px;
       flex: 1;
+      min-height: 0;
+    }
+
+    .slide-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .corporate-card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border-light);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+    }
+
+    .corporate-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
+
+    .card-icon-bubble {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--brand-gradient-soft);
+      border: 1px solid var(--border-strong);
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      margin-bottom: 12px;
+      color: var(--brand-primary);
+    }
+
+    .card-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--ink-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+
+    .card-body-text {
+      font-size: 12.5px;
+      color: var(--ink-secondary);
+      line-height: 1.48;
+      flex: 1;
+    }
+
+    .pill-tag {
+      display: inline-block;
+      align-self: flex-start;
+      margin-top: 10px;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--bg-card-subtle);
+      color: var(--brand-primary);
+      border: 1px solid var(--border-light);
+    }
+
+    /* Metric Highlight Box */
+    .metric-hero-box {
+      background: linear-gradient(135deg, #FAF7FF 0%, #F4EEFF 100%);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 18px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+
+    .metric-big-num {
+      font-family: var(--font-display);
+      font-size: 34px;
+      font-weight: 900;
+      background: var(--brand-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    .metric-label-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-main-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--ink-primary);
+    }
+
+    .metric-sub-note {
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+
+    /* Hero Cover */
+    .hero-cover-layout {
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 40px;
-      background: radial-gradient(circle at center, rgba(244, 145, 92, 0.12), rgba(99, 102, 241, 0.05) 50%, transparent 80%);
+      height: 100%;
+      padding: 16px 36px;
     }
 
-    .hero-eyebrow {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--primary);
-      background: rgba(244, 145, 92, 0.15);
-      border: 1px solid rgba(244, 145, 92, 0.3);
-      padding: 6px 16px;
-      border-radius: 999px;
-      margin-bottom: 20px;
+    .hero-brand-emblem {
+      width: 86px;
+      height: 86px;
+      border-radius: 24px;
+      background: #FFFFFF;
+      border: 2px solid var(--border-strong);
+      box-shadow: 0 10px 30px rgba(148, 125, 238, 0.35);
+      padding: 6px;
+      margin-bottom: 16px;
+      animation: floatHero 3.5s ease-in-out infinite alternate;
     }
 
-    .hero-big-title {
-      font-family: var(--font-heading);
-      font-size: 54px;
+    .hero-brand-emblem img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    @keyframes floatHero {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-7px); }
+    }
+
+    .hero-title-main {
+      font-family: var(--font-display);
+      font-size: 38px;
       font-weight: 900;
-      line-height: 1.08;
       letter-spacing: -0.03em;
-      margin-bottom: 18px;
+      color: var(--ink-primary);
+      margin-bottom: 8px;
+      line-height: 1.15;
     }
 
-    .hero-gradient-text {
-      background: var(--primary-gradient);
+    .hero-gradient-highlight {
+      background: var(--brand-gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .hero-tagline {
-      font-size: 19px;
-      color: var(--text-muted);
-      max-width: 680px;
+    .hero-summary-quote {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      max-width: 820px;
       line-height: 1.5;
-      margin-bottom: 32px;
+      margin-bottom: 22px;
     }
 
-    .presenter-pill {
+    .hero-meta-row {
       display: flex;
+      gap: 14px;
       align-items: center;
-      gap: 12px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      padding: 10px 22px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-strong);
+      padding: 8px 22px;
       border-radius: 999px;
-      font-size: 14px;
-      font-weight: 700;
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Speaker Notes Box */
-    .speaker-notes-bar {
-      position: absolute;
-      bottom: 20px;
-      left: 48px;
-      right: 48px;
-      background: rgba(13, 12, 11, 0.92);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 10px 18px;
+    .hero-meta-item {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink-secondary);
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 12px;
-      color: var(--text-muted);
+      gap: 6px;
     }
 
-    .notes-tag {
+    .hero-meta-divider {
+      color: var(--border-strong);
+    }
+
+    /* Screen Showcase with Zoom Preview */
+    .prototype-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      flex: 1;
+    }
+
+    .screen-demo-card {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-light);
+      border-radius: 20px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .screen-demo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--border-strong);
+    }
+
+    .screen-img-box {
+      height: 175px;
+      background: #F4EEFF;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .screen-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    .screen-info-box {
+      padding: 12px 16px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .screen-badge-title {
+      font-size: 13.5px;
       font-weight: 800;
-      color: var(--primary);
-      text-transform: uppercase;
-      font-size: 10px;
-      background: rgba(244, 145, 92, 0.15);
-      padding: 2px 6px;
-      border-radius: 4px;
-      flex-shrink: 0;
+      color: var(--ink-primary);
+      margin-bottom: 3px;
     }
 
-    /* Bottom Timeline Bar */
+    .screen-desc-sub {
+      font-size: 11.5px;
+      color: var(--ink-secondary);
+      line-height: 1.4;
+    }
+
+    /* Granular UI Showcase Pill Strips */
+    .ui-detail-pill-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .ui-detail-pill {
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--brand-gradient-soft);
+      border: 1px solid var(--border-strong);
+      color: #6B46C1;
+    }
+
+    /* Comparison Dual-Box */
+    .symbiotic-loop-box {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 16px;
+      align-items: center;
+      background: linear-gradient(135deg, #FAF7FF 0%, #F5EEFF 100%);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin-top: 8px;
+    }
+
+    .loop-column {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .loop-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--brand-primary);
+    }
+
+    .loop-desc {
+      font-size: 12px;
+      color: var(--ink-secondary);
+      line-height: 1.4;
+    }
+
+    .loop-arrow {
+      font-size: 22px;
+      color: var(--brand-primary);
+      font-weight: 900;
+    }
+
+    /* Bottom Presenter Controls */
     .deck-footer {
-      height: 48px;
+      height: 56px;
       padding: 0 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-top: 1px solid var(--border);
-      background: var(--bg-dark);
+      border-top: 1px solid var(--border-light);
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      z-index: 100;
     }
 
-    .progress-bar-container {
-      flex: 1;
-      height: 4px;
-      background: var(--border);
-      border-radius: 2px;
-      margin: 0 24px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: var(--primary-gradient);
-      width: 10%;
-      transition: width 0.3s ease;
-    }
-
-    .controls-hint {
-      font-size: 11px;
-      color: var(--text-dim);
-      font-weight: 600;
-    }
-
-    /* Badges */
-    .badge-pill {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 999px;
-      display: inline-flex;
+    .deck-nav-btns {
+      display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 8px;
     }
 
-    .badge-pill.ai {
-      background: rgba(99, 102, 241, 0.2);
-      color: #818CF8;
-      border: 1px solid rgba(99, 102, 241, 0.4);
+    .nav-btn {
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-strong);
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.15s ease;
     }
 
-    .badge-pill.ux {
-      background: rgba(16, 185, 129, 0.2);
-      color: #34D399;
-      border: 1px solid rgba(16, 185, 129, 0.4);
+    .nav-btn:hover {
+      background: #F4EEFF;
+      border-color: var(--brand-primary);
+      color: var(--brand-primary);
+    }
+
+    .nav-btn.primary {
+      background: var(--brand-gradient);
+      color: #FFFFFF;
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(148, 125, 238, 0.35);
+    }
+
+    .nav-btn.primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(148, 125, 238, 0.45);
+    }
+
+    .slide-indicator-track {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .indicator-pip {
+      width: 8px;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border-strong);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .indicator-pip.active {
+      width: 24px;
+      background: var(--brand-primary);
+      box-shadow: 0 0 10px rgba(148, 125, 238, 0.5);
+    }
+
+    .speaker-notes-drawer {
+      position: fixed;
+      bottom: 60px;
+      left: 28px;
+      right: 28px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 2px solid var(--brand-primary);
+      border-radius: 20px;
+      padding: 16px 24px;
+      box-shadow: 0 -10px 40px rgba(45, 25, 80, 0.2);
+      backdrop-filter: blur(20px);
+      z-index: 120;
+      display: none;
+      animation: slideUpNotes 0.25s ease forwards;
+    }
+
+    .speaker-notes-drawer.open {
+      display: block;
+    }
+
+    @keyframes slideUpNotes {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .notes-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--brand-primary);
+      margin-bottom: 4px;
+    }
+
+    .notes-content {
+      font-size: 14px;
+      color: var(--ink-primary);
+      line-height: 1.5;
+    }
+
+    .keyboard-hint {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP HEADER -->
+  <!-- Top Corporate Header -->
   <header class="deck-header">
     <div class="brand-group">
-      <div class="paw-badge">🐾</div>
-      <span class="deck-title">PetSocial (Nuzzle)</span>
-      <span class="deck-tag">UI/UX Pitch Deck</span>
+      <img src="../public/logo.png" alt="Nuzzle Logo" class="brand-logo-img" />
+      <span class="deck-title">Nuzzle</span>
+      <span class="deck-tag">Technopreneurship 2026 • Session-01 UI/UX</span>
     </div>
 
     <div class="timer-group">
-      <span class="slide-counter" id="slideNum">Slide 1 / 10</span>
-      <button class="nav-ctrl-btn" onclick="prevSlide()">‹ Prev</button>
-      <button class="nav-ctrl-btn" onclick="nextSlide()">Next ›</button>
+      <div class="slide-counter">
+        Slide <span id="currentSlideNum">1</span> of 10
+      </div>
+      <div class="timer-badge" id="timerBtn" title="Click to Pause/Resume 5:00 Timer">
+        <span class="timer-dot"></span>
+        <span id="timerDisplay">05:00</span>
+      </div>
+      <button class="nav-btn" id="notesToggleBtn" title="Toggle Speaker Script">
+        🎙️ Script (S)
+      </button>
     </div>
   </header>
 
-  <!-- DECK STAGE -->
+  <!-- Deck Main Stage -->
   <main class="deck-stage">
+    <div class="slide-container">
 
-    <!-- SLIDE 1: INTRODUCTION -->
-    <section class="slide active" id="slide-1">
-      <div class="hero-slide-wrapper">
-        <div class="hero-eyebrow">Session-01: UI/UX Presentation (5 Minutes)</div>
-        <h1 class="hero-big-title">
-          <span class="hero-gradient-text">PetSocial</span> — The Next-Gen<br>AI-Powered Pet Community
-        </h1>
-        <p class="hero-tagline">
-          "A mobile-first social ecosystem empowering pet parents with dedicated pet profiles, 24/7 AI health triage, and community safety networks."
-        </p>
-
-        <div class="presenter-pill">
-          <span>👤 Presenter: Abu Zafor</span>
-          <span>•</span>
-          <span>📱 Prototype: Vue.js 3 + Vite</span>
-          <span>•</span>
-          <span>⏱️ Duration: 5 Mins</span>
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Good day everyone. Today I'm excited to present PetSocial—a purpose-built mobile social app designed specifically for pets and pet parents, integrating cutting-edge AI features with clean, human-centered UI/UX design."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 2: KEY LEARNINGS FROM UI/UX SESSION -->
-    <section class="slide" id="slide-2">
-      <div class="slide-eyebrow">Section 2 • UI/UX Principles & Insights</div>
-      <h2 class="slide-title">Key Learnings from the UI/UX Session</h2>
-
-      <div class="slide-grid">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">🎯</div>
-            <div class="p-content">
-              <h4>1. Purpose-Driven Information Architecture</h4>
-              <p>Eliminated visual clutter common in generic social apps. Every component serves an explicit pet welfare need (Health, Lost Alerts, Playdates).</p>
-            </div>
+      <!-- SLIDE 1: 1. INTRODUCTION -->
+      <section class="slide-panel active" data-slide="1">
+        <div class="hero-cover-layout">
+          <div class="hero-brand-emblem">
+            <img src="../public/logo.png" alt="Nuzzle Monogram Logo" />
           </div>
 
-          <div class="point-card">
-            <div class="p-icon">🎨</div>
-            <div class="p-content">
-              <h4>2. Warm, Emotionally Resonant Aesthetic</h4>
-              <p>Adopted warm paper tokens (#FFFCF9) and soft coral (#F4915C) to evoke warmth, care, and trustworthiness rather than cold tech interfaces.</p>
-            </div>
-          </div>
+          <div class="slide-meta-badge">Section 1 • Project Introduction</div>
 
-          <div class="point-card">
-            <div class="p-icon">📱</div>
-            <div class="p-content">
-              <h4>3. Thumb-Zone Mobile Ergonomics</h4>
-              <p>Bottom navigation bar, floating action buttons, and swipeable modal bottom sheets designed for single-hand mobile interactions.</p>
-            </div>
-          </div>
+          <h1 class="hero-title-main">
+            Nuzzle: The <span class="hero-gradient-highlight">AI-Powered Pet Social Network</span>
+          </h1>
 
-          <div class="point-card">
-            <div class="p-icon">🛡️</div>
-            <div class="p-content">
-              <h4>4. Privacy & Anonymity by Design</h4>
-              <p>Separation of Owner identity vs Pet identity, giving users seamless Ghost Mode controls without losing app functionality.</p>
+          <p class="hero-summary-quote">
+            "An AI-powered, pet-first mobile social ecosystem that unites Dhaka's pet parents through dedicated pet profiles, 24/7 AI health triage, visual lost-pet matching, and emergency street-rescue dispatch."
+          </p>
+
+          <div class="hero-meta-row">
+            <div class="hero-meta-item">
+              <span>👥 Project Team:</span>
+              <strong>Abu Zafor • Nadim Rahman • Rizvi Sarker</strong>
+            </div>
+            <span class="hero-meta-divider">|</span>
+            <div class="hero-meta-item">
+              <span>📍 Focus:</span>
+              <strong>Dhaka MVP Launch • July 2026</strong>
+            </div>
+            <span class="hero-meta-divider">|</span>
+            <div class="hero-meta-item">
+              <span>⏱️ Time:</span>
+              <strong>5-Minute Pitch</strong>
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="mockup-holder">
-          <img src="../presentation_screenshots/01_home_feed.png" alt="Home Feed UX" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"From our UI/UX sessions, my biggest takeaway was that design isn't just decoration—it's empathy. We applied thumb-zone navigation, warm calming color palettes, and privacy-first anonymity."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 3: PROBLEM STATEMENT & TARGET USERS -->
-    <section class="slide" id="slide-3">
-      <div class="slide-eyebrow">Section 3 • Problem Statement & Personas</div>
-      <h2 class="slide-title">Problem Statement & Target Users</h2>
-
-      <div class="slide-grid">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">⚠️</div>
-            <div class="p-content">
-              <h4>The Problem</h4>
-              <p>Generic social media (Instagram, TikTok) mixes pet content with human clutter. Pet parents lack a dedicated space for health records, emergency lost alerts, and neighborhood pet compatibility.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">👩‍🦰</div>
-            <div class="p-content">
-              <h4>Persona 1: The Devoted Pet Parent (Alex)</h4>
-              <p>Wants a dedicated journal for her Golden Retriever, needs 24/7 symptom advice, and loves sharing daily milestones with fellow dog lovers.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">👨‍⚕️</div>
-            <div class="p-content">
-              <h4>Persona 2: The Community Adopter & Vet</h4>
-              <p>Needs a trustworthy channel to publish adoptable pets, verify medical passports, and offer slot bookings without scheduling chaos.</p>
-            </div>
+      <!-- SLIDE 2: WHAT IS NUZZLE & WHAT ARE WE SOLVING? (DEDICATED SLIDE) -->
+      <section class="slide-panel" data-slide="2">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">Core Concept • The Strategic Insight</div>
+            <h2 class="slide-heading">What is Nuzzle & What Are We Solving?</h2>
+            <p class="slide-subheading">A social network built around pets rather than people, powered by safety AI</p>
           </div>
         </div>
 
-        <div class="mockup-holder">
-          <img src="../presentation_screenshots/13_dual_profile.png" alt="Dual Profile" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Current platforms treat pets as an afterthought. Pet parents struggle with disorganized medical logs and frantic lost-pet searches. PetSocial provides a dedicated home for both pet identity and care."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 4: DESIGN PROCESS & USER FLOW -->
-    <section class="slide" id="slide-4">
-      <div class="slide-eyebrow">Section 4 • Design Process & Approach</div>
-      <h2 class="slide-title">Design Process & User Flow</h2>
-
-      <div class="slide-grid equal">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">🔍</div>
-            <div class="p-content">
-              <h4>1. User Research & Empathy Mapping</h4>
-              <p>Identified top friction points: emergency panic when a pet is lost, vet booking delays, and uncertainty over toxic foods.</p>
+        <div class="slide-grid-2">
+          <div class="corporate-card">
+            <h3 class="card-title">🐾 What is Nuzzle?</h3>
+            <p class="card-body-text" style="margin-bottom: 10px;">
+              <strong>The structural decision that defines the product:</strong> The pet holds the account, not the owner. A profile belongs to an animal and carries its name, breed, photos, milestones, health logs, and personality-driven bio.
+            </p>
+            <p class="card-body-text">
+              On top of this social graph sit <strong>3 core AI systems</strong>: Visual Lost-Pet Matching, 24/7 Health Urgency Triage, and Adoption Compatibility Matching—plus location-based injured-animal rescue alerts.
+            </p>
+            <div class="ui-detail-pill-strip">
+              <span class="ui-detail-pill">Pet-First Account</span>
+              <span class="ui-detail-pill">Locality-Based Feed</span>
+              <span class="ui-detail-pill">Emergency Rescue</span>
             </div>
           </div>
 
-          <div class="point-card">
-            <div class="p-icon">📐</div>
-            <div class="p-content">
-              <h4>2. Dual-Persona Architecture</h4>
-              <p>Designed a switchable profile system where the Pet has its own followers and posts, decoupled from the owner's private account.</p>
-            </div>
-          </div>
+          <div class="corporate-card">
+            <h3 class="card-title">⚡ What Problem Are We Solving?</h3>
+            <p class="card-body-text">
+              Bangladesh has <strong>64M social users</strong> and pet ownership surged <strong>+170% in 3 years</strong>. Yet the entire community lives in chaotic Facebook groups where:
+            </p>
+            <ul style="padding-left: 18px; font-size: 12px; color: var(--ink-secondary); line-height: 1.5; margin-top: 6px;">
+              <li><strong>Lost pets get buried:</strong> No visual similarity matching against found strays.</li>
+              <li><strong>Medical triage vacuum:</strong> Panic clinic visits vs dangerous delays.</li>
+              <li><strong>Injured street strays:</strong> Broadcasts to everyone reach nobody in particular.</li>
+            </ul>
 
-          <div class="point-card">
-            <div class="p-icon">🤖</div>
-            <div class="p-content">
-              <h4>3. AI-First Interaction Layer</h4>
-              <p>Positioned PawAI directly in the bottom navigation for 1-tap access to health vision scanning and symptom triage.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="dual-mockups">
-          <img src="../presentation_screenshots/14_pet_persona_profile.png" alt="Pet Profile" class="mockup-img">
-          <img src="../presentation_screenshots/15_health_passport.png" alt="Health Passport" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Our user flows prioritize speed and emotion. Pet parents can switch seamlessly between their human profile and pet passport with one tap, keeping medical records always at hand."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 5: PAWAI SUITE (CORE INNOVATION) -->
-    <section class="slide" id="slide-5">
-      <div class="slide-eyebrow">Section 5 • Prototype Walkthrough — AI Suite</div>
-      <h2 class="slide-title">✨ PawAI Pet Intelligence Suite</h2>
-
-      <div class="slide-grid">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">🔬</div>
-            <div class="p-content">
-              <h4>PetScan AI (Vision & Biometrics)</h4>
-              <p>Neural vision analyzes breed purity (98.4%), Body Condition Score (BCS 5/9), coat health, and mood detection in real-time.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">🩺</div>
-            <div class="p-content">
-              <h4>PawDoctor 24/7 Triage Chat</h4>
-              <p>Immediate veterinary-trained symptom triage with automated severity flags (Low, Moderate, Critical Emergency).</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">🎙️</div>
-            <div class="p-content">
-              <h4>Voice & Emotion AI Translator</h4>
-              <p>Captures bark/meow audio waveforms and translates pet feelings into entertaining, heartwarming thoughts.</p>
+            <div class="symbiotic-loop-box" style="margin-top: 10px; padding: 10px 14px;">
+              <div class="loop-column">
+                <span class="loop-title">Daily Social Layer</span>
+                <span class="loop-desc">Builds local user density & multi-angle photo records</span>
+              </div>
+              <div class="loop-arrow">⇄</div>
+              <div class="loop-column">
+                <span class="loop-title">Episodic AI Utility</span>
+                <span class="loop-desc">Accurate crisis matching & instant emergency response</span>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="dual-mockups">
-          <img src="../presentation_screenshots/03_pawai_scanner.png" alt="PawAI Scanner" class="mockup-img">
-          <img src="../presentation_screenshots/04_pawai_triage.png" alt="PawDoctor Triage" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Here is our standout innovation: the PawAI suite. Unlike Instagram, we provide active computer vision diagnostics and instant emergency triage when a pet ingests something harmful."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 6: SOCIAL & PLAYDATE HARMONY -->
-    <section class="slide" id="slide-6">
-      <div class="slide-eyebrow">Section 5 • Prototype Walkthrough — Social & AI Playdates</div>
-      <h2 class="slide-title">AI Playdate Matcher & Voice Translator</h2>
-
-      <div class="slide-grid">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">⚡</div>
-            <div class="p-content">
-              <h4>Playdate Harmony Engine</h4>
-              <p>Calculates behavioral synergy (e.g. 96% Match between Waffles & Oliver) by matching energy levels and play styles.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">💬</div>
-            <div class="p-content">
-              <h4>Direct Chat with Instant Scheduling</h4>
-              <p>1-tap playdate invitations, encrypted messaging, and simulated real-time neighborhood coordination.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">🎨</div>
-            <div class="p-content">
-              <h4>Magic Pet Portrait Studio</h4>
-              <p>Generative AI transforms pet photos into Pixar 3D, Cyberpunk, and Renaissance fine art avatars.</p>
-            </div>
+      <!-- SLIDE 3: 2. KEY LEARNINGS FROM UI/UX SESSION -->
+      <section class="slide-panel" data-slide="3">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">Section 2 • UI/UX Principles & Insights</div>
+            <h2 class="slide-heading">Key Learnings from the UI/UX Session</h2>
+            <p class="slide-subheading">How core human-centered design principles shaped Nuzzle's architecture</p>
           </div>
         </div>
 
-        <div class="dual-mockups">
-          <img src="../presentation_screenshots/06_pawai_matcher.png" alt="AI Matcher" class="mockup-img">
-          <img src="../presentation_screenshots/05_pawai_translator.png" alt="Voice Translator" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Socializing pets can be risky if energy levels clash. Our AI Harmony Matcher checks behavioral compatibility before dogs meet in the park, ensuring safe and fun playdates."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 7: FEED, STORIES & CONTENT CREATION -->
-    <section class="slide" id="slide-7">
-      <div class="slide-eyebrow">Section 5 • Prototype Walkthrough — Media & Feed</div>
-      <h2 class="slide-title">Stories, Reels & AI First-Person Captions</h2>
-
-      <div class="slide-grid">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">📸</div>
-            <div class="p-content">
-              <h4>Interactive Story Rings & Viewer</h4>
-              <p>Auto-advancing 24h stories with progress bars, tap navigation, hold-to-pause, and direct story replies.</p>
-            </div>
+        <div class="slide-grid-4">
+          <div class="corporate-card">
+            <div class="card-icon-bubble">🐾</div>
+            <h3 class="card-title">Pet-As-Entity IA</h3>
+            <p class="card-body-text">
+              Decoupling from human social timelines. The pet holds the primary account, milestones, and medical history, providing structured data for downstream AI models.
+            </p>
+            <span class="pill-tag">Core IA Strategy</span>
           </div>
 
-          <div class="point-card">
-            <div class="p-icon">✍️</div>
-            <div class="p-content">
-              <h4>AI First-Person Caption Writer</h4>
-              <p>1-tap generative caption tones (Silly, Sweet, Dramatic, Poetic) written from the pet's perspective.</p>
-            </div>
+          <div class="corporate-card">
+            <div class="card-icon-bubble">💜</div>
+            <h3 class="card-title">Calm Lavender Ergonomics</h3>
+            <p class="card-body-text">
+              During lost-pet panic or medical symptoms, high-contrast feeds heighten anxiety. Our soothing lavender & textured white palette fosters trust and emotional de-escalation.
+            </p>
+            <span class="pill-tag">Emotional Design</span>
           </div>
 
-          <div class="point-card">
-            <div class="p-icon">❤️</div>
-            <div class="p-content">
-              <h4>Haptic Double-Tap Micro-Interactions</h4>
-              <p>Double-tap photo for floating heart burst animation, hashtag discovery, and identity-switched comments.</p>
-            </div>
+          <div class="corporate-card">
+            <div class="card-icon-bubble">⚡</div>
+            <h3 class="card-title">Zero-Barrier Emergency UX</h3>
+            <p class="card-body-text">
+              When encountering an injured animal on Dhaka streets, reporting takes &lt;30 seconds with zero mandatory login—eliminating friction at life-or-death moments.
+            </p>
+            <span class="pill-tag">Frictionless Action</span>
+          </div>
+
+          <div class="corporate-card">
+            <div class="card-icon-bubble">✨</div>
+            <h3 class="card-title">Tactile Pet Reactions</h3>
+            <p class="card-body-text">
+              Replacing generic heart likes with Facebook-style pet micro-interactions: Paw Five 🐾, Nuzzle 💜, Treat 🦴, Fetch 🎾, and Purr 😻 for joyful community engagement.
+            </p>
+            <span class="pill-tag">Micro-Interactions</span>
           </div>
         </div>
+      </section>
 
-        <div class="dual-mockups">
-          <img src="../presentation_screenshots/02_story_viewer.png" alt="Story Viewer" class="mockup-img">
-          <img src="../presentation_screenshots/16_post_creation_ai.png" alt="Post Creation AI" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Content creation is fun and effortless. Our built-in AI Caption Writer generates witty captions in the pet's voice, driving higher engagement across the community."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 8: SAFETY, ADOPTION & COMMUNITY -->
-    <section class="slide" id="slide-8">
-      <div class="slide-eyebrow">Section 5 • Prototype Walkthrough — Safety & Adoption</div>
-      <h2 class="slide-title">Emergency Alert Network & Adoption Hub</h2>
-
-      <div class="slide-grid">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">🚨</div>
-            <div class="p-content">
-              <h4>5-Mile Emergency Broadcast</h4>
-              <p>Instant lost pet alerts pushed to nearby users with location markers, reward tags, and 1-tap call buttons.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">🏡</div>
-            <div class="p-content">
-              <h4>Verified Pet Adoption Center</h4>
-              <p>Filter by species, temperament tags, and vaccination status with direct shelter inquiry messaging.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">🏥</div>
-            <div class="p-content">
-              <h4>Conflict-Free Vet Booking</h4>
-              <p>Real-time slot calendar that prevents double bookings and syncs with the Pet Health Passport.</p>
-            </div>
+      <!-- SLIDE 4: 3. PROBLEM STATEMENT & TARGET USERS -->
+      <section class="slide-panel" data-slide="4">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">Section 3 • Market Reality & Personas</div>
+            <h2 class="slide-heading">Problem Statement & Target Users in Bangladesh</h2>
+            <p class="slide-subheading">A fast-growing pet community trapped in fragmented, unsearchable Facebook groups</p>
           </div>
         </div>
 
-        <div class="dual-mockups">
-          <img src="../presentation_screenshots/09_lost_and_found.png" alt="Lost and Found" class="mockup-img">
-          <img src="../presentation_screenshots/08_explore_communities.png" alt="Communities" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Safety is central to PetSocial. When a pet goes missing, a 5-mile emergency alert is broadcasted immediately, transforming the neighborhood into an active search network."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 9: DESIGN SYSTEM & DARK MODE -->
-    <section class="slide" id="slide-9">
-      <div class="slide-eyebrow">Section 5 • Design System & Theming</div>
-      <h2 class="slide-title">Design System, Typography & Dark Mode</h2>
-
-      <div class="slide-grid">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">🎨</div>
-            <div class="p-content">
-              <h4>Harmonious Color Palette</h4>
-              <p>Warm paper background (#FFFCF9), Coral Primary (#F4915C), Emerald for verified health, and Obsidian Dark Mode.</p>
+        <div class="slide-grid-2">
+          <div class="corporate-card">
+            <div class="metric-hero-box">
+              <span class="metric-big-num">+170%</span>
+              <div class="metric-label-group">
+                <span class="metric-main-title">3-Year Pet Ownership Surge in Bangladesh</span>
+                <span class="metric-sub-note">~90% cats • Tk 500 Cr (US$43M) cat-food market • 4,000+ shops</span>
+              </div>
             </div>
+
+            <h3 class="card-title">The Unaddressed Pain Points:</h3>
+            <ul style="padding-left: 18px; font-size: 12.5px; color: var(--ink-secondary); line-height: 1.5; margin-top: 4px;">
+              <li><strong>No Pet Identity:</strong> Pets exist as photos in human timelines with no persistent health history.</li>
+              <li><strong>Lost-Pet Search Failure:</strong> Reports get buried in Facebook groups with zero visual matching.</li>
+              <li><strong>Medical Triage Vacuum:</strong> Panic trips to clinics vs dangerous delays for first-time owners.</li>
+              <li><strong>Injured Animals Left Behind:</strong> Broadcast posts reach everyone in general, but no responder in particular.</li>
+            </ul>
           </div>
 
-          <div class="point-card">
-            <div class="p-icon">🔤</div>
-            <div class="p-content">
-              <h4>Modern Typography Scale</h4>
-              <p>Plus Jakarta Sans for crisp readability + Outfit for bold, friendly headings and brand identity.</p>
-            </div>
-          </div>
+          <div class="corporate-card">
+            <h3 class="card-title" style="margin-bottom: 10px;">3 Core Target Personas (Dhaka First):</h3>
+            
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <div style="background: var(--bg-card-subtle); padding: 9px 12px; border-radius: 12px; border: 1px solid var(--border-light);">
+                <strong style="color: var(--ink-primary); font-size: 12.5px;">Segment A (B2C): Pet Parents & Adopters</strong>
+                <p style="font-size: 11.5px; color: var(--ink-secondary); margin-top: 2px;">Dhaka owners (Dhanmondi, Gulshan, Uttara) seeking care, identity, local playdates & emergency support.</p>
+              </div>
 
-          <div class="point-card">
-            <div class="p-icon">🌙</div>
-            <div class="p-content">
-              <h4>True Dark Mode (#181615)</h4>
-              <p>Reduced eye strain during nighttime pet logs and evening walks, preserving battery life on OLED screens.</p>
+              <div style="background: var(--bg-card-subtle); padding: 9px 12px; border-radius: 12px; border: 1px solid var(--border-light);">
+                <strong style="color: var(--ink-primary); font-size: 12.5px;">Segment B (B2B): Pet Shops, Groomers & 225+ Clinics</strong>
+                <p style="font-size: 11.5px; color: var(--ink-secondary); margin-top: 2px;">4,000+ shops nationally with zero pet-tailored storefronts. Monetized via Tk 500/mo verified business subscriptions.</p>
+              </div>
+
+              <div style="background: var(--bg-card-subtle); padding: 9px 12px; border-radius: 12px; border: 1px solid var(--border-light);">
+                <strong style="color: var(--ink-primary); font-size: 12.5px;">Segment C (Welfare): Rescue Volunteers & Shelters</strong>
+                <p style="font-size: 11.5px; color: var(--ink-secondary); margin-top: 2px;">Active Dhaka street-animal rescue networks utilizing geo-fenced claim-and-lock dispatch free of charge.</p>
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="mockup-holder">
-          <img src="../presentation_screenshots/17_dark_theme_mode.png" alt="Dark Theme" class="mockup-img">
-        </div>
-      </div>
-
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"We built a robust design token system supporting both warm daylight mode and high-contrast dark mode with zero layout shift."</span>
-      </div>
-    </section>
-
-    <!-- SLIDE 10: CONCLUSION & FUTURE ROADMAP -->
-    <section class="slide" id="slide-10">
-      <div class="slide-eyebrow">Section 6 • Conclusion & Next Steps</div>
-      <h2 class="slide-title">Conclusion & Future Roadmap</h2>
-
-      <div class="slide-grid equal">
-        <div class="points-list">
-          <div class="point-card">
-            <div class="p-icon">🎓</div>
-            <div class="p-content">
-              <h4>What We Learned</h4>
-              <p>Domain-specific social UX succeeds when it solves real emotional and practical problems (health, safety, identity) rather than just copying generic feeds.</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">🚀</div>
-            <div class="p-content">
-              <h4>Planned Next Steps</h4>
-              <p>• IoT Smart Collar GPS integration for live walk tracking<br>• Real-time audio model integration for voice translator<br>• Telehealth video calls with licensed veterinary clinics</p>
-            </div>
-          </div>
-
-          <div class="point-card">
-            <div class="p-icon">🐾</div>
-            <div class="p-content">
-              <h4>Closing Remark</h4>
-              <p>"Pets are family. PetSocial gives them the dedicated, intelligent platform they deserve."</p>
-            </div>
+      <!-- SLIDE 5: 4. DESIGN PROCESS & APPROACH -->
+      <section class="slide-panel" data-slide="5">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">Section 4 • User Flows & System Design</div>
+            <h2 class="slide-heading">Design Process & Architectural Decisions</h2>
+            <p class="slide-subheading">Translating user needs into defensible, safety-first workflows</p>
           </div>
         </div>
 
-        <div class="hero-slide-wrapper" style="padding: 20px;">
-          <h2 style="font-family: var(--font-heading); font-size: 36px; font-weight: 900; margin-bottom: 12px;">Thank You! 🐾</h2>
-          <p style="color: var(--text-muted); font-size: 16px; margin-bottom: 24px;">Questions & Live Prototype Demo</p>
-          <div class="presenter-pill">
-            <span>✨ PetSocial Vue.js Prototype</span>
+        <div class="slide-grid-3">
+          <div class="corporate-card">
+            <div class="card-icon-bubble">📍</div>
+            <h3 class="card-title">1. Locality-First Feed</h3>
+            <p class="card-body-text">
+              Ranked strictly by <strong>recency & neighborhood proximity</strong> rather than dopamine-optimizing engagement. Builds genuine familiarity so lost pets are recognized instantly by immediate neighbors.
+            </p>
+            <span class="pill-tag">PostGIS Geo-Radius</span>
+          </div>
+
+          <div class="corporate-card">
+            <div class="card-icon-bubble">🩺</div>
+            <h3 class="card-title">2. 3-Tier Health Triage</h3>
+            <p class="card-body-text">
+              Input symptoms in Bangla or English. Classifies into: <em>(1) Monitor at home</em>, <em>(2) See vet in 24–48h</em>, or <em>(3) Emergency Care Now</em> with clinic routing. Explicitly escalation-biased for safety.
+            </p>
+            <span class="pill-tag">Vet-Signed Safety</span>
+          </div>
+
+          <div class="corporate-card">
+            <div class="card-icon-bubble">🚨</div>
+            <h3 class="card-title">3. Claim-and-Lock Rescue</h3>
+            <p class="card-body-text">
+              Progressive geo-fenced alert broadcast to nearest registered NGO volunteers. First responder claims and locks report, preventing wasted trips and showing live arrival status to the reporter.
+            </p>
+            <span class="pill-tag">Emergency Dispatch</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div class="speaker-notes-bar">
-        <span class="notes-tag">Speaker Cue</span>
-        <span>"Thank you for your time. PetSocial demonstrates how UI/UX and AI can combine to create meaningful, joyful products. I welcome any questions and would love to show the live prototype!"</span>
-      </div>
-    </section>
+      <!-- SLIDE 6: UI DEEP DIVE — DEN FEED & FACEBOOK REACTIONS -->
+      <section class="slide-panel" data-slide="6">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">UI Deep Dive • Feed & Micro-Interactions</div>
+            <h2 class="slide-heading">Den Feed & Facebook-Style Pet Reaction Dock</h2>
+            <p class="slide-subheading">Magazine moment cards with bespoke pet-first tactile interactions</p>
+          </div>
+        </div>
 
+        <div class="slide-grid-2">
+          <div class="screen-demo-card">
+            <div class="screen-img-box" style="height: 280px;">
+              <img src="../presentation_screenshots/01_home_feed.png" alt="Home Feed & Reactions" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">🐾 Magazine Moment Card Anatomy</h4>
+              <p class="screen-desc-sub">
+                Curved organic media containers with floating location pills, species badges, and double-tap reaction bursts.
+              </p>
+            </div>
+          </div>
+
+          <div class="corporate-card">
+            <h3 class="card-title">✨ Granular UI Elements:</h3>
+            <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+              <div style="background: var(--bg-card-subtle); padding: 8px 12px; border-radius: 12px;">
+                <strong style="color: var(--brand-primary); font-size: 12px;">1. Pet Mood & Soundbite Bar:</strong>
+                <p style="font-size: 11.5px; color: var(--ink-secondary);">Live tags like <code>🐾 Zoomies & Fetch Mode</code> and pulsing soundwaves (<code>🎵 Excited Panting & Tail Wag</code>).</p>
+              </div>
+
+              <div style="background: var(--bg-card-subtle); padding: 8px 12px; border-radius: 12px;">
+                <strong style="color: var(--brand-primary); font-size: 12px;">2. Facebook-Style Reaction Dock:</strong>
+                <p style="font-size: 11.5px; color: var(--ink-secondary);">Hover/click triggers floating frosted glass dock with 1.4x zoom and tooltips: 🐾 <em>Paw Five</em>, 💜 <em>Nuzzle</em>, 🦴 <em>Treat</em>, 🎾 <em>Fetch</em>, 😻 <em>Purr</em>.</p>
+              </div>
+
+              <div style="background: var(--bg-card-subtle); padding: 8px 12px; border-radius: 12px;">
+                <strong style="color: var(--brand-primary); font-size: 12px;">3. Pet Thought Dialogue Bubble:</strong>
+                <p style="font-size: 11.5px; color: var(--ink-secondary);">Humorous first-person pet thoughts: <code>💭 "I am the Supreme Branch Master."</code></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 7: UI DEEP DIVE — PAWAI INTELLIGENCE SUITE -->
+      <section class="slide-panel" data-slide="7">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">UI Deep Dive • AI Vision & Triage Suite</div>
+            <h2 class="slide-heading">PawAI Intelligence Suite & 24/7 Triage</h2>
+            <p class="slide-subheading">Multimodal AI vision scanner, emergency triage, and pet emotion translator</p>
+          </div>
+        </div>
+
+        <div class="slide-grid-3">
+          <div class="screen-demo-card">
+            <div class="screen-img-box">
+              <img src="../presentation_screenshots/03_pawai_scanner.png" alt="PetScan AI Vision" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">📸 PetScan AI Vision</h4>
+              <p class="screen-desc-sub">Computer vision analyzing breed purity (98.4%), body condition, coat sheen, and mood from a single photo.</p>
+            </div>
+          </div>
+
+          <div class="screen-demo-card">
+            <div class="screen-img-box">
+              <img src="../presentation_screenshots/04_pawai_triage.png" alt="24/7 Triage" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">🩺 24/7 Symptom Triage</h4>
+              <p class="screen-desc-sub">Bangla/English natural language triage with Low, Moderate, and Critical urgency routing to nearby Dhaka clinics.</p>
+            </div>
+          </div>
+
+          <div class="screen-demo-card">
+            <div class="screen-img-box">
+              <img src="../presentation_screenshots/05_pawai_translator.png" alt="Voice Translator" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">🎙️ Audio Voice Translator</h4>
+              <p class="screen-desc-sub">Real-time bark/meow audio waveform capture translating pet vocalizations into humorous thought bubbles.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 8: UI DEEP DIVE — SAFETY RADAR & PET PASSPORT -->
+      <section class="slide-panel" data-slide="8">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">UI Deep Dive • Safety & Architecture</div>
+            <h2 class="slide-heading">Safety Radar, Snuggle Circles & Pet Passport</h2>
+            <p class="slide-subheading">5-mile emergency broadcasting, daily stories, and digital medical records</p>
+          </div>
+        </div>
+
+        <div class="slide-grid-3">
+          <div class="screen-demo-card">
+            <div class="screen-img-box">
+              <img src="../presentation_screenshots/09_lost_and_found.png" alt="Lost & Found Radar" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">🚨 5-Mile Lost & Found Radar</h4>
+              <p class="screen-desc-sub">Visual embedding photo comparison and &lt;30-sec emergency street animal reporting with claim-and-lock.</p>
+            </div>
+          </div>
+
+          <div class="screen-demo-card">
+            <div class="screen-img-box">
+              <img src="../presentation_screenshots/02_story_viewer.png" alt="Snuggle Circles" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">✨ Snuggle Circles Stories</h4>
+              <p class="screen-desc-sub">Squircle daily story carousel with live status badges (<code>☁️ Zoomies</code>, <code>🎶 Singing</code>) and glowing rings.</p>
+            </div>
+          </div>
+
+          <div class="screen-demo-card">
+            <div class="screen-img-box">
+              <img src="../presentation_screenshots/14_pet_persona_profile.png" alt="Pet Passport Profile" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">🐾 Pet Passport & Switching</h4>
+              <p class="screen-desc-sub">Floating Island Navigation bar, on-the-fly pet perspective switcher, and complete vaccination logs.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 9: DESIGN SYSTEM & ACCESSIBILITY -->
+      <section class="slide-panel" data-slide="9">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">Design System • Tokens & Aesthetics</div>
+            <h2 class="slide-heading">Lavender & White Textured Design Tokens</h2>
+            <p class="slide-subheading">Curated aesthetics, glassmorphism, and thumb-zone mobile ergonomics</p>
+          </div>
+        </div>
+
+        <div class="slide-grid-2">
+          <div class="corporate-card">
+            <h3 class="card-title">🎨 Color Tokens & Textured Styling</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px;">
+              <div style="background: #947DEE; color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 11.5px; font-weight: 700;">
+                #947DEE (Lavender Main)
+              </div>
+              <div style="background: #7C3AED; color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 11.5px; font-weight: 700;">
+                #7C3AED (Deep Violet)
+              </div>
+              <div style="background: #FCFAFF; color: #261E38; border: 1px solid #D5C8F2; padding: 8px 12px; border-radius: 10px; font-size: 11.5px; font-weight: 700;">
+                #FCFAFF (Pearl Textured)
+              </div>
+              <div style="background: #261E38; color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 11.5px; font-weight: 700;">
+                #261E38 (Plum Ink)
+              </div>
+            </div>
+            <p style="font-size: 12px; color: var(--ink-secondary); margin-top: 10px; line-height: 1.45;">
+              <strong>Frosted Glassmorphism:</strong> <code>backdrop-filter: blur(24px)</code> with 1.5px subtle lavender borders and pillowy multi-layer shadows.
+            </p>
+          </div>
+
+          <div class="screen-demo-card">
+            <div class="screen-img-box" style="height: 200px;">
+              <img src="../presentation_screenshots/17_dark_theme_mode.png" alt="Dark Mode & Design System" />
+            </div>
+            <div class="screen-info-box">
+              <h4 class="screen-badge-title">🌙 Dark & Light Textured Modes</h4>
+              <p class="screen-desc-sub">Seamless single-tap dark mode toggle preserving high contrast and accessibility standards across all views.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SLIDE 10: 6. CONCLUSION & ROADMAP -->
+      <section class="slide-panel" data-slide="10">
+        <div class="slide-top-bar">
+          <div>
+            <div class="slide-meta-badge">Section 6 • Learnings, Roadmap & Conclusion</div>
+            <h2 class="slide-heading">Conclusion & Six-Month Dhaka Launch Roadmap</h2>
+            <p class="slide-subheading">From functional prototype to a live, defensible community ecosystem</p>
+          </div>
+        </div>
+
+        <div class="slide-grid-2">
+          <div class="corporate-card">
+            <h3 class="card-title">🚀 6-Month Roadmap & Gate Criteria (Dhaka):</h3>
+            <ul style="padding-left: 18px; font-size: 12px; color: var(--ink-secondary); line-height: 1.55; margin-top: 6px;">
+              <li><strong>Months 1–2 (Foundation):</strong> Pet profiles, follow graph, locality feed, UX complete.</li>
+              <li><strong>Month 3 (Lost-Pet AI):</strong> Precision@5 ≥ 60% with visual embedding similarity.</li>
+              <li><strong>Month 4 (Triage & Rescue):</strong> Vet sign-off, &lt;5% under-triage rate, 20+ Dhaka responders.</li>
+              <li><strong>Month 5 (Adoption AI):</strong> Compatibility scoring, 50 verified shops, 10 shelters.</li>
+              <li><strong>Month 6 (Public Dhaka Launch):</strong> 10,000 registered users, 12,000 pet profiles.</li>
+            </ul>
+          </div>
+
+          <div class="corporate-card" style="background: linear-gradient(135deg, #FAF7FF 0%, #F4EEFF 100%); border-color: var(--border-strong);">
+            <div class="card-icon-bubble">💡</div>
+            <h3 class="card-title">Key Prototype Learnings:</h3>
+            <p class="card-body-text" style="font-size: 12.5px; margin-bottom: 14px;">
+              The social layer earns daily attention and generates continuous training data; the AI features provide indispensable crisis support. Neither functions without the other.
+            </p>
+
+            <div style="padding: 12px 16px; background: #FFFFFF; border-radius: 14px; border: 1.5px solid var(--border-strong); box-shadow: var(--shadow-sm);">
+              <span style="font-size: 10.5px; font-weight: 800; color: var(--brand-primary); text-transform: uppercase;">🐾 Closing Remark</span>
+              <p style="font-size: 13px; font-weight: 700; color: var(--ink-primary); margin-top: 2px;">
+                "Pets are family. Nuzzle gives them the dedicated, intelligent, and compassionate platform they deserve."
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
   </main>
 
-  <!-- DECK FOOTER & PROGRESS -->
+  <!-- Bottom Presenter Controls -->
   <footer class="deck-footer">
-    <span class="controls-hint">⌨️ Use Left/Right Arrow Keys or Space to navigate</span>
-    
-    <div class="progress-bar-container">
-      <div class="progress-bar-fill" id="progressFill"></div>
+    <div class="deck-nav-btns">
+      <button class="nav-btn" id="prevBtn">← Prev</button>
+      <button class="nav-btn primary" id="nextBtn">Next →</button>
+      <button class="nav-btn" id="fullscreenBtn">⛶ Fullscreen (F)</button>
     </div>
 
-    <span class="controls-hint">PetSocial UI/UX Presentation</span>
+    <!-- Pips -->
+    <div class="slide-indicator-track" id="pipsContainer">
+      <div class="indicator-pip active" data-target="1"></div>
+      <div class="indicator-pip" data-target="2"></div>
+      <div class="indicator-pip" data-target="3"></div>
+      <div class="indicator-pip" data-target="4"></div>
+      <div class="indicator-pip" data-target="5"></div>
+      <div class="indicator-pip" data-target="6"></div>
+      <div class="indicator-pip" data-target="7"></div>
+      <div class="indicator-pip" data-target="8"></div>
+      <div class="indicator-pip" data-target="9"></div>
+      <div class="indicator-pip" data-target="10"></div>
+    </div>
+
+    <span class="keyboard-hint">Use ◄ / ► Arrow Keys or Space to Navigate</span>
   </footer>
 
+  <!-- Speaker Notes Drawer -->
+  <div class="speaker-notes-drawer" id="speakerNotesDrawer">
+    <div class="notes-title" id="notesSlideHeader">Slide 1 Speaker Notes (0:00 - 0:30)</div>
+    <p class="notes-content" id="notesText">
+      "Good day everyone! My name is Abu Zafor, presenting alongside Nadim Rahman and Rizvi Sarker. Today we are presenting Nuzzle—the next-generation, AI-powered mobile social network built exclusively for pets and pet parents in Bangladesh."
+    </p>
+  </div>
+
   <script>
+    const slides = document.querySelectorAll('.slide-panel');
+    const pips = document.querySelectorAll('.indicator-pip');
+    const currentSlideNumEl = document.getElementById('currentSlideNum');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    const notesToggleBtn = document.getElementById('notesToggleBtn');
+    const speakerNotesDrawer = document.getElementById('speakerNotesDrawer');
+    const notesSlideHeader = document.getElementById('notesSlideHeader');
+    const notesText = document.getElementById('notesText');
+
     let currentSlide = 1;
     const totalSlides = 10;
 
-    function updateSlide() {
-      document.querySelectorAll('.slide').forEach((slide, idx) => {
-        if (idx + 1 === currentSlide) {
-          slide.classList.add('active');
-        } else {
-          slide.classList.remove('active');
-        }
+    const speakerNotes = {
+      1: {
+        time: "0:00 – 0:30 (30s)",
+        script: "Good day honorable judges and participants. My name is Abu Zafor, presenting alongside Nadim Rahman and Rizvi Sarker. Today I am excited to present Nuzzle. In one sentence: Nuzzle is an AI-powered, pet-first mobile social ecosystem that combines everyday locality-based pet social networking with 24/7 AI health triage, visual lost-pet matching, and emergency rescue dispatch for Bangladesh's rapidly growing pet community."
+      },
+      2: {
+        time: "0:30 – 1:00 (30s)",
+        script: "What is Nuzzle and what are we solving? In Nuzzle, the pet is the account—not a sub-photo on a human profile. We solve the four critical failures of today's Facebook pet groups: lost pets getting lost in feed noise, medical symptom panic, zero coordination for injured street strays, and fragmented local discovery. Crucially, our daily social layer builds the local density and multi-photo training dataset that makes our AI accurate during episodic crises."
+      },
+      3: {
+        time: "1:00 – 1:30 (30s)",
+        script: "From our UI/UX sessions, four core principles shaped our architecture: Pet-As-Entity IA to structure data for AI models; Calm Lavender Ergonomics to de-escalate anxiety during medical or lost-pet emergencies; Zero-Barrier Emergency UX allowing anyone to report an injured street stray in under 30 seconds with no login; and Tactile Pet Micro-Reactions celebrating the human-animal bond."
+      },
+      4: {
+        time: "1:30 – 2:00 (30s)",
+        script: "Market Reality: Bangladesh pet ownership surged 170% in three years, with a Tk 500 Crore cat food market and 4,000+ pet shops. We serve three distinct segments: 64M social users in Dhaka (B2C), 4,225+ pet businesses and 225+ clinics needing verified storefronts (B2B), and dedicated animal rescue volunteers."
+      },
+      5: {
+        time: "2:00 – 2:30 (30s)",
+        script: "Our Design Process created three defensible workflows: a Locality-First Den Feed ranked by proximity over engagement; 3-Tier AI Health Triage in Bangla/English with escalation bias for vet safety; and Progressive Geo-Fenced Claim-and-Lock Rescue Dispatch."
+      },
+      6: {
+        time: "2:30 – 3:00 (30s)",
+        script: "Looking at our UI in detail: The Den Feed features magazine-style moment cards with pet mood badges, soundbite indicators, and our signature Facebook-style Pet Multi-Reaction Dock—allowing users to tap or hover to give Paw Fives, Nuzzles, Treats, Tennis Balls, or Purrs with celebratory bursts!"
+      },
+      7: {
+        time: "3:00 – 3:30 (30s)",
+        script: "Our PawAI Intelligence Suite includes PetScan AI Vision for breed & coat health, PawDoctor 24/7 symptom triage in Bangla and English with clinic routing, an AI audio Voice Translator, and an AI Playdate Matcher."
+      },
+      8: {
+        time: "3:30 – 4:00 (30s)",
+        script: "For Safety and Daily Delight: Our 5-Mile Lost & Found Radar uses image embedding similarity; Snuggle Circles provide squircle story trays; and our Floating Island navigation includes a digital Pet Passport and an on-the-fly pet switcher."
+      },
+      9: {
+        time: "4:00 – 4:30 (30s)",
+        script: "Our Design System employs a soothing Lavender and Pearl White textured theme, frosted glassmorphism, and titanium bezels—accessible in both light and dark modes."
+      },
+      10: {
+        time: "4:30 – 5:00 (30s)",
+        script: "To conclude: Creating this prototype validated that the social layer and AI systems form an indispensable compounding loop. Our 6-Month MVP Roadmap targets a public launch in Dhaka with 10,000 registered users, 12,000 pet profiles, and 150 verified businesses. Pets are family. Nuzzle gives them the platform they deserve. Thank you!"
+      }
+    };
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      slides.forEach(slide => {
+        const slideIdx = parseInt(slide.getAttribute('data-slide'));
+        slide.classList.toggle('active', slideIdx === currentSlide);
       });
 
-      document.getElementById('slideNum').textContent = `Slide ${currentSlide} / ${totalSlides}`;
-      document.getElementById('progressFill').style.width = `${(currentSlide / totalSlides) * 100}%`;
+      pips.forEach(pip => {
+        const targetIdx = parseInt(pip.getAttribute('data-target'));
+        pip.classList.toggle('active', targetIdx === currentSlide);
+      });
+
+      currentSlideNumEl.textContent = currentSlide;
+
+      // Update speaker notes
+      notesSlideHeader.textContent = `Slide ${currentSlide} Speaker Notes (${speakerNotes[currentSlide].time})`;
+      notesText.textContent = speakerNotes[currentSlide].script;
     }
 
-    function nextSlide() {
-      if (currentSlide < totalSlides) {
-        currentSlide++;
-        updateSlide();
-      }
-    }
+    prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
 
-    function prevSlide() {
-      if (currentSlide > 1) {
-        currentSlide--;
-        updateSlide();
-      }
-    }
+    pips.forEach(pip => {
+      pip.addEventListener('click', () => {
+        const target = parseInt(pip.getAttribute('data-target'));
+        showSlide(target);
+      });
+    });
 
     // Keyboard navigation
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
-        e.preventDefault();
-        nextSlide();
+        showSlide(currentSlide + 1);
       } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-        e.preventDefault();
-        prevSlide();
+        showSlide(currentSlide - 1);
       } else if (e.key === 'Home') {
-        currentSlide = 1;
-        updateSlide();
+        showSlide(1);
       } else if (e.key === 'End') {
-        currentSlide = totalSlides;
-        updateSlide();
+        showSlide(totalSlides);
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullscreen();
+      } else if (e.key.toLowerCase() === 's') {
+        toggleNotes();
       }
     });
 
-    updateSlide();
+    // Fullscreen toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+    // Notes toggle
+    function toggleNotes() {
+      speakerNotesDrawer.classList.toggle('open');
+      notesToggleBtn.style.background = speakerNotesDrawer.classList.contains('open') ? '#EDE7F6' : '#FFFFFF';
+    }
+    notesToggleBtn.addEventListener('click', toggleNotes);
+
+    // 5-Minute Timer Countdown
+    let timeLeft = 300;
+    let timerRunning = true;
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerBtn = document.getElementById('timerBtn');
+
+    const timerInterval = setInterval(() => {
+      if (timerRunning && timeLeft > 0) {
+        timeLeft--;
+        const mins = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+        const secs = String(timeLeft % 60).padStart(2, '0');
+        timerDisplay.textContent = `${mins}:${secs}`;
+        if (timeLeft <= 30) {
+          timerDisplay.style.color = 'var(--accent-rose)';
+        }
+      }
+    }, 1000);
+
+    timerBtn.addEventListener('click', () => {
+      timerRunning = !timerRunning;
+      timerBtn.style.opacity = timerRunning ? '1' : '0.6';
+    });
+
+    // Initialize
+    showSlide(1);
   </script>
 </body>
 </html>

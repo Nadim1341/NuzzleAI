@@ -158,7 +158,7 @@ const exploreImages = [
 .explore-scroll-body {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: 24px;
+  padding-bottom: 84px;
 }
 
 .search-bar-wrapper {

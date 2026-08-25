@@ -45,6 +45,16 @@ export interface PostComment {
   isLiked?: boolean;
 }
 
+export type PetReactionType = 'paw' | 'nuzzle' | 'treat' | 'ball' | 'purr';
+
+export interface PetReactionCount {
+  paw: number;     // 🐾 Paw Five
+  nuzzle: number;  // 💜 Nuzzle
+  treat: number;   // 🦴 Treat
+  ball: number;    // 🎾 Fetch
+  purr: number;    // 😻 Purr
+}
+
 export interface Post {
   id: string;
   ownerId: string;
@@ -66,6 +76,11 @@ export interface Post {
   hashtags: string[];
   location?: string;
   aiGeneratedBadge?: boolean;
+  selectedReaction?: PetReactionType | null;
+  reactions?: PetReactionCount;
+  petMood?: string;
+  petSoundBite?: string;
+  petDialogue?: string;
 }
 
 export interface StorySegment {
@@ -130,6 +145,11 @@ export interface LostFoundPost {
   contactPhone: string;
   reportedAt: string;
   isResolved: boolean;
+  isClaimed?: boolean;
+  claimedBy?: string;
+  claimedAt?: string;
+  claimType?: 'owner_reunited' | 'volunteer_rescue' | 'foster_care';
+  claimNotes?: string;
 }
 
 export interface AdoptionListing {
@@ -148,6 +168,12 @@ export interface AdoptionListing {
   temperament: string[];
   isVaccinated: boolean;
   isNeutered: boolean;
+  isClaimed?: boolean;
+  claimedBy?: string;
+  claimedAt?: string;
+  bookedMeetDate?: string;
+  bookedMeetTime?: string;
+  claimType?: 'meet_greet' | 'adoption_hold' | 'foster_sponsor';
 }
 
 export interface VetSlot {

@@ -74,6 +74,10 @@ import { currentTab } from './stores/appStore';
   justify-content: center;
   align-items: center;
   background-color: var(--bg-stage);
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(186, 167, 248, 0.35) 0%, transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(148, 125, 238, 0.25) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(253, 251, 254, 0.6) 0%, transparent 60%);
   overflow: hidden;
 }
 
@@ -82,22 +86,24 @@ import { currentTab } from './stores/appStore';
   max-width: 440px;
   height: 100%;
   max-height: 920px;
-  background-color: var(--bg-app);
+  background: var(--bg-app-textured);
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+  box-shadow: 
+    0 25px 60px -10px rgba(45, 25, 80, 0.25),
+    0 10px 30px rgba(148, 125, 238, 0.15);
 }
 
 @media (min-width: 441px) {
   .mobile-container {
     height: calc(100vh - 24px);
     border-radius: 40px;
-    border: 8px solid #2B2521;
+    border: 8px solid #D8CDF2;
     box-shadow: 
-      0 30px 60px rgba(0, 0, 0, 0.35),
-      0 0 0 2px #443B35;
+      0 30px 70px rgba(45, 25, 80, 0.3),
+      0 0 0 2px #EDE4FA;
   }
 }
 
@@ -113,13 +119,16 @@ import { currentTab } from './stores/appStore';
   z-index: 100;
   flex-shrink: 0;
   background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
 }
 
 .notch-island {
   width: 110px;
   height: 24px;
-  background: #11100E;
+  background: #1C152B;
   border-radius: 20px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
 }
 
 .status-indicators {

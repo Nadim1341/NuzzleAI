@@ -11,9 +11,9 @@
         <span class="brand-text">Nuzzle</span>
       </div>
 
-      <!-- Quick Active Pet Perspective Switcher Pill on Feed -->
+      <!-- Quick Active Pet Perspective Switcher Pill on Feed (Only for Pet Parents) -->
       <button 
-        v-if="!showBackButton && pets.length > 0" 
+        v-if="!showBackButton && (!owner.role || owner.role === 'parent') && pets.length > 0" 
         class="pet-perspective-pill"
         @click="cyclePetPerspective"
         :title="'Switch perspective from ' + currentBrowsingName"
